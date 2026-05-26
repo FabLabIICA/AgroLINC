@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>
+    AgroIdeas | AgroLINC
+  </title>
+
+  <!-- FONTS -->
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- ICONS -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
+
+  <!-- LEAFLET -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet/dist/leaflet.css"
+  />
+
+  <!-- CSS -->
+  <link
+    rel="stylesheet"
+    href="css/index.css"
+  />
+
+</head>
+
+<body class="agroideas-page">
+
+  <!-- ======================================
+       HEADER
+  ======================================= -->
+
+  <header class="topbar">
+
+    <div class="logo-wrap">
+
+      <div class="logo-mark"></div>
+
+      <div>
+
+        <div class="logo">
+          AgroLINC
+        </div>
+
+        <small>
+          Innovación y tecnologías aplicadas
+        </small>
+
+      </div>
+
+    </div>
+
+    <nav class="nav">
+
+      <a href="./index.html">
+        Inicio
+      </a>
+
+      <a href="./ruta.html">
+        Mi Ruta
+      </a>
+
+      <a
+        href="./agroideas.html"
+        class="active"
+      >
+        AgroIdeas
+      </a>
+
+      <a href="#">
+        Territorio
+      </a>
+
+      <a href="#">
+        Noticias
+      </a>
+
+    </nav>
+
+  </header>
+
+  <!-- ======================================
+       HERO
+  ======================================= -->
+
+  <section class="dashboard-hero agroideas-hero">
+
+    <div class="dashboard-overlay"></div>
+
+    <div class="ideas-hero-content">
+
+      <span class="hero-tag">
+        Open Lab AgroLINC
+      </span>
+
+      <h1>
+        Modelos abiertos,
+        fabricación digital
+        y territorio
+      </h1>
+
+      <p>
+        Explora prototipos agrícolas,
+        impresión 3D, automatización,
+        mapeos territoriales y recursos
+        abiertos desarrollados desde
+        AgroLINC.
+      </p>
+
+      <div class="ideas-search">
+
+        <div class="ideas-search-input">
+
+          <i class="fa-solid fa-magnifying-glass"></i>
+
+          <input
+            type="text"
+            id="ideasSearch"
+            placeholder="Buscar recursos, prototipos o territorios"
+          />
+
+        </div>
+
+        <button id="explorarBtn">
+          Explorar
+        </button>
+
+      </div>
+
+      <div class="ideas-tags" style="margin-bottom: 2rem;">
+
+        <span>
+          Impresión 3D
+        </span>
+
+        <span>
+          IoT
+        </span>
+
+        <span>
+          Agricultura
+        </span>
+
+        <span>
+          Territorial
+        </span>
+
+        <span>
+          Automatización
+        </span>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ======================================
+       EXPLORADOR
+  ======================================= -->
+
+  <section class="ideas-explorer">
+
+    <!-- SIDEBAR -->
+
+    <aside class="explorer-sidebar">
+
+      <div class="sidebar-block">
+
+        <span class="section-badge">
+          Navegación
+        </span>
+
+        <h3>
+          Explorar AgroIdeas
+        </h3>
+
+      </div>
+
+      <div class="explorer-menu">
+
+        <a
+          href="#catalogoPrototipo"
+          class="explorer-link active"
+        >
+
+          <i class="fa-solid fa-microchip"></i>
+
+
+          Catálogo de Prototipos
+
+        </a>
+
+        <a
+          href="#catalogo"
+          class="explorer-link"
+        >
+
+        <i class="fa-solid fa-cube"></i>
+
+
+          AgroIdeas 3D
+
+        </a>
+
+        <a
+          href="#mapamaker"
+          class="explorer-link"
+        >
+
+          <i class="fa-solid fa-map-location-dot"></i>
+
+
+          Mapa Maker
+
+        </a>
+
+      </div>
+
+      <div class="sidebar-info" style="margin-top: 1rem;">
+
+        <h4>
+          AgroIdeas
+        </h4>
+
+        <p>
+          Conectando tecnologías,
+          territorio y fabricación
+          digital aplicada.
+        </p>
+
+      </div>
+
+    </aside>
+
+    <!-- CONTENT -->
+
+    <div class="explorer-content">
+
+      <!-- ======================================
+           CATALOGO
+      ======================================= -->
+
+      <section
+        class="ideas-section"
+        id="catalogoPrototipo"
+      >
+
+        <div class="ideas-section-top">
+
+          <div>
+
+            <span class="section-badge">
+              Biblioteca abierta
+            </span>
+
+            <h2>
+              Catálogo de Prototipos
+            </h2>
+
+          </div>
+
+          <p>
+            Recursos abiertos,
+            automatización y
+            soluciones agroalimentarias.
+          </p>
+
+        </div>
+
+        <div
+          class="ideas-grid"
+          id="ideasGrid"
+        >
+
+        <div
+          class="ideas-pagination"
+          id="ideasPagination"
+        ></div>
+
+          <!-- DINÁMICO -->
+
+        </div>
+
+      </section>
+ <!-- ======================================
+           CATALOGO 3D
+      ======================================= -->
+      <section
+        class="ideas-section"
+        id="catalogo"
+      >
+
+        <div class="ideas-section-top">
+
+          <div>
+
+            <span class="section-badge">
+              Repositorio de modelos
+            </span>
+
+            <h2>
+              Agroideas 3D
+            </h2>
+
+          </div>
+
+          <p>
+            Modelos para impresión 3D
+            de utilidad para el sector agro. Libres y verificados.
+          </p>
+
+        </div>
+
+        <div
+          class="ideas-grid"
+          id="ideasGrid"
+        >
+
+        <div
+          class="ideas-pagination"
+          id="ideasPagination"
+        ></div>
+
+          <!-- DINÁMICO -->
+
+        </div>
+
+      </section>
+
+      <!-- ======================================
+           MAPA 3D
+      ======================================= -->
+
+      <section
+        class="ideas-section"
+        id="mapamaker"
+      >
+
+        <div class="ideas-section-top">
+
+          <div>
+
+            <span class="section-badge">
+              Mapa interactivo
+            </span>
+
+            <h2>
+              Mapa Maker
+            </h2>
+
+          </div>
+
+          <p>
+            Espacios maker,
+            laboratorios y
+            servicios vinculados
+            a fabricación digital.
+          </p>
+
+        </div>
+
+        <div class="map-card">
+
+          <div
+            id="mapImpresoras"
+            class="leaflet-map"
+          ></div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </section>  
+
+  <!-- ======================================
+       FOOTER
+  ======================================= -->
+
+  <footer class="footer">
+
+    <div>
+
+      <strong>
+        AgroLINC
+      </strong>
+
+      <p>
+        Innovación aplicada y
+        tecnologías abiertas.
+      </p>
+
+    </div>
+
+    <div>
+
+      <strong>
+        AgroIdeas
+      </strong>
+
+      <p>
+        Biblioteca maker y territorial.
+      </p>
+
+    </div>
+
+    <div>
+
+      <strong>
+        Ecosistema
+      </strong>
+
+      <p>
+        Fabricación · Territorio · AgroTech
+      </p>
+
+    </div>
+
+  </footer>
+
+  <!-- ======================================
+       LEAFLET
+  ======================================= -->
+
+  <script
+    src="https://unpkg.com/leaflet/dist/leaflet.js"
+  ></script>
+
+  <!-- ======================================
+       JS
+  ======================================= -->
+
+  <script src="js/agroideas.js"></script>
+  <div
+  class="idea-modal"
+  id="ideaModal"
+>
+
+  <div class="idea-modal-box">
+
+    <button
+      class="modal-close"
+      onclick="closeIdeaModal()"
+    >
+
+      <i class="fa-solid fa-xmark"></i>
+
+    </button>
+
+    <div id="ideaModalBody"></div>
+
+  </div>
+
+</div>
+</body>
+</html>

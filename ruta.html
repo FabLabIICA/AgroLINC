@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>Mi Ruta | AgroLINC</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
+
+  <link rel="stylesheet" href="css/index.css" />
+
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="topbar">
+
+    <div class="logo-wrap">
+
+      <div class="logo-mark"></div>
+
+      <div>
+
+        <div class="logo">
+          AgroLINC
+        </div>
+
+        <small>
+          Innovación y tecnologías aplicadas
+        </small>
+
+      </div>
+
+    </div>
+
+    <nav class="nav">
+
+      <a href="./index.html">
+        Inicio
+      </a>
+
+      <a href="./ruta.html" class="active">
+        Mi Ruta
+      </a>
+
+      <a href="./agroideas.html">
+        AgroIdeas
+      </a>
+
+      <a href="#">
+        Territorio
+      </a>
+
+      <a href="#">
+        Noticias
+      </a>
+
+    </nav>
+
+    <!-- <a href="./ruta.html" class="header-btn">
+      Consultar avance
+    </a> -->
+
+  </header>
+
+  <!-- HERO -->
+  <section class="dashboard-hero">
+
+    <div class="dashboard-overlay"></div>
+
+    <div class="dashboard-content">
+
+      <span class="hero-tag">
+        Ruta formativa AgroLINC
+      </span>
+
+      <h1>
+        Consulta tu progreso
+        y próximos cursos
+      </h1>
+
+      <p>
+        Visualiza cursos completados,
+        tecnologías habilitadas
+        y próximos pasos.
+      </p>
+
+      <div class="search-box">
+
+        <input
+          id="cedulaInput"
+          type="text"
+          placeholder="Ingresa tu identificación"
+        />
+
+        <button id="consultarBtn">
+          Consultar ruta
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- MAIN -->
+  <main class="main-wrapper">
+
+    <!-- PERFIL -->
+    <aside class="profile-card">
+
+      <div class="profile-top">
+
+        <div
+          class="profile-avatar"
+          id="profileAvatar"
+        >
+          --
+        </div>
+
+        <div>
+
+          <span class="profile-label">
+            Participante
+          </span>
+
+          <h3 id="studentName">
+            Sin consultar
+          </h3>
+
+          <p id="studentRoute">
+            Ruta AgroLINC
+          </p>
+
+        </div>
+
+      </div>
+
+      <div class="progress-wrap">
+
+        <div class="progress-top">
+
+          <span>
+            Progreso
+          </span>
+
+          <span id="progressText">
+            0/0
+          </span>
+
+        </div>
+
+        <div class="progress-bar">
+
+          <div
+            class="progress-fill"
+            id="progressFill"
+          ></div>
+
+        </div>
+
+      </div>
+
+      <div class="stats-grid">
+
+        <div class="mini-stat">
+
+          <strong id="completedCount">
+            0
+          </strong>
+
+          <span>
+            Completados
+          </span>
+
+        </div>
+
+        <div class="mini-stat">
+
+          <strong id="availableCount">
+            0
+          </strong>
+
+          <span>
+            Disponibles
+          </span>
+
+        </div>
+
+      </div>
+
+      <div class="legend">
+
+        <div class="legend-item">
+          <span class="dot completed-dot"></span>
+          Completado
+        </div>
+
+        <div class="legend-item">
+          <span class="dot available-dot"></span>
+          Disponible
+        </div>
+
+        <div class="legend-item">
+          <span class="dot locked-dot"></span>
+          Bloqueado
+        </div>
+
+      </div>
+
+    </aside>
+
+    <!-- CURSOS -->
+    <section class="courses-section">
+
+      <div class="section-header">
+
+        <div>
+
+          <span class="section-tag">
+            Ruta Técnica
+          </span>
+
+          <h2>
+            Mapa de aprendizaje
+          </h2>
+
+        </div>
+
+        <p>
+          Los cursos se desbloquean
+          conforme completas requisitos.
+        </p>
+
+      </div>
+
+      <div
+        class="courses-grid"
+        id="coursesGrid"
+      ></div>
+
+    </section>
+
+  </main>
+
+  <script src="js/data.js"></script>
+
+</body>
+</html>
