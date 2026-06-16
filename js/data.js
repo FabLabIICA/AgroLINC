@@ -61,16 +61,95 @@ function clean(value) {
 ========================================= */
 
 const CURSOS_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vSnS7gYqNZk-2vrvEU1DSYrZa7535VglT7kXCXWWpjDLwDu32K4od3CZqFJyeANgHP_OGhVvVwMhPZC/pub?gid=0&single=true&output=csv";
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQen9jQ8hTfq8nTuYdXS3JXnha10XGyrK42n57v2UT8kEvN3UlrfGiXcKaLY2ZhX8YN2IjWyiUqj-_q/pub?gid=1008621981&single=true&output=csv";
 
 const ESTUDIANTES_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vSnS7gYqNZk-2vrvEU1DSYrZa7535VglT7kXCXWWpjDLwDu32K4od3CZqFJyeANgHP_OGhVvVwMhPZC/pub?gid=1568040734&single=true&output=csv";
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQen9jQ8hTfq8nTuYdXS3JXnha10XGyrK42n57v2UT8kEvN3UlrfGiXcKaLY2ZhX8YN2IjWyiUqj-_q/pub?gid=1841377808&single=true&output=csv";
 
 const EVENTOS_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vSnS7gYqNZk-2vrvEU1DSYrZa7535VglT7kXCXWWpjDLwDu32K4od3CZqFJyeANgHP_OGhVvVwMhPZC/pub?gid=1589233834&single=true&output=csv";
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQen9jQ8hTfq8nTuYdXS3JXnha10XGyrK42n57v2UT8kEvN3UlrfGiXcKaLY2ZhX8YN2IjWyiUqj-_q/pub?gid=1458346686&single=true&output=csv";
 
-const KPI_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSnS7gYqNZk-2vrvEU1DSYrZa7535VglT7kXCXWWpjDLwDu32K4od3CZqFJyeANgHP_OGhVvVwMhPZC/pub?gid=203474066&single=true&output=csv";
+const KPI_URL = 
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQen9jQ8hTfq8nTuYdXS3JXnha10XGyrK42n57v2UT8kEvN3UlrfGiXcKaLY2ZhX8YN2IjWyiUqj-_q/pub?gid=1244953961&single=true&output=csv";
 
+const CALENDARIO_URL = 
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQen9jQ8hTfq8nTuYdXS3JXnha10XGyrK42n57v2UT8kEvN3UlrfGiXcKaLY2ZhX8YN2IjWyiUqj-_q/pub?gid=933585437&single=true&output=csv";
+
+  /* =========================================
+   BLOG
+========================================= */
+
+const BLOG_URL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vQen9jQ8hTfq8nTuYdXS3JXnha10XGyrK42n57v2UT8kEvN3UlrfGiXcKaLY2ZhX8YN2IjWyiUqj-_q/pub?gid=670892286&single=true&output=csv";
+
+const BLOG_IMAGENES_URL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vQen9jQ8hTfq8nTuYdXS3JXnha10XGyrK42n57v2UT8kEvN3UlrfGiXcKaLY2ZhX8YN2IjWyiUqj-_q/pub?gid=2108075240&single=true&output=csv";
+
+/* =========================================
+ FETCH BLOG
+========================================= */
+
+async function fetchBlog() {
+
+const noticiasRows =
+  await fetchCSV(
+    BLOG_URL,
+    "BLOG"
+  );
+
+const imagenesRows =
+  await fetchCSV(
+    BLOG_IMAGENES_URL,
+    "BLOG_IMAGENES"
+  );
+
+const imagenes =
+  imagenesRows
+    .slice(1)
+    .map(r => ({
+      noticia:
+        clean(r[1]),
+
+      imagen:
+        clean(r[0])
+    }));
+
+return noticiasRows
+  .slice(1)
+  .map(r => {
+
+    const id =
+      clean(r[0]);
+
+    return {
+
+      id,
+
+      fecha:
+        clean(r[1]),
+
+      titulo:
+        clean(r[2]),
+
+      texto:
+        clean(r[3]),
+
+      imagenes:
+        imagenes
+          .filter(
+            i =>
+              i.noticia === id
+          )
+          .map(
+            i =>
+              `assets/images/blog/${i.imagen}`
+          )
+
+    };
+
+  });
+
+}
 /* =========================================
    FETCH CSV
 ========================================= */
@@ -140,16 +219,43 @@ async function fetchCursos() {
   const data = rows.slice(1).map(r => ({
     id: clean(r[0]),
     nombre: r[1],
-    ruta: clean(r[2]),
-    requisito1: clean(r[3]),
-    requisito2: clean(r[4]),
-    cursoFinal: clean(r[5]),
-    etapa: r[6]
+    descripcion: r[2],
+    ruta: clean(r[3]),
+    requisito1: clean(r[4]),
+    requisito2: clean(r[5]),
+    cursoFinal: clean(r[6]),
+    etapa: r[7]
   }));
 
   debugLog("CURSOS LIMPIOS", data);
 
   return data;
+
+}
+
+async function fetchCalendario() {
+
+  const rows =
+    await fetchCSV(
+      CALENDARIO_URL,
+      "CALENDARIO"
+    );
+
+  return rows.slice(1).map(r => ({
+
+    fecha: r[0],
+
+    id: clean(r[1]),
+
+    min: Number(r[3]),
+
+    max: Number(r[4]),
+
+    inscritos: Number(r[5]),
+
+    enlace: r[6]
+
+  }));
 
 }
 
@@ -483,21 +589,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
   console.log("AgroLINC iniciado");
 
-  document
-    .getElementById("consultarBtn")
-    .addEventListener("click", consultarRuta);
+  const consultarBtn =
+    document.getElementById("consultarBtn");
 
-  document
-    .getElementById("cedulaInput")
-    .addEventListener("keydown", e => {
+  const cedulaInput =
+    document.getElementById("cedulaInput");
 
-      if (e.key === "Enter") {
+  if (consultarBtn) {
 
-        consultarRuta();
+    consultarBtn.addEventListener(
+      "click",
+      consultarRuta
+    );
+
+  }
+
+  if (cedulaInput) {
+
+    cedulaInput.addEventListener(
+      "keydown",
+      e => {
+
+        if (e.key === "Enter") {
+
+          consultarRuta();
+
+        }
 
       }
+    );
 
-    });
+  }
 
 });
 

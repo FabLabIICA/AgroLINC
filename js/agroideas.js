@@ -1,3 +1,5 @@
+let catalogoOriginal = [];
+
 /* =========================================
    PAGINACIÓN
 ========================================= */
@@ -13,7 +15,13 @@ let catalogoGlobal = [];
 ========================================= */
 
 const AGROIDEAS_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vSnS7gYqNZk-2vrvEU1DSYrZa7535VglT7kXCXWWpjDLwDu32K4od3CZqFJyeANgHP_OGhVvVwMhPZC/pub?gid=1406834327&single=true&output=csv";
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0Qx4yyj93NZTptg6jXzfAH4PJukBl7pjLJ8rry7j5fOfEETlzC45utloqB6WYxw/pub?gid=1323057626&single=true&output=csv";
+
+const AGROIDEAS_3D =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0Qx4yyj93NZTptg6jXzfAH4PJukBl7pjLJ8rry7j5fOfEETlzC45utloqB6WYxw/pub?gid=434666419&single=true&output=csv";
+
+const AGROIDEAS_MAPA_MAKER =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0Qx4yyj93NZTptg6jXzfAH4PJukBl7pjLJ8rry7j5fOfEETlzC45utloqB6WYxw/pub?gid=1086175041&single=true&output=csv";
 
 /* =========================================
    DEBUG
@@ -241,26 +249,28 @@ function getImage(url) {
 
 }
 
-/* =========================================
-   RENDER CATALOGO
-========================================= */
-
 function renderCatalogo(data) {
 
-  catalogoGlobal = data.filter(item => {
+  catalogoOriginal =
+    data.filter(item => {
 
-    const tipo =
-      item.tipo.toLowerCase();
+      const tipo =
+        item.tipo.toLowerCase();
 
-    return (
-      tipo.includes("3d") ||
-      tipo.includes("modelo") ||
-      tipo.includes("prototipo")
-    );
+      return (
+        tipo.includes("3d") ||
+        tipo.includes("modelo") ||
+        tipo.includes("prototipo")
+      );
 
-  });
+    });
 
-  renderPage(currentPage);
+  catalogoGlobal =
+    [...catalogoOriginal];
+
+  currentPage = 1;
+
+  renderPage(1);
 
 }
 
@@ -601,41 +611,271 @@ function renderTerritorial(data) {
   });
 
 }
-
 /* =========================================
-   INIT
+   BUSCADOR
 ========================================= */
 
-async function initAgroIdeas() {
+function initSearch() {
 
-  try {
-
-    const data =
-      await fetchAgroIdeas();
-
-    renderCatalogo(data);
-
-    renderMapa(data);
-
-    renderTerritorial(data);
-
-  } catch (error) {
-
-    console.error(error);
-
-    alert(
-      "Error cargando AgroIdeas"
-    );
-
+  const input =
+  document.getElementById(
+  "ideasSearch"
+  );
+  
+  const btn =
+  document.getElementById(
+  "explorarBtn"
+  );
+  
+  if (!input) return;
+  
+  function buscar() {
+  
+  const q =
+  input.value
+  .toLowerCase()
+  .trim();
+  
+  if (!q) {
+  
+  catalogoGlobal =
+  [
+  ...catalogoOriginal
+  ];
+  
   }
-
-}
-
-/* =========================================
-   LOAD
-========================================= */
-
-document.addEventListener(
+  
+  else {
+  
+  catalogoGlobal =
+  catalogoOriginal.filter(
+  item => {
+  
+  return (
+  
+  item.nombre
+  .toLowerCase()
+  .includes(q)
+  
+  ||
+  
+  item.descripcion
+  .toLowerCase()
+  .includes(q)
+  
+  ||
+  
+  item.coleccion
+  .toLowerCase()
+  .includes(q)
+  
+  );
+  
+  }
+  );
+  
+  }
+  
+  currentPage = 1;
+  
+  renderPage(1);
+  
+  document
+  .getElementById(
+  "catalogoPrototipo"
+  )
+  .scrollIntoView({
+  behavior:
+  "smooth"
+  });
+  
+  }
+  
+  input.addEventListener(
+  "input",
+  buscar
+  );
+  
+  btn.addEventListener(
+  "click",
+  buscar
+  );
+  
+  }
+  
+  
+  /* =========================================
+  SIDEBAR
+  ========================================= */
+  
+  function initSidebar() {
+  
+  const links =
+  document.querySelectorAll(
+  ".explorer-link"
+  );
+  
+  const sections =
+  [
+  ...links
+  ]
+  .map(
+  l => {
+  
+  const id =
+  l
+  .getAttribute(
+  "href"
+  )
+  .replace(
+  "#",
+  ""
+  );
+  
+  return document.getElementById(
+  id
+  );
+  
+  }
+  )
+  .filter(Boolean);
+  
+  function activate() {
+  
+  let active =
+  sections[0];
+  
+  sections.forEach(s => {
+  
+  if (
+  
+  window.scrollY
+  
+  >=
+  
+  s.offsetTop
+  - 220
+  
+  ) {
+  
+  active =
+  s;
+  
+  }
+  
+  });
+  
+  links.forEach(link => {
+  
+  link.classList.remove(
+  "active"
+  );
+  
+  if (
+  
+  link.getAttribute(
+  "href"
+  )
+  
+  ===
+  
+  `#${active.id}`
+  
+  ) {
+  
+  link.classList.add(
+  "active"
+  );
+  
+  }
+  
+  });
+  
+  }
+  
+  links.forEach(link => {
+  
+  link.addEventListener(
+  "click",
+  e => {
+  
+  e.preventDefault();
+  
+  const id =
+  link
+  .getAttribute(
+  "href"
+  );
+  
+  document
+  .querySelector(
+  id
+  )
+  .scrollIntoView({
+  
+  behavior:
+  "smooth"
+  
+  });
+  
+  });
+  
+  });
+  
+  window.addEventListener(
+  "scroll",
+  activate
+  );
+  
+  activate();
+  
+  }
+  
+  
+  /* =========================================
+  INIT
+  ========================================= */
+  
+  async function initAgroIdeas() {
+  
+  try {
+  
+  const data =
+  await fetchAgroIdeas();
+  
+  renderCatalogo(
+  data
+  );
+  
+  renderMapa(
+  data
+  );
+  
+  renderTerritorial(
+  data
+  );
+  
+  initSidebar();
+  
+  initSearch();
+  
+  }
+  
+  catch (e) {
+  
+  console.error(
+  e
+  );
+  
+  alert(
+  "Error cargando AgroIdeas"
+  );
+  
+  }
+  
+  }
+  
+  document.addEventListener(
   "DOMContentLoaded",
   initAgroIdeas
-);
+  );
