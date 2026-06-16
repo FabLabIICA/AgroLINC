@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
   <meta charset="UTF-8" />
 
   <meta
@@ -52,58 +52,64 @@
 
 <body class="agroideas-page">
 
-  <!-- ======================================
-       HEADER
-  ======================================= -->
 
-  <header class="topbar">
 
-    <div class="logo-wrap">
 
-      <div class="logo-mark"></div>
+<!-- =====================================================
+     HEADER
+====================================================== -->
 
-      <div>
+<!-- HEADER -->
+<header class="topbar">
 
-        <div class="logo">
-          AgroLINC
-        </div>
+  <div class="logo-wrap">
+    
+    <img
+      src="assets/images/agrolinc.svg"
+      alt="AgroLINC"
+      class="institution-logo agrolinc-logo"
+    >
+    
+  </div>
 
-        <small>
-          Innovación y tecnologías aplicadas
-        </small>
+  <nav class="nav">
 
-      </div>
+    <a href="./index.html" >
+      Inicio
+    </a>
 
-    </div>
+    <a href="./ruta.html">
+      Mi Ruta
+    </a>
 
-    <nav class="nav">
+    <a href="#" class="active">
+      AgroIdeas
+    </a>
 
-      <a href="./index.html">
-        Inicio
-      </a>
+    <!-- <a href="./blog.html">
+      Blog
+    </a> -->
 
-      <a href="./ruta.html">
-        Mi Ruta
-      </a>
+  </nav>
+  <div class="institution-right">
 
-      <a
-        href="./agroideas.html"
-        class="active"
-      >
-        AgroIdeas
-      </a>
+    <img
+      src="assets/images/micitt.png"
+      alt="Laboratorios LINC"
+      class="institution-logo linc-logo"
+    >
 
-      <a href="#">
-        Territorio
-      </a>
+    <div class="institution-divider"></div>
 
-      <a href="#">
-        Noticias
-      </a>
+    <img
+      src="assets/images/iica-azul.png"
+      alt="IICA"
+      class="institution-logo iica-logo"
+    >
 
-    </nav>
+  </div>
 
-  </header>
+</header>
 
   <!-- ======================================
        HERO
@@ -116,21 +122,19 @@
     <div class="ideas-hero-content">
 
       <span class="hero-tag">
-        Open Lab AgroLINC
+        AgroIdeas: Repositorio de soluciones para la agricultura
       </span>
 
       <h1>
-        Modelos abiertos,
-        fabricación digital
-        y territorio
+        Modelos abiertos, fabricación digital e innovación aplicada
       </h1>
 
       <p>
         Explora prototipos agrícolas,
-        impresión 3D, automatización,
-        mapeos territoriales y recursos
-        abiertos desarrollados desde
-        AgroLINC.
+        modelos para impresión 3D,
+        recursos abiertos,
+        espacios maker y soluciones 
+        desarrolladas desde AgroLINC.
       </p>
 
       <div class="ideas-search">
@@ -263,141 +267,117 @@
 
     <div class="explorer-content">
 
-      <!-- ======================================
-           CATALOGO
-      ======================================= -->
-
+      <!-- ==========================
+           PROTOTIPOS
+      ========================== -->
+      
       <section
         class="ideas-section"
         id="catalogoPrototipo"
       >
-
-        <div class="ideas-section-top">
-
-          <div>
-
-            <span class="section-badge">
-              Biblioteca abierta
-            </span>
-
-            <h2>
-              Catálogo de Prototipos
-            </h2>
-
-          </div>
-
-          <p>
-            Recursos abiertos,
-            automatización y
-            soluciones agroalimentarias.
-          </p>
-
-        </div>
-
-        <div
-          class="ideas-grid"
-          id="ideasGrid"
-        >
-
-        <div
-          class="ideas-pagination"
-          id="ideasPagination"
-        ></div>
-
-          <!-- DINÁMICO -->
-
-        </div>
-
+      
+      <div class="ideas-section-top">
+      
+      <div>
+      
+      <span class="section-badge">
+      Biblioteca abierta
+      </span>
+      
+      <h2>
+      Catálogo de Prototipos
+      </h2>
+      
+      </div>
+      
+      <p>
+      Recursos abiertos y soluciones agroalimentarias.
+      </p>
+      
+      </div>
+      
+      <div
+      class="ideas-grid"
+      id="ideasGrid"
+      ></div>
+      
+      <div
+      class="ideas-pagination"
+      id="ideasPagination"
+      ></div>
+      
       </section>
- <!-- ======================================
-           CATALOGO 3D
-      ======================================= -->
+      
+      
+      <!-- ==========================
+           AGROIDEAS 3D
+      ========================== -->
+      
       <section
-        class="ideas-section"
-        id="catalogo"
+      class="ideas-section"
+      id="catalogo"
       >
-
-        <div class="ideas-section-top">
-
-          <div>
-
-            <span class="section-badge">
-              Repositorio de modelos
-            </span>
-
-            <h2>
-              Agroideas 3D
-            </h2>
-
-          </div>
-
-          <p>
-            Modelos para impresión 3D
-            de utilidad para el sector agro. Libres y verificados.
-          </p>
-
-        </div>
-
-        <div
-          class="ideas-grid"
-          id="ideasGrid"
-        >
-
-        <div
-          class="ideas-pagination"
-          id="ideasPagination"
-        ></div>
-
-          <!-- DINÁMICO -->
-
-        </div>
-
+      
+      <div class="ideas-section-top">
+      
+      <div>
+      
+      <span class="section-badge">
+      Repositorio
+      </span>
+      
+      <h2>
+      AgroIdeas 3D
+      </h2>
+      
+      </div>
+      
+      <p>
+      Modelos abiertos para impresión 3D.
+      </p>
+      
+      </div>
+      
       </section>
-
-      <!-- ======================================
-           MAPA 3D
-      ======================================= -->
-
+      
+      
+      <!-- ==========================
+           MAPA
+      ========================== -->
+      
       <section
-        class="ideas-section"
-        id="mapamaker"
+      class="ideas-section"
+      id="mapamaker"
       >
-
-        <div class="ideas-section-top">
-
-          <div>
-
-            <span class="section-badge">
-              Mapa interactivo
-            </span>
-
-            <h2>
-              Mapa Maker
-            </h2>
-
-          </div>
-
-          <p>
-            Espacios maker,
-            laboratorios y
-            servicios vinculados
-            a fabricación digital.
-          </p>
-
-        </div>
-
-        <div class="map-card">
-
-          <div
-            id="mapImpresoras"
-            class="leaflet-map"
-          ></div>
-
-        </div>
-
+      
+      <div class="ideas-section-top">
+      
+      <div>
+      
+      <span class="section-badge">
+      Mapa interactivo
+      </span>
+      
+      <h2>
+      Mapa Maker
+      </h2>
+      
+      </div>
+      
+      </div>
+      
+      <div class="map-card">
+      
+      <div
+      id="mapImpresoras"
+      class="leaflet-map"
+      ></div>
+      
+      </div>
+      
       </section>
-
-    </div>
+      
+      </div>
 
   </section>  
 
@@ -405,46 +385,65 @@
        FOOTER
   ======================================= -->
 
-  <footer class="footer">
+ <!-- FOOTER -->
+ <footer class="footer">
 
-    <div>
+  <div class="footer-brand">
 
-      <strong>
-        AgroLINC
-      </strong>
+    <h3>
+      AgroLINC
+    </h3>
 
-      <p>
-        Innovación aplicada y
-        tecnologías abiertas.
-      </p>
+    <p>
+      Plataforma de formación, innovación y tecnologías aplicadas para el sector agroalimentario.
+    </p>
 
-    </div>
+    <div class="footer-institution">
 
-    <div>
+      <span>
+        Desarrollado por
+      </span>
 
-      <strong>
-        AgroIdeas
-      </strong>
+      <div class="footer-logos">
 
-      <p>
-        Biblioteca maker y territorial.
-      </p>
+        <img style="height: 65px;"
+          src="assets/images/fablab.png"
+          alt="FabLab"
+        >
 
-    </div>
+        
 
-    <div>
-
-      <strong>
-        Ecosistema
-      </strong>
-
-      <p>
-        Fabricación · Territorio · AgroTech
-      </p>
+      </div>
 
     </div>
 
-  </footer>
+  </div>
+
+  <div class="footer-col">
+
+    <strong>
+      Contacto
+    </strong>
+
+    <p>
+      fablab@iica.int
+    </p>
+
+  </div>
+
+  <div class="footer-col">
+
+    <strong>
+      Plataforma
+    </strong>
+
+    <p>
+      Inicio · Mi Ruta · AgroIdeas · Blog
+    </p>
+
+  </div>
+
+</footer>
 
   <!-- ======================================
        LEAFLET

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
   <meta charset="UTF-8" />
 
   <meta
@@ -30,56 +30,62 @@
 
 <body>
 
-  <!-- HEADER -->
-  <header class="topbar">
+ 
 
-    <div class="logo-wrap">
+<!-- =====================================================
+     HEADER
+====================================================== -->
 
-      <div class="logo-mark"></div>
+<header class="topbar">
 
-      <div>
+  <div class="logo-wrap">
+    
+    <img
+      src="assets/images/agrolinc.svg"
+      alt="AgroLINC"
+      class="institution-logo agrolinc-logo"
+    >
+    
+  </div>
 
-        <div class="logo">
-          AgroLINC
-        </div>
+  <nav class="nav">
 
-        <small>
-          Innovación y tecnologías aplicadas
-        </small>
+    <a href="./index.html" >
+      Inicio
+    </a>
 
-      </div>
+    <a href="#" class="active">
+      Mi Ruta
+    </a>
 
-    </div>
+    <a href="./agroideas.html">
+      AgroIdeas
+    </a>
 
-    <nav class="nav">
-
-      <a href="./index.html">
-        Inicio
-      </a>
-
-      <a href="./ruta.html" class="active">
-        Mi Ruta
-      </a>
-
-      <a href="./agroideas.html">
-        AgroIdeas
-      </a>
-
-      <a href="#">
-        Territorio
-      </a>
-
-      <a href="#">
-        Noticias
-      </a>
-
-    </nav>
-
-    <!-- <a href="./ruta.html" class="header-btn">
-      Consultar avance
+    <!-- <a href="./blog.html" >
+      Blog
     </a> -->
 
-  </header>
+  </nav>
+  <div class="institution-right">
+
+    <img
+      src="assets/images/micitt.png"
+      alt="Laboratorios LINC"
+      class="institution-logo linc-logo"
+    >
+
+    <div class="institution-divider"></div>
+
+    <img
+      src="assets/images/iica-azul.png"
+      alt="IICA"
+      class="institution-logo iica-logo"
+    >
+
+  </div>
+
+</header>
 
   <!-- HERO -->
   <section class="dashboard-hero">
@@ -262,6 +268,64 @@
   </main>
 
   <script src="js/data.js"></script>
+ <!-- FOOTER -->
+ <footer class="footer">
 
+  <div class="footer-brand">
+
+    <h3>
+      AgroLINC
+    </h3>
+
+    <p>
+      Plataforma de formación, innovación y tecnologías aplicadas para el sector agroalimentario.
+    </p>
+
+    <div class="footer-institution">
+
+      <span>
+        Desarrollado por
+      </span>
+
+      <div class="footer-logos">
+
+        <img style="height: 65px;"
+          src="assets/images/fablab.png"
+          alt="FabLab"
+        >
+
+        
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="footer-col">
+
+    <strong>
+      Contacto
+    </strong>
+
+    <p>
+      fablab@iica.int
+    </p>
+
+  </div>
+
+  <div class="footer-col">
+
+    <strong>
+      Plataforma
+    </strong>
+
+    <p>
+      Inicio · Mi Ruta · AgroIdeas · Blog
+    </p>
+
+  </div>
+
+</footer>
 </body>
 </html>
