@@ -1,3 +1,8 @@
+
+   /* html {
+    scroll-padding-top: 100px; 
+  } */
+
 /* =========================================================
    ROOT
 ========================================================= */
@@ -2243,6 +2248,54 @@ input {
 }
 
 /* =========================================================
+   CORRECCIÓN DE POPUPS EN LEAFLET
+========================================================= */
+
+/* Forzar que el contenedor nativo respete los bordes de nuestro diseño */
+/* .leaflet-popup-content-wrapper {
+  padding: 0 !important;
+  overflow: hidden !important;
+  border-radius: 16px !important;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  width: 100% !important;
+} */
+
+/* Estilos de tu tarjeta interna del popup */
+/* .map-popup {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-sizing: border-box;
+} */
+
+/* Contenedor con scroll para descripciones masivas */
+/* .popup-desc-container {
+  max-height: 120px;       
+  overflow-y: auto;        
+  padding-right: 4px;
+} */
+
+/* Estilo para la barra de scroll integrada (opcional, más estética) */
+/* .popup-desc-container::-webkit-scrollbar {
+  width: 4px;
+}
+.popup-desc-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.popup-desc {
+  font-size: 0.9rem !important;
+  line-height: 1.4 !important;
+  color: #475569;
+  margin: 0;
+} */
+
+/* =========================================================
    PAGINATION
 ========================================================= */
 
@@ -3608,363 +3661,411 @@ input {
 /* =====================================================
 BLOG
 ===================================================== */
-/* =====================================================
-BLOG
-===================================================== */
+:root {
+  --primary: #6d28d9; /* Definición del color por si no venía en el resto del CSS */
+}
 
-#blogContainer{
-
+#blogContainer {
   max-width: 1100px;
-  
   margin: 0 auto;
-  
   padding: 4rem 5%;
-  
   display: flex;
-  
   flex-direction: column;
-  
   gap: 4rem;
-  
-  }
-  
-  /* ======================= */
-  
-  .blog-post{
-  
+}
+
+/* =====================================================
+   POST STRUCTURE
+===================================================== */
+.blog-post {
   background: white;
-  
   border-radius: 30px;
-  
   overflow: hidden;
-  
-  box-shadow:
-  0 20px 50px
-  rgba(0,0,0,.06);
-  
-  }
-  
-  /* ======================= */
-  
-  .blog-slider{
-  
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.06);
+}
+
+/* =====================================================
+   SLIDER (CORREGIDO PARA TRAX HORIZONTAL FLUIDO)
+===================================================== */
+.blog-slider {
   position: relative;
-  
   width: 100%;
-  
-  height:
-  clamp(
-  320px,
-  55vw,
-  620px
-  );
-  
+  height: clamp(320px, 55vw, 620px);
   overflow: hidden;
-  
-  background:
-  #eef2f7;
-  
-  }
-  
-  /* NO FLEX */
-  
-  .blog-track{
-  
-  display:block;
-  
-  position:relative;
-  
-  width:100%;
-  
-  height:100%;
-  
-  }
-  
-  .blog-slide{
-  
-  position:absolute;
-  
-  inset:0;
-  
-  opacity:0;
-  
-  transition:
-  opacity .45s ease;
-  
-  }
-  
-  .blog-slide.active{
-  
-  opacity:1;
-  
-  z-index:2;
-  
-  }
-  
-  .blog-slide img{
-  
-  width:100%;
-  
-  height:100%;
-  
-  object-fit:cover;
-  
-  display:block;
-  
-  }
-  
-  /* ======================= */
-  
-  .blog-arrow{
-  
-  position:absolute;
-  
-  top:50%;
-  
-  transform:
-  translateY(-50%);
-  
-  z-index:10;
-  
-  width:52px;
-  
-  height:52px;
-  
-  border:none;
-  
-  border-radius:50%;
-  
-  background:
-  rgba(
-  255,
-  255,
-  255,
-  .92
-  );
-  
-  cursor:pointer;
-  
-  font-size:1.1rem;
-  
-  transition:.2s;
-  
-  }
-  
-  .blog-arrow:hover{
-  
-  transform:
-  translateY(-50%)
-  scale(1.08);
-  
-  }
-  
-  .blog-arrow.left{
-  
-  left:24px;
-  
-  }
-  
-  .blog-arrow.right{
-  
-  right:24px;
-  
-  }
-  
-  /* ======================= */
-  
-  .blog-dots{
-  
-  position:absolute;
-  
-  left:50%;
-  
-  bottom:24px;
-  
-  transform:
-  translateX(-50%);
-  
-  display:flex;
-  
-  gap:.6rem;
-  
-  z-index:10;
-  
-  }
-  
-  .blog-dot{
-  
-  width:10px;
-  
-  height:10px;
-  
-  border-radius:999px;
-  
-  background:
-  rgba(
-  255,
-  255,
-  255,
-  .45
-  );
-  
-  transition:.2s;
-  
-  }
-  
-  .blog-dot.active{
-  
-  width:34px;
-  
-  background:white;
-  
-  }
-  
-  /* ======================= */
-  
-  .blog-body{
-  
-  padding:
-  2.8rem
-  3rem;
-  
-  }
-  
-  .blog-date{
-  
-  display:inline-flex;
-  
-  padding:
-  .6rem
-  1rem;
-  
-  border-radius:
-  999px;
-  
-  background:
-  rgba(
-  109,
-  40,
-  217,
-  .08
-  );
-  
-  color:
-  var(--primary);
-  
-  font-weight:700;
-  
-  margin-bottom:1rem;
-  
-  }
-  
-  .blog-title{
-  
-  font-size:
-  clamp(
-  2rem,
-  4vw,
-  2.8rem
-  );
-  
-  line-height:1.15;
-  
-  margin-bottom:1.4rem;
-  
-  color:
-  #0f172a;
-  
-  }
-  
-  .blog-text{
-  
-  font-size:1.06rem;
-  
-  line-height:2;
-  
-  color:
-  #61707c;
-  
-  max-width:850px;
-  
-  }
-  
-  /* ======================= */
-  
-  #blogPagination{
-  
-  display:flex;
-  
-  justify-content:center;
-  
-  gap:1rem;
-  
-  margin:
-  0 auto
-  5rem;
-  
+  background: #eef2f7;
+}
+
+.blog-track {
+  display: flex;          /* CAMBIADO A FLEX: Coloca las imágenes una al lado de la otra */
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1); /* Transición suave de deslizamiento */
+  will-change: transform;
+}
+
+.blog-slide {
+  flex: 0 0 100%;         /* Asegura que cada slide ocupe exactamente el 100% del contenedor */
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.blog-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* =====================================================
+   CONTROLES DEL SLIDER
+===================================================== */
+.blog-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 52px;
+  height: 52px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.blog-arrow:hover {
+  transform: translateY(-50%) scale(1.08);
+  background: white;
+}
+
+.blog-arrow.left { left: 24px; }
+.blog-arrow.right { right: 24px; }
+
+.blog-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.6rem;
+  z-index: 10;
+}
+
+.blog-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.blog-dot.active {
+  width: 34px;
+  background: white;
+}
+
+/* =====================================================
+   BODY CONTENIDO
+===================================================== */
+.blog-body {
+  padding: 2.8rem 3rem;
+}
+
+.blog-date {
+  display: inline-flex;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  background: rgba(109, 40, 217, 0.08);
+  color: var(--primary);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.blog-title {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  line-height: 1.15;
+  margin-bottom: 1.4rem;
+  color: #0f172a;
+}
+
+.blog-text {
+  font-size: 1.06rem;
+  line-height: 2;
+  color: #61707c;
+  max-width: 850px;
+}
+
+/* =====================================================
+   PAGINACIÓN
+===================================================== */
+#blogPagination {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 0 auto 5rem;
   flex-wrap:wrap;
-  
+}
+
+#blogPagination button, 
+#blogPagination .page-btn {
+  width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 16px;
+  background: white;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+}
+
+#blogPagination button.active,
+#blogPagination .page-btn.active {
+  background: var(--primary);
+  color: white;
+}
+
+/* =====================================================
+   RESPONSIVE DESIGN
+===================================================== */
+@media (max-width: 900px) {
+  #blogContainer {
+    padding: 2rem 1rem;
+    gap: 2.5rem;
   }
   
-  #blogPagination button{
-  
-  width:50px;
-  
-  height:50px;
-  
-  border:none;
-  
-  border-radius:16px;
-  
-  background:white;
-  
-  cursor:pointer;
-  
-  font-weight:700;
-  
-  box-shadow:
-  0 10px 20px
-  rgba(0,0,0,.08);
-  
+  .blog-body {
+    padding: 2rem 1.5rem;
   }
   
-  #blogPagination button.active{
-  
-  background:
-  var(--primary);
-  
-  color:white;
-  
+  .blog-title {
+    font-size: 1.6rem;
   }
   
-  /* ======================= */
-  
-  @media(max-width:900px){
-  
-  #blogContainer{
-  
-  padding:2rem;
-  
+  .blog-arrow {
+    width: 44px;
+    height: 44px;
   }
   
-  .blog-body{
-  
-  padding:2rem;
-  
+  .blog-arrow.left { left: 12px; }
+  .blog-arrow.right { right: 12px; }
+}
+/* =========================================================
+   ESTILOS CORREGIDOS PARA EL MODAL (VENTANA FLOTANTE)
+========================================================= */
+#ideaModal {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.6); /* Fondo oscuro semitransparente */
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999; /* Por encima de mapas, headers y todo */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  padding: 1.5rem;
+}
+
+/* Cuando el JS le añade la clase .open */
+#ideaModal.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Caja blanca interna del modal */
+.idea-modal-content {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 24px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  position: relative;
+  animation: modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalSlideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* =========================================================
+   NUEVO POPUP COMPACTO DEL MAPA
+========================================================= */
+
+
+.map-popup-compact {
+  padding: 12px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.popup-img-thumb {
+  width: 100%;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 4px;
+}
+
+.map-popup-compact h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: #0f172a;
+}
+
+
+
+
+
+
+/* =========================================================
+   REDISEÑO DEL CONTENEDOR NATIVO DE LEAFLET
+========================================================= */
+.leaflet-popup{
+  width: 400px; 
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+/* Contenedor compacto interno */
+.map-popup-compact {
+  padding: 12px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-sizing: border-box;
+}
+
+/* Mini miniatura de la imagen */
+.popup-img-thumb {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 2px;
+  display: block;
+}
+
+.map-popup-compact h4.popup-title {
+  margin: 4px 0 0 0 !important;
+  font-size: 0.95rem !important;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #0f172a;
+}
+
+.popup-region-sub {
+  margin: 0 !important;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+/* Botón discreto de ampliación */
+.popup-modal-btn {
+  background: #6d28d9; /* Color primario */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 4px;
+  width: 100%;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.popup-modal-btn:hover {
+  background: #5b21b6;
+  transform: scale(1.02);
+}
+html {
+  /* Le dice al navegador que deje un margen superior exacto al saltar a un ancla (#) */
+  scroll-padding-top: 7rem; 
+  scroll-behavior: smooth;
+}
+
+/* Si en pantallas móviles tu barra superior mide menos, la ajustas con un Media Query */
+@media (max-width: 768px) {
+  html {
+    scroll-padding-top: 4.5rem; /* Ajuste preciso para celulares */
   }
-  
-  .blog-title{
-  
-  font-size:1.8rem;
-  
+}
+/* =========================================================
+   BOTÓN HOME PROFESIONAL (FONTAWESOME)
+========================================================= */
+.map-home-btn {
+  background-color: #ffffff;
+  color: #475569; /* Un gris oscuro más elegante que el negro puro */
+  width: 34px;
+  height: 34px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-shadow: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Tamaño específico para el icono interno */
+.map-home-btn i {
+  font-size: 0.95rem; 
+}
+
+/* Efecto Hover */
+.map-home-btn:hover {
+  background-color: #f8fafc;
+  color: #0f172a; /* Se oscurece al pasar el cursor */
+}
+
+/* Margen superior para separarlo del bloque de zoom [ + ] y [ - ] */
+.leaflet-top.leaflet-left .map-home-btn {
+  margin-top: 6px !important;
+}
+
+/* Ajuste fino para pantallas táctiles */
+@media (max-width: 768px) {
+  .map-home-btn {
+    width: 38px;
+    height: 38px;
   }
-  
-  .blog-arrow{
-  
-  width:44px;
-  
-  height:44px;
-  
+  .map-home-btn i {
+    font-size: 1.1rem;
   }
-  
+}
+
+/* Animación de entrada para las tarjetas KPI */
+.metric-card {
+  animation: kpiFadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes kpiFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
