@@ -1,881 +1,661 @@
-let catalogoOriginal = [];
-
 /* =========================================
-   PAGINACIÓN
+ESTADO GLOBAL
 ========================================= */
 
 const ITEMS_PER_PAGE = 6;
+// Páginas independientes para cada sección
+let currentPagePrototipos = 1;
+let currentPage3D = 1;
 
-let currentPage = 1;
+let biblioteca = {
+  prototipos: [],
+  modelos3d: [],
+  mapaMaker: []
+};
 
-let catalogoGlobal = [];
+// Listas globales que mutan con las búsquedas
+let prototiposFiltrados = [];
+let modelos3dFiltrados = [];
+let mapaFiltrado = [];
+
+// Instancia global del mapa para poder manipular los marcadores dinámicamente
+let mapaLeaflet = null;
+let marcadoresMapa = [];
 
 /* =========================================
-   AGROIDEAS
+URLS DE GOOGLE SHEETS (CSV)
 ========================================= */
 
-const AGROIDEAS_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0Qx4yyj93NZTptg6jXzfAH4PJukBl7pjLJ8rry7j5fOfEETlzC45utloqB6WYxw/pub?gid=1323057626&single=true&output=csv";
-
-const AGROIDEAS_3D =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0Qx4yyj93NZTptg6jXzfAH4PJukBl7pjLJ8rry7j5fOfEETlzC45utloqB6WYxw/pub?gid=434666419&single=true&output=csv";
-
-const AGROIDEAS_MAPA_MAKER =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0Qx4yyj93NZTptg6jXzfAH4PJukBl7pjLJ8rry7j5fOfEETlzC45utloqB6WYxw/pub?gid=1086175041&single=true&output=csv";
+const AGROIDEAS_PROTOTIPO = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQen9jQ8hTfq8nTuYdXS3JXnha10XGyrK42n57v2UT8kEvN3UlrfGiXcKaLY2ZhX8YN2IjWyiUqj-_q/pub?gid=1323057626&single=true&output=csv";
+const AGROIDEAS_3D = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQen9jQ8hTfq8nTuYdXS3JXnha10XGyrK42n57v2UT8kEvN3UlrfGiXcKaLY2ZhX8YN2IjWyiUqj-_q/pub?gid=434666419&single=true&output=csv";
+const AGROIDEAS_MAPA_MAKER = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQen9jQ8hTfq8nTuYdXS3JXnha10XGyrK42n57v2UT8kEvN3UlrfGiXcKaLY2ZhX8YN2IjWyiUqj-_q/pub?gid=1086175041&single=true&output=csv";
 
 /* =========================================
-   DEBUG
+HELPERS / UTILIDADES
 ========================================= */
 
-function debugLog(title, data) {
-
-  console.group(title);
-
-  console.table(data);
-
-  console.groupEnd();
-
+function clean(v) {
+  return String(v || "")
+    .replace(/\r/g, "")
+    .replace(/\n/g, " ")
+    .trim();
 }
 
-/* =========================================
-   HELPERS
-========================================= */
-
-/* =========================================
-   GOOGLE DRIVE IMAGE
-========================================= */
+function truncate(text, max = 120) {
+  if (!text) return "";
+  if (text.length <= max) return text;
+  return text.slice(0, max) + "...";
+}
 
 function getGoogleDriveImage(url) {
-
   if (!url) return "";
-
-  /*
-    Convierte:
-
-    https://drive.google.com/file/d/FILE_ID/view
-
-    a:
-
-    https://drive.google.com/thumbnail?id=FILE_ID&sz=w1000
-  */
-
-  const match =
-    url.match(/\/d\/(.*?)\//);
-
+  const match = url.match(/\/d\/(.*?)\//);
   if (!match) return url;
-
-  const fileId = match[1];
-
-  return `
-    https://drive.google.com/thumbnail?id=${fileId}&sz=w1200
-  `;
-
+  return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1200`;
 }
-
-function clean(value) {
-
-  return String(value || "")
-    .replace(/\r/g, "")
-    .replace(/\n/g, "")
-    .trim();
-
-}
-
-/* =========================================
-   CSV PARSER
-========================================= */
-
-function parseCSV(text) {
-
-  return text
-    .trim()
-    .split("\n")
-    .map(row => {
-
-      const result = [];
-
-      let current = "";
-      let insideQuotes = false;
-
-      for (let i = 0; i < row.length; i++) {
-
-        const char = row[i];
-
-        if (char === '"') {
-
-          insideQuotes = !insideQuotes;
-
-        } else if (
-          char === "," &&
-          !insideQuotes
-        ) {
-
-          result.push(clean(current));
-
-          current = "";
-
-        } else {
-
-          current += char;
-
-        }
-
-      }
-
-      result.push(clean(current));
-
-      return result;
-
-    });
-
-}
-
-/* =========================================
-   FETCH CSV
-========================================= */
-
-async function fetchCSV(url, label = "CSV") {
-
-  const response = await fetch(url);
-
-  const text = await response.text();
-
-  console.log(`${label} RAW`);
-  console.log(text);
-
-  const rows = parseCSV(text);
-
-  debugLog(`${label} PARSED`, rows);
-
-  return rows;
-
-}
-
-/* =========================================
-   FETCH AGROIDEAS
-========================================= */
-
-async function fetchAgroIdeas() {
-
-  const rows =
-    await fetchCSV(
-      AGROIDEAS_URL,
-      "AGROIDEAS"
-    );
-
-  /*
-    COLUMNAS:
-
-    0 ID
-    1 Colección
-    2 Nombre
-    3 Imagen
-    4 Recurso
-    5 Descripción
-    6 Tipo
-    7 lat
-    8 lng
-  */
-
-  const data = rows
-    .slice(1)
-    .filter(r => r[2])
-    .map(r => ({
-
-      id:
-        clean(r[0]),
-
-      coleccion:
-        clean(r[1]),
-
-      nombre:
-        clean(r[2]),
-
-      imagen:
-        clean(r[3]),
-
-      recurso:
-        clean(r[4]),
-
-      descripcion:
-        clean(r[5]),
-
-      tipo:
-        clean(r[6]),
-
-      lat:
-        parseFloat(clean(r[7])),
-
-      lng:
-        parseFloat(clean(r[8]))
-
-    }));
-
-  debugLog(
-    "AGROIDEAS LIMPIAS",
-    data
-  );
-
-  return data;
-
-}
-
-/* =========================================
-   IMAGE
-========================================= */
 
 function getImage(url) {
-
-  const imageUrl =
-    getGoogleDriveImage(url);
-
-  if (!imageUrl) {
-
+  const img = getGoogleDriveImage(url);
+  if (!img) {
     return `
       <div class="idea-placeholder">
         <i class="fa-solid fa-cube"></i>
       </div>
     `;
-
   }
-
-  return `
-    <img
-      src="${imageUrl}"
-      alt="Imagen AgroIdea"
-      loading="lazy"
-    />
-  `;
-
-}
-
-function renderCatalogo(data) {
-
-  catalogoOriginal =
-    data.filter(item => {
-
-      const tipo =
-        item.tipo.toLowerCase();
-
-      return (
-        tipo.includes("3d") ||
-        tipo.includes("modelo") ||
-        tipo.includes("prototipo")
-      );
-
-    });
-
-  catalogoGlobal =
-    [...catalogoOriginal];
-
-  currentPage = 1;
-
-  renderPage(1);
-
+  return `<img src="${img}" loading="lazy" alt="Imagen del recurso" />`;
 }
 
 /* =========================================
-   RENDER PAGE
+PROCESAMIENTO CSV ROBUSTO
 ========================================= */
 
+function parseCSV(text) {
+  const lines = [];
+  let row = [];
+  let current = "";
+  let insideQuotes = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    const next = text[i + 1];
+
+    if (c === '"') {
+      if (insideQuotes && next === '"') {
+        current += '"';
+        i++;
+      } else {
+        insideQuotes = !insideQuotes;
+      }
+    } else if (c === ',' && !insideQuotes) {
+      row.push(clean(current));
+      current = "";
+    } else if ((c === '\r' || c === '\n') && !insideQuotes) {
+      if (c === '\r' && next === '\n') {
+        i++;
+      }
+      row.push(clean(current));
+      lines.push(row);
+      row = [];
+      current = "";
+    } else {
+      current += c;
+    }
+  }
+  
+  if (current || row.length > 0) {
+    row.push(clean(current));
+    lines.push(row);
+  }
+  
+  return lines.filter(r => r.length > 0 && r.some(cell => cell !== ""));
+}
+
+async function fetchCSV(url, label) {
+  const res = await fetch(url);
+  const txt = await res.text();
+  console.log(label, "datos cargados.");
+  return parseCSV(txt);
+}
+
+/* =========================================
+FETCH DE DATOS ASÍNCRONOS
+========================================= */
+
+async function fetchPrototipos() {
+  const rows = await fetchCSV(AGROIDEAS_PROTOTIPO, "PROTOTIPOS");
+  return rows
+    .slice(1)
+    .filter(r => r[2])
+    .map(r => ({
+      tipo: "prototipo",
+      id: clean(r[0]),
+      coleccion: clean(r[1]),
+      nombre: clean(r[2]),
+      imagen: clean(r[3]),
+      github: clean(r[4]),
+      descripcion: clean(r[5]),
+      autor: clean(r[6])
+    }));
+}
+
+async function fetch3D() {
+  const rows = await fetchCSV(AGROIDEAS_3D, "3D");
+  return rows
+    .slice(1)
+    .filter(r => r[2])
+    .map(r => ({
+      tipo: "3d",
+      id: clean(r[0]),
+      coleccion: clean(r[1]),
+      nombre: clean(r[2]),
+      imagen: clean(r[3]),
+      descarga: clean(r[4]),
+      descripcion: clean(r[5]),
+      impresion: clean(r[6]),
+      autor: clean(r[7])
+    }));
+}
+
+async function fetchMapaMaker() {
+  const rows = await fetchCSV(AGROIDEAS_MAPA_MAKER, "MAPA");
+  return rows
+    .slice(1)
+    .filter(r => r[1])
+    .map(r => ({
+      tipo: "mapa",
+      id: clean(r[0]),
+      nombre: clean(r[1]),
+      imagen: clean(r[2]),
+      tipoPunto: clean(r[3]),
+      descripcion: clean(r[4]),
+      lat: Number(r[5]),
+      lng: Number(r[6]),
+      link: clean(r[7])
+    }));
+}
+
+async function fetchAgroIdeas() {
+  const [prototipos, modelos3d, mapaMaker] = await Promise.all([
+    fetchPrototipos(),
+    fetch3D(),
+    fetchMapaMaker()
+  ]);
+
+  biblioteca = { prototipos, modelos3d, mapaMaker };
+}
+
+/* =========================================
+RENDERIZADO DE COMPONENTES
+========================================= */
+
+function renderCatalogo() {
+  // Inicializar estados filtrados con los originales de la biblioteca
+  prototiposFiltrados = [...biblioteca.prototipos];
+  modelos3dFiltrados = [...biblioteca.modelos3d];
+  mapaFiltrado = [...biblioteca.mapaMaker];
+  
+  currentPagePrototipos = 1;
+  currentPage3D = 1;
+  
+  renderPage(1);
+  render3D(1);
+  renderMarcadoresMapa();
+}
+
+// 1. Renderizar Prototipos (Paginados)
 function renderPage(page) {
-
-  const grid =
-    document.getElementById(
-      "ideasGrid"
-    );
-
-  const pagination =
-    document.getElementById(
-      "ideasPagination"
-    );
-
+  const grid = document.getElementById("ideasGrid");
   if (!grid) return;
-
+  
   grid.innerHTML = "";
-
-  const start =
-    (page - 1) * ITEMS_PER_PAGE;
-
-  const end =
-    start + ITEMS_PER_PAGE;
-
-  const items =
-    catalogoGlobal.slice(start, end);
+  const start = (page - 1) * ITEMS_PER_PAGE;
+  const items = prototiposFiltrados.slice(start, start + ITEMS_PER_PAGE);
+  
+  if (items.length === 0) {
+    grid.innerHTML = `<p class="no-results">No se encontraron prototipos que coincidan.</p>`;
+    renderPaginationPrototipos();
+    return;
+  }
 
   items.forEach(item => {
-
-    const card =
-      document.createElement("div");
-
-    card.className =
-      "idea-card-v2";
+    const card = document.createElement("div");
+    card.className = "idea-card-v2";
+    
+    const itemDataAttr = btoa(unescape(encodeURIComponent(JSON.stringify(item))));
 
     card.innerHTML = `
-
       <div class="idea-card-image">
-
         ${getImage(item.imagen)}
-
       </div>
-
       <div class="idea-card-body">
-
-        <div class="idea-chip">
-          ${item.coleccion || "AgroIdeas"}
-        </div>
-
-        <h3>
-          ${item.nombre}
-        </h3>
-
-        <p class="idea-short-desc">
-          ${
-            truncate(
-              item.descripcion,
-              110
-            )
-          }
-        </p>
-
+        <div class="idea-chip">${item.coleccion || "AgroIdeas"}</div>
+        <h3>${item.nombre}</h3>
+        <p class="idea-short-desc">${truncate(item.descripcion, 110)}</p>
         <div class="idea-actions">
-
-          <button
-            class="resource-btn"
-            onclick='openIdeaModal(${JSON.stringify(item)})'
-          >
+          <button class="resource-btn" onclick="openIdeaModalFromAttr('${itemDataAttr}')">
             Ver detalle
           </button>
-
-          ${
-            item.recurso
-              ? `
-                <a
-                  href="${item.recurso}"
-                  target="_blank"
-                  class="resource-btn secondary"
-                >
-                  Recurso
-                </a>
-              `
-              : ""
-          }
-
+          ${item.github ? `<a href="${item.github}" target="_blank" class="resource-btn secondary">Github</a>` : ""}
         </div>
-
       </div>
-
     `;
-
     grid.appendChild(card);
-
   });
-
-  renderPagination();
-
+  
+  renderPaginationPrototipos();
 }
 
-/* =========================================
-   TRUNCATE
-========================================= */
-
-function truncate(text, max = 120) {
-
-  if (!text) return "";
-
-  if (text.length <= max) {
-
-    return text;
-
+// 2. Renderizar Modelos 3D (Paginados)
+function render3D(page) {
+  const section = document.getElementById("catalogo");
+  if (!section) return;
+  
+  let grid = section.querySelector(".ideas-grid");
+  if (!grid) {
+    grid = document.createElement("div");
+    grid.className = "ideas-grid";
+    section.appendChild(grid);
+  }
+  
+  grid.innerHTML = "";
+  
+  const start = (page - 1) * ITEMS_PER_PAGE;
+  const items = modelos3dFiltrados.slice(start, start + ITEMS_PER_PAGE);
+  
+  if (items.length === 0) {
+    grid.innerHTML = `<p class="no-results">No se encontraron modelos 3D que coincidan.</p>`;
+    renderPagination3D();
+    return;
   }
 
-  return text.substring(0, max) + "...";
-
-}
-/* =========================================
-   PAGINATION
-========================================= */
-
-function renderPagination() {
-
-  const container =
-    document.getElementById(
-      "ideasPagination"
-    );
-
-  if (!container) return;
-
-  container.innerHTML = "";
-
-  const totalPages =
-    Math.ceil(
-      catalogoGlobal.length /
-      ITEMS_PER_PAGE
-    );
-
-  for (
-    let i = 1;
-    i <= totalPages;
-    i++
-  ) {
-
-    const btn =
-      document.createElement("button");
-
-    btn.className =
-      `page-btn ${
-        i === currentPage
-          ? "active"
-          : ""
-      }`;
-
-    btn.textContent = i;
-
-    btn.onclick = () => {
-
-      currentPage = i;
-
-      renderPage(i);
-
-      window.scrollTo({
-        top:
-          document
-            .getElementById(
-              "catalogo"
-            )
-            .offsetTop - 80,
-        behavior: "smooth"
-      });
-
-    };
-
-    container.appendChild(btn);
-
-  }
-
-}
-/* =========================================
-   MAPA
-========================================= */
-
-function renderMapa(data) {
-
-  const mapContainer =
-    document.getElementById(
-      "mapImpresoras"
-    );
-
-  if (!mapContainer) return;
-
-  const puntos = data.filter(item => {
-
-    return (
-      item.tipo.toLowerCase() === "punto" &&
-      !isNaN(item.lat) &&
-      !isNaN(item.lng)
-    );
-
-  });
-
-  const map = L.map(
-    "mapImpresoras"
-  ).setView(
-    [9.7489, -83.7534],
-    8
-  );
-
-  L.tileLayer(
-    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    {
-      attribution:
-        "&copy; OpenStreetMap"
-    }
-  ).addTo(map);
-
-  puntos.forEach(punto => {
-
-    L.marker([
-      punto.lat,
-      punto.lng
-    ])
-      .addTo(map)
-      .bindPopup(`
-
-        <div class="map-popup">
-
-          <h4>
-            ${punto.nombre}
-          </h4>
-
-          <p>
-            ${punto.descripcion || ""}
-          </p>
-
-          ${
-            punto.recurso
-              ? `
-                <a
-                  href="${punto.recurso}"
-                  target="_blank"
-                >
-                  Ver más
-                </a>
-              `
-              : ""
-          }
-
-        </div>
-
-      `);
-
-  });
-
-  setTimeout(() => {
-
-    map.invalidateSize();
-
-  }, 500);
-
-}
-
-/* =========================================
-   TERRITORIAL
-========================================= */
-
-function renderTerritorial(data) {
-
-  const container =
-    document.getElementById(
-      "territorialGrid"
-    );
-
-  if (!container) return;
-
-  container.innerHTML = "";
-
-  const territoriales =
-    data.filter(item => {
-
-      const tipo =
-        item.tipo.toLowerCase();
-
-      return (
-        tipo.includes("territorial") ||
-        tipo.includes("mapeo")
-      );
-
-    });
-
-  territoriales.forEach(item => {
-
-    const card =
-      document.createElement("div");
-
-    card.className =
-      "territorial-card";
+  items.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "idea-card-v2";
+    
+    const itemDataAttr = btoa(unescape(encodeURIComponent(JSON.stringify(item))));
 
     card.innerHTML = `
-
-      <div class="territorial-icon">
-
-        <i class="fa-solid fa-map-location-dot"></i>
-
+      <div class="idea-card-image">${getImage(item.imagen)}</div>
+      <div class="idea-card-body">
+        <div class="idea-chip">${item.coleccion || "3D"}</div>
+        <h3>${item.nombre}</h3>
+        <p>${truncate(item.descripcion)}</p>
+        <div class="idea-actions">
+          <button class="resource-btn" onclick="openIdeaModalFromAttr('${itemDataAttr}')">
+            Ver detalle
+          </button>
+          ${item.descarga ? `<a href="${item.descarga}" target="_blank" class="resource-btn secondary">Descargar</a>` : ""}
+        </div>
       </div>
-
-      <h3>
-        ${item.nombre}
-      </h3>
-
-      <p>
-        ${item.descripcion}
-      </p>
-
-      ${
-        item.recurso
-          ? `
-            <a
-              href="${item.recurso}"
-              target="_blank"
-              class="territorial-link"
-            >
-              Abrir recurso
-            </a>
-          `
-          : ""
-      }
-
     `;
-
-    container.appendChild(card);
-
+    grid.appendChild(card);
   });
 
+  renderPagination3D();
 }
+
 /* =========================================
-   BUSCADOR
+PAGINACIONES INDEPENDIENTES
+========================================= */
+
+// Paginación de Prototipos
+function renderPaginationPrototipos() {
+  const container = document.getElementById("ideasPagination");
+  if (!container) return;
+  
+  container.innerHTML = "";
+  const pages = Math.ceil(prototiposFiltrados.length / ITEMS_PER_PAGE);
+  if (pages <= 1) return;
+
+  for (let i = 1; i <= pages; i++) {
+    const btn = document.createElement("button");
+    btn.className = `page-btn ${i === currentPagePrototipos ? "active" : ""}`;
+    btn.textContent = i;
+    btn.onclick = () => {
+      currentPagePrototipos = i;
+      renderPage(i);
+    };
+    container.appendChild(btn);
+  }
+}
+
+// Paginación de Modelos 3D
+function renderPagination3D() {
+  const section = document.getElementById("catalogo");
+  if (!section) return;
+
+  // Buscar o crear dinámicamente el contenedor de paginación para 3D
+  let container = document.getElementById("3dPagination");
+  if (!container) {
+    container = document.createElement("div");
+    container.id = "3dPagination";
+    container.style.display = "flex";
+    container.style.gap = "1rem";
+    container.style.justify = "center";
+    container.style.marginTop = "3rem";
+    section.appendChild(container);
+  }
+
+  container.innerHTML = "";
+  const pages = Math.ceil(modelos3dFiltrados.length / ITEMS_PER_PAGE);
+  if (pages <= 1) return;
+
+  for (let i = 1; i <= pages; i++) {
+    const btn = document.createElement("button");
+    btn.className = `page-btn ${i === currentPage3D ? "active" : ""}`;
+    btn.textContent = i;
+    btn.onclick = () => {
+      currentPage3D = i;
+      render3D(i);
+    };
+    container.appendChild(btn);
+  }
+}
+
+/* =========================================
+BÚSQUEDA GLOBAL (AFECTA A LAS 3 BIBLIOTECAS)
 ========================================= */
 
 function initSearch() {
-
-  const input =
-  document.getElementById(
-  "ideasSearch"
-  );
-  
-  const btn =
-  document.getElementById(
-  "explorarBtn"
-  );
+  const input = document.getElementById("ideasSearch");
+  const btn = document.getElementById("explorarBtn");
   
   if (!input) return;
-  
+
   function buscar() {
-  
-  const q =
-  input.value
-  .toLowerCase()
-  .trim();
-  
-  if (!q) {
-  
-  catalogoGlobal =
-  [
-  ...catalogoOriginal
-  ];
-  
+    const q = input.value.toLowerCase().trim();
+    
+    if (!q) {
+      prototiposFiltrados = [...biblioteca.prototipos];
+      modelos3dFiltrados = [...biblioteca.modelos3d];
+      mapaFiltrado = [...biblioteca.mapaMaker];
+    } else {
+      const matchesQuery = (item) => Object.values(item).join(" ").toLowerCase().includes(q);
+
+      prototiposFiltrados = biblioteca.prototipos.filter(matchesQuery);
+      modelos3dFiltrados = biblioteca.modelos3d.filter(matchesQuery);
+      mapaFiltrado = biblioteca.mapaMaker.filter(matchesQuery);
+    }
+    
+    currentPagePrototipos = 1;
+    currentPage3D = 1;
+
+    renderPage(1);
+    render3D(1);
+    renderMarcadoresMapa();
   }
-  
-  else {
-  
-  catalogoGlobal =
-  catalogoOriginal.filter(
-  item => {
-  
-  return (
-  
-  item.nombre
-  .toLowerCase()
-  .includes(q)
-  
-  ||
-  
-  item.descripcion
-  .toLowerCase()
-  .includes(q)
-  
-  ||
-  
-  item.coleccion
-  .toLowerCase()
-  .includes(q)
-  
-  );
-  
+
+  input.addEventListener("input", buscar);
+  if (btn) {
+    btn.addEventListener("click", buscar);
   }
-  );
+}
+
+/* =========================================
+MAPA MAKER (LEAFLET - INICIALIZACIÓN Y FILTRADO)
+========================================= */
+
+/* =========================================
+MAPA MAKER (LEAFLET - INICIALIZACIÓN Y FILTRADO)
+========================================= */
+
+function initMapa() {
+  const container = document.getElementById("mapImpresoras");
+  if (!container) return;
   
-  }
+  container.innerHTML = "";
   
-  currentPage = 1;
+  // Coordenadas y zoom de origen (Costa Rica central)
+  const origenLatLng = [9.7489, -83.7534];
+  const origenZoom = 8;
   
-  renderPage(1);
+  mapaLeaflet = L.map("mapImpresoras").setView(origenLatLng, origenZoom);
   
-  document
-  .getElementById(
-  "catalogoPrototipo"
-  )
-  .scrollIntoView({
-  behavior:
-  "smooth"
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "© OpenStreetMap"
+  }).addTo(mapaLeaflet);
+  
+  // =========================================================
+  // BOTÓN PERSONALIZADO PARA VOLVER AL ORIGEN
+  // =========================================================
+  const HomeButtonControl = L.Control.extend({
+    options: {
+      position: 'topleft' // Se ubica justo debajo de los botones de + y -
+    },
+    onAdd: function () {
+      const btn = L.DomUtil.create('button', 'map-home-btn');
+      
+      // Contenido visual del botón (un icono de casa o texto discreto)
+      btn.innerHTML = '<i class="fa-solid fa-house"></i>';
+      btn.title = 'Restablecer vista inicial';
+      btn.type = 'button';
+      
+      // Evita que al hacer doble clic en el botón se haga zoom al mapa de fondo
+      L.DomEvent.disableClickPropagation(btn);
+      
+      // Acción al presionar el botón
+      btn.onclick = function() {
+        const isMobile = window.innerWidth <= 768;
+        
+        // En móviles podemos regresar a un zoom un poco menor (7.5 u 8) si es necesario
+        const zoomFinal = isMobile ? 7.5 : origenZoom;
+        
+        mapaLeaflet.flyTo(origenLatLng, zoomFinal, {
+          duration: 1.2 // Transición suave de vuelta a casa
+        });
+        
+        // Opcional: Cierra cualquier popup que haya quedado abierto
+        mapaLeaflet.closePopup();
+      };
+      
+      return btn;
+    }
   });
   
-  }
+  // Añadimos el botón al mapa
+  mapaLeaflet.addControl(new HomeButtonControl());
   
-  input.addEventListener(
-  "input",
-  buscar
-  );
-  
-  btn.addEventListener(
-  "click",
-  buscar
-  );
-  
-  }
-  
-  
-  /* =========================================
-  SIDEBAR
-  ========================================= */
-  
-  function initSidebar() {
-  
-  const links =
-  document.querySelectorAll(
-  ".explorer-link"
-  );
-  
-  const sections =
-  [
-  ...links
-  ]
-  .map(
-  l => {
-  
-  const id =
-  l
-  .getAttribute(
-  "href"
-  )
-  .replace(
-  "#",
-  ""
-  );
-  
-  return document.getElementById(
-  id
-  );
-  
-  }
-  )
-  .filter(Boolean);
-  
-  function activate() {
-  
-  let active =
-  sections[0];
-  
-  sections.forEach(s => {
-  
-  if (
-  
-  window.scrollY
-  
-  >=
-  
-  s.offsetTop
-  - 220
-  
-  ) {
-  
-  active =
-  s;
-  
-  }
-  
-  });
-  
-  links.forEach(link => {
-  
-  link.classList.remove(
-  "active"
-  );
-  
-  if (
-  
-  link.getAttribute(
-  "href"
-  )
-  
-  ===
-  
-  `#${active.id}`
-  
-  ) {
-  
-  link.classList.add(
-  "active"
-  );
-  
-  }
-  
-  });
-  
-  }
-  
-  links.forEach(link => {
-  
-  link.addEventListener(
-  "click",
-  e => {
-  
-  e.preventDefault();
-  
-  const id =
-  link
-  .getAttribute(
-  "href"
-  );
-  
-  document
-  .querySelector(
-  id
-  )
-  .scrollIntoView({
-  
-  behavior:
-  "smooth"
-  
-  });
-  
-  });
-  
-  });
-  
-  window.addEventListener(
-  "scroll",
-  activate
-  );
-  
-  activate();
-  
-  }
-  
-  
-  /* =========================================
-  INIT
-  ========================================= */
-  
-  async function initAgroIdeas() {
-  
+  setTimeout(() => {
+    mapaLeaflet.invalidateSize();
+  }, 400);
+}
+
+// CORREGIDO: POPUP COMPACTO Y CENTRADO INTELIGENTE CON CONTEXTO GLOBAL
+function renderMarcadoresMapa() {
+  if (!mapaLeaflet) return;
+
+  marcadoresMapa.forEach(marker => mapaLeaflet.removeLayer(marker));
+  marcadoresMapa = [];
+
+  mapaFiltrado
+    .filter(p => !isNaN(p.lat) && !isNaN(p.lng))
+    .forEach(p => {
+      // Formateamos la estructura para que sea compatible con el render del modal existente
+      const itemDataForModal = {
+        tipo: "prototipo", // Usado para mapear campos estándar en tu modal
+        nombre: p.nombre,
+        imagen: p.imagen,
+        coleccion: p.tipoPunto || "Punto de Mapa",
+        descripcion: p.descripcion,
+        autor: p.link ? `<a href="${p.link}" target="_blank" class="resource-btn">Abrir enlace externo</a>` : ""
+      };
+
+      const itemDataAttr = btoa(unescape(encodeURIComponent(JSON.stringify(itemDataForModal))));
+
+      // HTML súper limpio: Sin descripciones masivas que dañen el mapa
+      const popup = `
+        <div class="map-popup-compact">
+          ${p.imagen ? `<img src="${getGoogleDriveImage(p.imagen)}" class="popup-img-thumb" alt="Punto"/>` : ""}
+          <h4 class="popup-title">${p.nombre}</h4>
+          ${p.tipoPunto ? `<p class="popup-region-sub">📍 ${p.tipoPunto}</p>` : ""}
+          <button class="popup-modal-btn" onclick="openIdeaModalFromAttr('${itemDataAttr}')">
+            Ampliar detalles
+          </button>
+        </div>
+      `;
+      
+      const marker = L.marker([p.lat, p.lng]).bindPopup(popup, {
+        maxWidth: 200,
+        minWidth: 180,
+        closeButton: false,
+        autoPanPadding: L.point(50, 100) // Evita choques con barras fijas arriba
+      });
+
+      // Compensación visual al hacer click para evitar la barra superior rígida
+      marker.on("click", () => {
+        const visualOffset = 0.025; // Eleva el punto geográfico sutilmente
+        const adjustedLat = Number(p.lat) + visualOffset;
+        mapaLeaflet.flyTo([adjustedLat, p.lng], 10, { duration: 0.8 });
+      });
+
+      marker.addTo(mapaLeaflet);
+      marcadoresMapa.push(marker);
+    });
+}
+
+/* =========================================
+MODAL CONTROL
+========================================= */
+
+window.openIdeaModalFromAttr = function(base64Str) {
   try {
+    const jsonStr = decodeURIComponent(escape(atob(base64Str)));
+    const item = JSON.parse(jsonStr);
+    openIdeaModal(item);
+  } catch (err) {
+    console.error("Error decodificando la información del modal", err);
+  }
+};
+
+function openIdeaModal(item) {
+  const modal = document.getElementById("ideaModal");
+  const body = document.getElementById("ideaModalBody");
+  if (!modal || !body) return;
+
+  let extra = "";
+
+  if (item.tipo === "prototipo") {
+    extra = `
+      ${item.autor ? `<p class="modal-meta-info">${item.autor}</p>` : ""}
+      ${item.github ? `<a href="${item.github}" target="_blank" class="resource-btn">Ver Github</a>` : ""}
+    `;
+  }
+
+  if (item.tipo === "3d") {
+    extra = `
+      ${item.impresion ? `<p><strong>Cómo imprimir:</strong><br>${item.impresion}</p>` : ""}
+      ${item.descarga ? `<a href="${item.descarga}" target="_blank" class="resource-btn">Descargar STL</a>` : ""}
+    `;
+  }
+
+  body.innerHTML = `
+    <div class="idea-modal-content">
+      <div>${getImage(item.imagen)}</div>
+      <h2>${item.nombre}</h2>
+      <p class="modal-desc-text">${item.descripcion || ""}</p>
+      <p><strong>Categoría:</strong> ${item.coleccion || "AgroIdeas"}</p>
+      ${extra}
+    </div>
+  `;
   
-  const data =
-  await fetchAgroIdeas();
-  
-  renderCatalogo(
-  data
-  );
-  
-  renderMapa(
-  data
-  );
-  
-  renderTerritorial(
-  data
-  );
-  
-  initSidebar();
-  
-  initSearch();
-  
+  modal.classList.add("open");
+}
+
+function closeIdeaModal() {
+  const modal = document.getElementById("ideaModal");
+  if (modal) modal.classList.remove("open");
+}
+
+/* =========================================
+SIDEBAR / NAVEGACIÓN SCROLL
+========================================= */
+
+function initSidebar() {
+  const links = document.querySelectorAll(".explorer-link");
+  if (links.length === 0) return;
+
+  const sections = [...links]
+    .map(l => {
+      const href = l.getAttribute("href");
+      return href ? document.getElementById(href.replace("#", "")) : null;
+    })
+    .filter(Boolean);
+    
+  function activate() {
+    if (sections.length === 0) return;
+    let active = sections[0];
+    
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 140) {
+        active = s;
+      }
+    });
+    
+    links.forEach(link => {
+      link.classList.remove("active");
+      if (link.getAttribute("href") === `#${active.id}`) {
+        link.classList.add("active");
+      }
+    });
   }
   
-  catch (e) {
+  // CORRECCIÓN DEL CLICK CON ANCHOR OFFSET PARA BARRAS FIJAS
+ // Reemplaza ÚNICAMENTE el fragmento del click en tu función initSidebar() por este:
+links.forEach(link => {
+  link.addEventListener("click", e => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute("href"));
+    if (target) {
+      // Dejamos que el "scroll-padding-top" del CSS haga todo el trabajo sucio en móvil y PC
+      target.scrollIntoView({
+        behavior: "smooth"
+      });
+    }
+  });
+});
   
-  console.error(
-  e
-  );
-  
-  alert(
-  "Error cargando AgroIdeas"
-  );
-  
+  window.addEventListener("scroll", activate);
+  activate();
+}
+
+/* =========================================
+EVENT LISTENERS ACCESIBILIDAD MÓDULOS
+========================================= */
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeIdeaModal();
+});
+
+const modalContainer = document.getElementById("ideaModal");
+if (modalContainer) {
+  modalContainer.addEventListener("click", e => {
+    if (e.target.id === "ideaModal") closeIdeaModal();
+  });
+}
+
+/* =========================================
+INICIALIZADOR APP
+========================================= */
+
+async function initAgroIdeas() {
+  try {
+    initMapa();
+    await fetchAgroIdeas();
+    
+    renderCatalogo();
+    initSidebar();
+    initSearch();
+    
+    console.log("AgroIdeas inicializado con éxito con paginación independiente.");
+  } catch (e) {
+    console.error("Fallo crítico en AgroIdeas:", e);
+    alert("Error cargando los componentes de AgroIdeas");
   }
-  
-  }
-  
-  document.addEventListener(
-  "DOMContentLoaded",
-  initAgroIdeas
-  );
+}
+
+/* =========================================
+EJECUCIÓN AL CARGAR DOM
+========================================= */
+
+document.addEventListener("DOMContentLoaded", initAgroIdeas);

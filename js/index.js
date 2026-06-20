@@ -1,104 +1,110 @@
 async function renderKPIs() {
+  try {
+    const kpis = await fetchKPI();
+    const container = document.getElementById("kpiContainer");
+    if (!container) return;
 
-    try {
-  
-      const kpis = await fetchKPI();
-  
-      const container =
-        document.getElementById("kpiContainer");
-  
-      if (!container) return;
-  
-      const icons = {
+    // Diccionario de palabras clave para asignar iconos de forma dinámica
+    const iconKeywords = [
+      { key: "personas", icon: "fa-solid fa-users" },
+      { key: "recurso", icon: "fa-solid fa-lightbulb" },
+      { key: "agroidea", icon: "fa-solid fa-lightbulb" },
+      { key: "curso", icon: "fa-solid fa-book" },
+      { key: "certificaciones", icon: "fa-solid fa-graduation-cap" },
+      { key: "capacitacion", icon: "fa-solid fa-graduation-cap" },
+      { key: "modelo", icon: "fa-solid fa-cube" },
+      { key: "prototipo", icon: "fa-solid fa-microchip" },
+      { key: "mapa", icon: "fa-solid fa-map-location-dot" }
+    ];
 
-        participantes:
-          "fa-solid fa-users",
-      
-        "recursos agroideas":
-          "fa-solid fa-lightbulb",
-      
-        "cursos diferentes":
-          "fa-solid fa-graduation-cap"
-      
-      };
-  
-      container.innerHTML = "";
-  
-      kpis.forEach(kpi => {
-  
-        const card =
-          document.createElement("div");
-  
-        card.className =
-          "metric-card";
-  
-        const icon =
-          icons[kpi.nombre] ||
-          "fa-solid fa-chart-column";
-  
-        card.innerHTML = `
-  
-          <div class="metric-icon">
-            <i class="${icon}"></i>
-          </div>
-  
-          <div>
-  
-            <strong>
-              ${kpi.valor}
-            </strong>
-  
-            <span>
-              ${kpi.nombre}
-            </span>
-  
-          </div>
-  
-        `;
-  
-        container.appendChild(card);
-  
-      });
-  
-    } catch (error) {
-  
-      console.error(
-        "Error cargando KPI",
-        error
-      );
-  
+    container.innerHTML = "";
+
+    kpis.forEach(kpi => {
+      const card = document.createElement("div");
+      card.className = "metric-card";
+
+      // CORRECCIÓN: La conversión a minúsculas se hace en una variable interna SOLO para el icono
+      const nombreParaBuscarIcono = String(kpi.nombre || "").toLowerCase();
+      const match = iconKeywords.find(item => nombreParaBuscarIcono.includes(item.key));
+      const icon = match ? match.icon : "fa-solid fa-chart-column";
+
+      card.innerHTML = `
+        <div class="metric-icon">
+          <i class="${icon}"></i>
+        </div>
+        <div>
+          <strong class="kpi-counter" data-target="${kpi.valor}">0</strong>
+          <span>${kpi.nombre}</span>
+        </div>
+      `;
+
+      container.appendChild(card);
+    });
+
+    // Disparar la animación optimizada
+    animateKPICounters();
+
+  } catch (error) {
+    console.error("Error cargando KPI", error);
+  }
+}
+
+// CORRECCIÓN: ANIMACIÓN BASADA EN TIEMPO REAL (DURACIÓN FIJA)
+function animateKPICounters() {
+  const counters = document.querySelectorAll(".kpi-counter");
+  const duration = 1500; // Duración exacta de la animación en milisegundos (1.5 segundos)
+
+  counters.forEach(counter => {
+    const targetText = String(counter.dataset.target || "").trim();
+    const targetValue = parseInt(targetText.replace(/\D/g, ""), 10);
+    
+    if (isNaN(targetValue) || targetValue === 0) {
+      counter.textContent = targetText;
+      return;
     }
-  
-  }
-  
-  document.addEventListener(
-    "DOMContentLoaded",
-    renderKPIs
-  );
 
-  const copyBtn =
-  document.getElementById("copyBtn");
+    const suffix = targetText.replace(/[0-9]/g, "");
+    let startTime = null;
 
-copyBtn.addEventListener(
-  "click",
-  async () => {
+    const updateNumber = (timestamp) => {
+      if (!startTime) startTime = timestamp;
+      const progress = timestamp - startTime;
 
-    await navigator.clipboard.writeText(
-      "fablab@iica.int"
-    );
+      // Calcular el valor actual basado en el progreso del tiempo
+      if (progress < duration) {
+        // Fracción del progreso (de 0 a 1)
+        const percentage = progress / duration;
+        
+        // Efecto de desaceleración (Ease-Out) para que frene suavemente al llegar al final
+        const easeOutPercentage = 1 - Math.pow(1 - percentage, 3);
+        
+        const currentValue = Math.floor(easeOutPercentage * targetValue);
+        
+        counter.textContent = currentValue + suffix;
+        requestAnimationFrame(updateNumber);
+      } else {
+        // Asegurar que al finalizar el tiempo quede el valor exacto de la hoja
+        counter.textContent = targetText;
+      }
+    };
 
-    copyBtn.innerHTML =
-      '<i class="fa-solid fa-check"></i>';
+    requestAnimationFrame(updateNumber);
+  });
+}
 
+// Mantener los eventos existentes intactos
+document.addEventListener("DOMContentLoaded", renderKPIs);
+
+const copyBtn = document.getElementById("copyBtn");
+if (copyBtn) {
+  copyBtn.addEventListener("click", async () => {
+    await navigator.clipboard.writeText("fablab@iica.int");
+    copyBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
     setTimeout(() => {
-
-      copyBtn.innerHTML =
-        '<i class="fa-regular fa-copy"></i>';
-
+      copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i>';
     }, 1800);
-
-  }
-);
+  });
+}
 
 /* =========================================
    RENDER
@@ -345,7 +351,7 @@ async function openModal(curso, cursos) {
           "Lista de espera";
 
         detalle = `
-
+        <br>
           <span class="event-note">
             No hay cupos disponibles.
             Puede registrarse en la lista de espera.
@@ -365,7 +371,7 @@ async function openModal(curso, cursos) {
           >
             Unirse a lista de espera
           </a>
-
+        <br>
           <small class="event-small">
             Mantenga disponibilidad para la fecha y horario de la capacitación.
           </small>
