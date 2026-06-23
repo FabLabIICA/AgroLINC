@@ -84,57 +84,40 @@ content="website">
 <header class="topbar">
 
   <div class="logo-wrap">
-
-    
-
-    
     <img
       src="assets/images/agrolinc.svg"
       alt="AgroLINC"
       class="institution-logo agrolinc-logo"
     >
-    
   </div>
 
-  <nav class="nav">
+  <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
 
-    <a href="#" class="active">
-      Inicio
-    </a>
-
-    <a href="./ruta.html">
-      Mi Ruta
-    </a>
-
-    <a href="./agroideas.html">
-      AgroIdeas
-    </a>
-
-    <!-- <a href="./blog.html">
-      Blog
-    </a> -->
-
+  <nav class="nav" id="mainNav">
+    <a href="#" class="active">Inicio</a>
+    <a href="./ruta.html" >Mi Ruta</a>
+    <a href="./agroideas.html">AgroIdeas</a>
   </nav>
-  <div class="institution-right">
 
+  <div class="institution-right">
     <img
       src="assets/images/micitt.png"
       alt="Laboratorios LINC"
       class="institution-logo linc-logo"
     >
-
     <div class="institution-divider"></div>
-
     <img
       src="assets/images/iica-azul.png"
       alt="IICA"
       class="institution-logo iica-logo"
     >
-
   </div>
 
 </header>
-
   <!-- HERO -->
   <section class="hero">
 
@@ -159,9 +142,11 @@ content="website">
         <div class="hero-actions">
 
           <a href="https://forms.gle/3hsVm6HF35N531JG7" class="primary-btn">
-            Inscribirme
+            Registrarme en AgroLINC
           </a>
-
+          <a href="#Inscripcion" class="secondary-btn">
+            Inscribirme en cursos
+          </a>
           <a href="./agroideas.html" class="secondary-btn">
             Ver AgroIdeas
           </a>
@@ -171,69 +156,69 @@ content="website">
       </div>
 
       <div class="hero-panel" id="kpiContainer">
-
-        <!-- <div class="metric-card">
-
-          <div class="metric-icon">
-            <i class="fa-solid fa-graduation-cap"></i>
-          </div>
-
-          <div>
-            <strong>14</strong>
-            <span>Cursos técnicos</span>
-          </div>
-
-        </div>
-
-        <div class="metric-card">
-
-          <div class="metric-icon">
-            <i class="fa-solid fa-cube"></i>
-          </div>
-
-          <div>
-            <strong>35+</strong>
-            <span>Prototipos</span>
-          </div>
-
-        </div>
-
-        <div class="metric-card">
-
-          <div class="metric-icon">
-            <i class="fa-solid fa-microchip"></i>
-          </div>
-
-          <div>
-            <strong>8</strong>
-            <span>Tecnologías</span>
-          </div>
-
-        </div> -->
-
       </div>
 
     </div>
-
-  </section>
+</Section>
+  
  <!-- =========================================
      RUTA FORMATIVA | AgroLINC
 ========================================= -->
 
 <section class="learning-path">
 
-  <div class="path-header">
+  <div class="path-header" id="Inscripcion">
 
     <span class="section-tag">
       Ruta Formativa
     </span>
 
     <h2>
-      Explora los cursos AgroLINC
+      Inscríbete grátis a los curso AgroLINC
     </h2>
 
     <p>
-      ¿Cómo matricularse? > Explora nuestra oferta de capacitaciones haciendo clic sobre la tarjeta de cualquier curso. Se abrirá una ventana con los detalles, los requisitos y los botones de inscripción para las convocatorias disponibles.
+      El primer paso es crearse un perfil para formar parte de AgroLINC, es gratis y no genera ningún compromiso
+    </p>
+
+    
+<br>
+<div class="acciones">
+  <a
+    href="https://forms.gle/3hsVm6HF35N531JG7"
+    class="agrolinc-card-link agrolinc-card-link--principal"
+    target="_blank"
+  >
+    Registrarme en AgroLINC
+  </a>
+
+  <a
+    href="#"
+    id="btnCalendario"
+    data-img="assets/images/calendario.jpg"
+    class="agrolinc-card-link"
+  >
+    Ver calendario
+  </a>
+
+  <a
+    href="#"
+    id="btnRuta"
+    data-img="assets/images/ruta.jpg"
+    class="agrolinc-card-link"
+  >
+    Explorar ruta formativa
+  </a>
+</div>
+    <br>
+    <p>
+      ¿Cómo inscribirme a un curso? 
+    </p>
+
+    <br>
+
+    <p>
+      Haciendo clic sobre la tarjeta de cualquier curso. Se abrirá una ventana con los detalles, los requisitos y los botones de inscripción para las convocatorias disponibles.
     </p>
 
   </div>
