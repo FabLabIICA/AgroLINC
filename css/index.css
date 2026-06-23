@@ -1903,18 +1903,23 @@ button, input {
 
   .topbar {
     height: 80px;
-    padding: 0 4%;
+    padding: 0 12px; 
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px; 
   }
 
   .agrolinc-logo {
-    max-height: 48px; /* Evita que quede diminuto en pantallas pequeñas */
+    max-height: 40px; 
+    width: auto;
   }
 
-  /* El botón hamburguesa pasa a estar visible al lado de la barra de navegación */
+  /* Corregido: Ahora se muestra correctamente el botón en celulares */
   .menu-toggle {
     display: flex;
-    margin-left: 1rem; 
-    margin-right: 1rem;
+    margin-left: 0.2rem; 
+    margin-right: 0.2rem;
+    flex-shrink: 0;
   }
 
   /* La navegación se esconde y se transforma en caja desplegable */
@@ -1945,15 +1950,22 @@ button, input {
   }
 
   .institution-right {
-    gap: 0.8rem;
+    gap: 0.5rem; 
+    flex-shrink: 1; 
+    display: flex;
+    align-items: center;
   }
 
   .iica-logo {
-    max-height: 25px;
+    max-height: 20px; 
+    width: auto;
+    object-fit: contain;
   }
 
   .linc-logo {
-    max-height: 45px;
+    max-height: 32px; 
+    width: auto;
+    object-fit: contain;
   }
   
   .institution-divider {
