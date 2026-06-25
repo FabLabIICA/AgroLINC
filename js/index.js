@@ -1,3 +1,6 @@
+// =========================================================
+// ENTRADA EN CALOR DE KPIS (DESPLIEGUE ESCALONADO)
+// =========================================================
 async function renderKPIs() {
   try {
     const kpis = await fetchKPI();
@@ -18,9 +21,12 @@ async function renderKPIs() {
 
     container.innerHTML = "";
 
-    kpis.forEach(kpi => {
+    kpis.forEach((kpi, index) => {
       const card = document.createElement("div");
       card.className = "metric-card";
+      
+      // Asignamos un retraso CSS (delay) proporcional al índice para el deslizamiento escalonado
+      card.style.setProperty('--card-delay', `${index * 0.15}s`);
 
       const nombreParaBuscarIcono = String(kpi.nombre || "").toLowerCase();
       const match = iconKeywords.find(item => nombreParaBuscarIcono.includes(item.key));
@@ -39,7 +45,10 @@ async function renderKPIs() {
       container.appendChild(card);
     });
 
-    animateKPICounters();
+    // Disparar la animación de los números justo cuando termine el deslizamiento físico
+    setTimeout(() => {
+      animateKPICounters();
+    }, kpis.length * 150 + 200);
 
   } catch (error) {
     console.error("Error cargando KPI", error);
@@ -82,6 +91,78 @@ function animateKPICounters() {
   });
 }
 
+// =========================================================
+// CONSTRUCCIÓN DINÁMICA DE LA FRANJA MÓVIL (SÓLO LOS 3 PRÓXIMOS)
+// =========================================================
+async function initCoursesTicker() {
+  const tickerTrack = document.getElementById("tickerTrack");
+  if (!tickerTrack) return;
+
+  try {
+    // Traemos de forma paralela los cursos base y el calendario de convocatorias
+    const [cursos, calendario] = await Promise.all([fetchCursos(), fetchCalendario()]);
+    
+    // 1. Filtramos solo los eventos que tienen un enlace activo de inscripción
+    const inscripcionesActivas = calendario.filter(evento => evento.enlace);
+
+    if (inscripcionesActivas.length === 0) {
+      tickerTrack.innerHTML = `<div class="ticker-item"><span>✨ Próximas convocatorias bajo codiseño regional</span></div>`;
+      return;
+    }
+
+    // 2. ORDENAR Y LIMITAR A LOS 3 MÁS CERCANOS
+    // Convertimos o asumimos el orden cronológico del calendario y cortamos el array
+    const proximosTresEventos = inscripcionesActivas
+      .sort((a, b) => {
+        // Esto asume que tus fechas vienen ordenables o ya ordenadas de API. 
+        // Si vienen en texto estricto, el orden nativo del JSON suele ser cronológico.
+        return new Date(a.fecha) - new Date(b.fecha); 
+      })
+      .slice(0, 3); // <--- Aquí se hace la magia: extrae estrictamente los 3 primeros
+
+    // 3. Generamos el bloque de ítems usando el nombre real del curso
+    let itemsHTML = proximosTresEventos.map(evento => {
+      const cuposDisponibles = evento.max - evento.inscritos - evento.espera + evento.cancelados;
+      
+      // Buscamos el nombre real mapeando con la base de datos de cursos
+      const cursoEncontrado = cursos.find(c => c.id === evento.id);
+      const nombreLimpioCurso = cursoEncontrado ? cursoEncontrado.nombre : String(evento.id).replace(/_/g, " ");
+
+      let badgeClase = "status-open";
+      let badgeTexto = "INSCRIPCIÓN ABIERTA";
+
+      if (cuposDisponibles <= 0) {
+        badgeClase = "status-alert";
+        badgeTexto = "LISTA DE ESPERA";
+      } else if (cuposDisponibles <= 5) {
+        badgeClase = "status-danger";
+        badgeTexto = "ÚLTIMOS LUGARES";
+      }
+
+      return `
+        <div class="ticker-item">
+          <span class="ticker-badge ${badgeClase}">${badgeTexto}</span>
+          <strong class="ticker-course-name">${evento.fecha} — ${nombreLimpioCurso}</strong>
+          <span class="ticker-separator">|</span>
+          <span class="ticker-slots"><i class="fa-solid fa-users-viewfinder"></i> ${cuposDisponibles > 0 ? cuposDisponibles + ' cupos' : 'Lleno'}</span>
+          <a href="${evento.enlace}" target="_blank" class="ticker-action-btn">Inscribirme <i class="fa-solid fa-arrow-right-to-bracket"></i></a>
+        </div>
+      `;
+    }).join("");
+
+    // Duplicación idéntica para que el bucle CSS infinito ruede sin cortes visuales
+    tickerTrack.innerHTML = `<div class="ticker-content-loop">${itemsHTML}</div><div class="ticker-content-loop" aria-hidden="true">${itemsHTML}</div>`;
+
+  } catch (error) {
+    console.error("Error al inicializar la franja de cursos:", error);
+  }
+}
+
+// Actualizamos el listener DOMContentLoaded global para incluir el inicio de la franja
+document.addEventListener("DOMContentLoaded", () => {
+  renderKPIs();
+  initCoursesTicker(); // Inicializa el ticker deportivo
+});
 document.addEventListener("DOMContentLoaded", renderKPIs);
 
 const copyBtn = document.getElementById("copyBtn");
