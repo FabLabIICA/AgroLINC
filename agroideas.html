@@ -13,7 +13,6 @@
     AgroIdeas | AgroLINC
   </title>
 
-  <!-- FONTS -->
   <link
     rel="preconnect"
     href="https://fonts.googleapis.com"
@@ -30,19 +29,16 @@
     rel="stylesheet"
   />
 
-  <!-- ICONS -->
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
   />
 
-  <!-- LEAFLET -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet/dist/leaflet.css"
   />
 
-  <!-- CSS -->
   <link
     rel="stylesheet"
     href="css/index.css"
@@ -54,10 +50,6 @@
 
 
 
-
-<!-- =====================================================
-     HEADER
-====================================================== -->
 
 <header class="topbar">
 
@@ -100,10 +92,6 @@
   </div>
 
 </header>
-
-  <!-- ======================================
-       HERO
-  ======================================= -->
 
   <section class="dashboard-hero agroideas-hero">
 
@@ -175,13 +163,7 @@
 
   </section>
 
-  <!-- ======================================
-       EXPLORADOR
-  ======================================= -->
-
   <section class="ideas-explorer">
-
-    <!-- SIDEBAR -->
 
     <aside class="explorer-sidebar">
 
@@ -253,8 +235,6 @@
 
     </aside>
 
-    <!-- CONTENT -->
-
     <div class="explorer-content">
 
       <section
@@ -319,22 +299,27 @@
             </h2>
           </div>
         </div>
+
+        <div class="map-tabs-mobile">
+          <button class="map-tab-btn active" data-tab="mapa">
+            <i class="fas fa-map"></i> Ver Mapa
+          </button>
+          <button class="map-tab-btn" data-tab="detalles">
+            <i class="fas fa-list"></i> Ver Detalles
+          </button>
+        </div>
         
-        <div class="map-layout">
-        
+        <div class="map-layout" id="mapWrapper">
+          
           <div class="map-card">
-            <div id="mapImpresoras" class="leaflet-map"></div>
+            <div id="mapImpresoras"></div>
           </div>
-
-          <div class="map-details-sidebar" id="mapDetailsSidebar">
-            <div class="map-details-placeholder" id="mapSidebarPlaceholder">
-              <i class="fa-solid fa-map-location-dot"></i>
-              <p>Pasa el mouse sobre un punto para ver su nombre.<br><strong>Haz clic</strong> para cargar sus especificaciones aquí.</p>
+          
+          <div class="map-details-sidebar" id="mapSidebar">
+            <h3>Detalles de la Red</h3>
+            <p>Selecciona un punto en el mapa para ver la información detallada aquí.</p>
             </div>
-            <div class="map-details-content d-none" id="mapSidebarContent">
-              </div>
-          </div>
-
+        
         </div>
       
       </section>
@@ -343,12 +328,7 @@
 
   </section>  
 
-  <!-- ======================================
-       FOOTER
-  ======================================= -->
-
- <!-- FOOTER -->
- <footer class="footer">
+  <footer class="footer">
 
   <div class="footer-brand">
 
@@ -407,17 +387,9 @@
 
 </footer>
 
-  <!-- ======================================
-       LEAFLET
-  ======================================= -->
-
   <script
     src="https://unpkg.com/leaflet/dist/leaflet.js"
   ></script>
-
-  <!-- ======================================
-       JS
-  ======================================= -->
 
   <script src="js/agroideas.js"></script>
   <div

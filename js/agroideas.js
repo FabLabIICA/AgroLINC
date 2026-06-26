@@ -396,10 +396,6 @@ function initSearch() {
 MAPA MAKER (LEAFLET - INICIALIZACIÓN Y FILTRADO)
 ========================================= */
 
-/* =========================================
-MAPA MAKER (LEAFLET - INICIALIZACIÓN Y FILTRADO)
-========================================= */
-
 function initMapa() {
   const container = document.getElementById("mapImpresoras");
   if (!container) return;
@@ -461,8 +457,7 @@ function initMapa() {
   }, 400);
 }
 
-// CORREGIDO: POPUP COMPACTO Y CENTRADO INTELIGENTE CON CONTEXTO GLOBAL
-// CONTROL DE MARCADORES CON TOOLTIP FLOTANTE Y PANEL LATERAL RESERVADO
+// CONTROL DE MARCADORES CON TOOLTIP FLOTANTE Y PANEL LATERAL PREMIUM RESEÑADO
 function renderMarcadoresMapa() {
   if (!mapaLeaflet) return;
 
@@ -470,55 +465,114 @@ function renderMarcadoresMapa() {
   marcadoresMapa.forEach(marker => mapaLeaflet.removeLayer(marker));
   marcadoresMapa = [];
 
-  // Capturamos los nodos del DOM de la barra lateral fija
-  const placeholder = document.getElementById("mapSidebarPlaceholder");
-  const contentContainer = document.getElementById("mapSidebarContent");
+  // Capturamos el contenedor del DOM de la barra lateral fija
+  const sidebar = document.getElementById("mapSidebar");
 
   mapaFiltrado
     .filter(p => !isNaN(p.lat) && !isNaN(p.lng))
     .forEach(p => {
       
-      // Creación del marcador nativo limpio sin popup pesado
+      // Creación del marcador nativo limpio
       const marker = L.marker([p.lat, p.lng]);
 
       // 1. COMPORTAMIENTO MOUSEOVER: Muestra etiqueta ligera flotante con el nombre
       marker.bindTooltip(`<strong>${p.nombre}</strong>`, {
         direction: 'top',
         opacity: 0.9,
-        sticky: true // El nombre sigue la trayectoria exacta del puntero del mouse
+        sticky: true // El nombre sigue la trayectoria exacta del puntero
       });
 
-      // 2. COMPORTAMIENTO CLICK: Envía los detalles a la región lateral fija reservada
+      // 2. COMPORTAMIENTO CLICK: Actualiza el panel lateral con la nueva grilla estética de tarjetas
       marker.on("click", () => {
         // Centrar sutilmente el mapa sobre el punto
         const visualOffset = window.innerWidth <= 768 ? 0 : 0.012; 
         mapaLeaflet.flyTo([Number(p.lat) + visualOffset, p.lng], 11, { duration: 0.6 });
 
-        // Ocultamos el placeholder inicial instructivo
-        if (placeholder) placeholder.classList.add("d-none");
-        if (contentContainer) {
-          contentContainer.classList.remove("d-none");
+        if (sidebar) {
+          const imagenUrl = p.imagen ? getGoogleDriveImage(p.imagen) : '';
 
-          // Inyectamos la información estructurada con scroll interno en el Panel Lateral
-          contentContainer.innerHTML = `
-            ${p.imagen ? `<img src="${getGoogleDriveImage(p.imagen)}" class="map-sidebar-img" alt="${p.nombre}"/>` : `
-              <div class="idea-placeholder" style="height:140px; margin-bottom:1rem; border-radius:16px;">
-                <i class="fa-solid fa-cube"></i>
+          // Inyectamos la información estructurada con la grilla premium
+          sidebar.innerHTML = `
+            <h3><i class="fas fa-map-marker-alt"></i> Detalles de la Red</h3>
+            
+            <div class="sidebar-info-group">
+              ${imagenUrl ? `<img src="${imagenUrl}" class="sidebar-feature-img" alt="${p.nombre}">` : `
+                <div class="idea-placeholder" style="height: 150px; border-radius: 16px;">
+                  <i class="fa-solid fa-cube"></i>
+                </div>
+              `}
+              
+              <div class="sidebar-location-title">${p.nombre}</div>
+              
+              ${p.tipoPunto ? `
+              <div class="sidebar-data-row">
+                <i class="fas fa-tags"></i>
+                <div>
+                  <span class="sidebar-data-label">Clasificación</span>
+                  <span class="sidebar-data-value">${p.tipoPunto}</span>
+                </div>
               </div>
-            `}
-            <h3 class="map-sidebar-title">${p.nombre}</h3>
-            ${p.tipoPunto ? `<span class="map-sidebar-badge">📍 ${p.tipoPunto}</span>` : ""}
-            <div class="map-sidebar-desc">
-              <p>${p.descripcion || "Sin descripción detallada disponible actualmente."}</p>
+              ` : ''}
+              
+              <div class="sidebar-data-row">
+                <i class="fas fa-align-left"></i>
+                <div>
+                  <span class="sidebar-data-label">Descripción</span>
+                  <span class="sidebar-data-value">${p.descripcion || "Sin descripción detallada disponible actualmente."}</span>
+                </div>
+              </div>
+              
+              ${p.link ? `
+                <a href="${p.link}" target="_blank" class="resource-btn" style="width: 100%; text-align: center; display: block; text-decoration: none; margin-top: 0.5rem;">
+                  <i class="fas fa-external-link-alt"></i> Ver sitio o recurso
+                </a>
+              ` : ""}
             </div>
-            ${p.link ? `<a href="${p.link}" target="_blank" class="resource-btn" style="width:100%; text-align:center; display:block; text-decoration:none;">Ver sitio o recurso</a>` : ""}
           `;
+        }
+
+        // CONTROL EXCLUSIVO CELULARES: Al tocar un marcador, simular clic en pestaña de detalles
+        if (window.innerWidth <= 768) {
+          const btnDetallesCelular = document.querySelector('.map-tab-btn[data-tab="detalles"]');
+          if (btnDetallesCelular) {
+            btnDetallesCelular.click();
+          }
         }
       });
 
       marker.addTo(mapaLeaflet);
       marcadoresMapa.push(marker);
     });
+}
+
+/* =========================================
+CONTROLADORES DE PESTAÑAS (TABS) PARA MÓVIL
+========================================= */
+function initMapaTabsMobile() {
+  const btnVerMapa = document.getElementById("btnVerMapa");
+  const btnVerDetalles = document.getElementById("btnVerDetalles");
+  const mapLayoutWrapper = document.getElementById("mapLayoutWrapper");
+
+  if (btnVerMapa && btnVerDetalles && mapLayoutWrapper) {
+    btnVerMapa.addEventListener("click", () => {
+      btnVerMapa.classList.add("active");
+      btnVerDetalles.classList.remove("active");
+      mapLayoutWrapper.classList.remove("show-details-view");
+      
+      // Forzar recalculado de geometría espacial de Leaflet al volver al mapa activo
+      if (mapaLeaflet) {
+        setTimeout(() => {
+          mapaLeaflet.invalidateSize();
+        }, 150);
+      }
+    });
+
+    btnVerDetalles.addEventListener("click", () => {
+      btnVerDetalles.classList.add("active");
+      btnVerMapa.classList.remove("active");
+      mapLayoutWrapper.classList.add("show-details-view");
+    });
+  }
 }
 
 /* =========================================
@@ -607,20 +661,17 @@ function initSidebar() {
     });
   }
   
-  // CORRECCIÓN DEL CLICK CON ANCHOR OFFSET PARA BARRAS FIJAS
- // Reemplaza ÚNICAMENTE el fragmento del click en tu función initSidebar() por este:
-links.forEach(link => {
-  link.addEventListener("click", e => {
-    e.preventDefault();
-    const target = document.querySelector(link.getAttribute("href"));
-    if (target) {
-      // Dejamos que el "scroll-padding-top" del CSS haga todo el trabajo sucio en móvil y PC
-      target.scrollIntoView({
-        behavior: "smooth"
-      });
-    }
+  links.forEach(link => {
+    link.addEventListener("click", e => {
+      e.preventDefault();
+      const target = document.querySelector(link.getAttribute("href"));
+      if (target) {
+        target.scrollIntoView({
+          behavior: "smooth"
+        });
+      }
+    });
   });
-});
   
   window.addEventListener("scroll", activate);
   activate();
@@ -645,13 +696,10 @@ if (modalContainer) {
 INICIALIZADOR APP
 ========================================= */
 
-/* =========================================
-INICIALIZADOR APP
-========================================= */
-
 async function initAgroIdeas() {
   try {
-    initMenuMobile(); // <-- Nueva función añadida para el botón sandwich
+    initMenuMobile(); // Lógica para el botón sandwich
+    initMapaTabsMobile(); // Inicialización de las pestañas móviles
     initMapa();
     await fetchAgroIdeas();
     
@@ -677,7 +725,6 @@ function initMenuMobile() {
       mainNav.classList.toggle("open");
     });
 
-    // Cerrar el menú si se da clic a cualquier enlace interno
     mainNav.querySelectorAll("a").forEach(link => {
       link.addEventListener("click", () => {
         menuToggle.classList.remove("open");
@@ -688,7 +735,42 @@ function initMenuMobile() {
 }
 
 /* =========================================
-EJECUCIÓN AL CARGAR DOM
+EJECUCIÓN AL CARGAR DOM (INTERACTIVIDAD TABS)
 ========================================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+  const tabButtons = document.querySelectorAll(".map-tab-btn");
+  const mapWrapper = document.getElementById("mapWrapper");
+
+  if (tabButtons && mapWrapper) {
+    tabButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        // 1. Quitar la clase active de todos los botones de la pestaña del mapa
+        tabButtons.forEach(b => b.classList.remove("active"));
+        
+        // 2. Añadir la clase active al botón presionado
+        btn.classList.add("active");
+
+        // 3. Evaluar qué pestaña se presionó usando el atributo data-tab
+        const targetTab = btn.getAttribute("data-tab");
+
+        if (targetTab === "detalles") {
+          // Muestra el panel lateral y oculta el mapa (en móvil)
+          mapWrapper.classList.add("show-details");
+        } else {
+          // Regresa a la vista del mapa original
+          mapWrapper.classList.remove("show-details");
+          
+          // Corrección Leaflet con la instancia global correcta (mapaLeaflet)
+          if (typeof mapaLeaflet !== 'undefined' && mapaLeaflet !== null) {
+            setTimeout(() => {
+              mapaLeaflet.invalidateSize();
+            }, 100);
+          }
+        }
+      });
+    });
+  }
+});
 
 document.addEventListener("DOMContentLoaded", initAgroIdeas);
