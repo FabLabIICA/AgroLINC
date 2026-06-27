@@ -493,7 +493,7 @@ function renderMarcadoresMapa() {
 
           // Inyectamos la información estructurada con la grilla premium
           sidebar.innerHTML = `
-            <h3><i class="fas fa-map-marker-alt"></i> Detalles de la Red</h3>
+            <h3><i class="fas fa-map-marker-alt"></i> Detalles dela Lugar</h3>
             
             <div class="sidebar-info-group">
               ${imagenUrl ? `<img src="${imagenUrl}" class="sidebar-feature-img" alt="${p.nombre}">` : `
@@ -576,62 +576,83 @@ function initMapaTabsMobile() {
 }
 
 /* =========================================
-MODAL CONTROL
+   MODAL CONTROL (AGROIDEAS)
 ========================================= */
 
+// Decodificación segura de atributos en Base64 para abrir el modal
 window.openIdeaModalFromAttr = function(base64Str) {
   try {
     const jsonStr = decodeURIComponent(escape(atob(base64Str)));
     const item = JSON.parse(jsonStr);
     openIdeaModal(item);
   } catch (err) {
-    console.error("Error decodificando la información del modal", err);
+    console.error("Error decodificando la información del modal:", err);
   }
 };
 
+// Función principal para renderizar y abrir el modal premium
 function openIdeaModal(item) {
   const modal = document.getElementById("ideaModal");
   const body = document.getElementById("ideaModalBody");
   if (!modal || !body) return;
 
-  let extra = "";
-
-  if (item.tipo === "prototipo") {
-    extra = `
-      ${item.autor ? `<p class="modal-meta-info">${item.autor}</p>` : ""}
-      ${item.github ? `<a href="${item.github}" target="_blank" class="resource-btn">Ver Github</a>` : ""}
-    `;
+  // 1. Preparar bloques condicionales según el tipo de recurso
+  let autorHtml = item.autor ? `<p style="font-size: 0.85rem; color: #64748b; margin-bottom: 0.5rem;"><strong>Autor:</strong> ${item.autor}</p>` : "";
+  let impresionHtml = item.impresion ? `<p style="font-size: 0.85rem; color: #64748b; background: #f8fafc; padding: 0.75rem; border-radius: 8px; border: 1px solid #e2e8f0; margin-top: 0.75rem;"><strong>Instrucciones de impresión:</strong><br>${item.impresion}</p>` : "";
+  
+  // 2. Construir los botones de acción del pie de página de forma unificada
+  let botonesAccion = "";
+  if (item.tipo === "prototipo" && item.github) {
+    botonesAccion = `<a href="${item.github}" target="_blank" class="resource-btn"><i class="fa-brands fa-github"></i> Ver en GitHub</a>`;
+  } else if (item.tipo === "3d" && item.descarga) {
+    botonesAccion = `<a href="${item.descarga}" target="_blank" class="resource-btn"><i class="fa-solid fa-download"></i> Descargar STL</a>`;
   }
 
-  if (item.tipo === "3d") {
-    extra = `
-      ${item.impresion ? `<p><strong>Cómo imprimir:</strong><br>${item.impresion}</p>` : ""}
-      ${item.descarga ? `<a href="${item.descarga}" target="_blank" class="resource-btn">Descargar STL</a>` : ""}
-    `;
-  }
-
+  // 3. Inyectar la estructura premium limpia en dos columnas
   body.innerHTML = `
-    <div class="idea-modal-content">
-      <div>${getImage(item.imagen)}</div>
-      <h2>${item.nombre}</h2>
-      <p class="modal-desc-text">${item.descripcion || ""}</p>
-      <p><strong>Categoría:</strong> ${item.coleccion || "AgroIdeas"}</p>
-      ${extra}
+    <div class="idea-modal-grid">
+      
+      <div class="idea-modal-cover">
+        ${getImage(item.imagen)}
+      </div>
+      
+      <div class="idea-modal-info">
+        <div>
+          <span class="modal-badge">
+            <i class="fa-solid fa-layer-group"></i> ${item.coleccion || "AgroIdeas"}
+          </span>
+          
+          <h2>${item.nombre}</h2>
+          
+          <p class="modal-desc-paragraph">${item.descripcion || "No se cargó una descripción detallada para este recurso."}</p>
+          
+          ${autorHtml}
+          ${impresionHtml}
+        </div>
+        
+        ${botonesAccion ? `<div class="modal-footer-actions">${botonesAccion}</div>` : ""}
+      </div>
+      
     </div>
   `;
-  
+
+  // 4. Activar visualmente el modal añadiendo la clase responsiva
   modal.classList.add("open");
 }
 
-function closeIdeaModal() {
+// Cierre seguro del modal expuesto globalmente para el atributo onclick="closeIdeaModal()"
+window.closeIdeaModal = function() {
   const modal = document.getElementById("ideaModal");
-  if (modal) modal.classList.remove("open");
-}
+  if (modal) {
+    modal.classList.remove("open");
+    const body = document.getElementById("ideaModalBody");
+    if (body) body.innerHTML = ""; // Limpieza de memoria e imagen para evitar parpadeos al reabrir
+  }
+};
 
 /* =========================================
-SIDEBAR / NAVEGACIÓN SCROLL
+   SIDEBAR / NAVEGACIÓN SCROLL (SOPORTE MÓVIL)
 ========================================= */
-
 function initSidebar() {
   const links = document.querySelectorAll(".explorer-link");
   if (links.length === 0) return;
@@ -647,8 +668,11 @@ function initSidebar() {
     if (sections.length === 0) return;
     let active = sections[0];
     
+    // Si la pantalla es móvil, calculamos una holgura mayor porque hay dos barras fijas arriba
+    const offsetCalculado = window.innerWidth <= 1200 ? 250 : 140;
+    
     sections.forEach(s => {
-      if (window.scrollY >= s.offsetTop - 140) {
+      if (window.scrollY >= s.offsetTop - offsetCalculado) {
         active = s;
       }
     });
@@ -666,7 +690,12 @@ function initSidebar() {
       e.preventDefault();
       const target = document.querySelector(link.getAttribute("href"));
       if (target) {
-        target.scrollIntoView({
+        const offsetCalculado = window.innerWidth <= 1200 ? 230 : 130;
+        const elementoPosición = target.getBoundingClientRect().top;
+        const posiciónGlobal = elementoPosición + window.pageYOffset - offsetCalculado;
+
+        window.scrollTo({
+          top: posiciónGlobal,
           behavior: "smooth"
         });
       }
@@ -674,22 +703,8 @@ function initSidebar() {
   });
   
   window.addEventListener("scroll", activate);
+  window.addEventListener("resize", activate); // Recalcular si rota la pantalla
   activate();
-}
-
-/* =========================================
-EVENT LISTENERS ACCESIBILIDAD MÓDULOS
-========================================= */
-
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape") closeIdeaModal();
-});
-
-const modalContainer = document.getElementById("ideaModal");
-if (modalContainer) {
-  modalContainer.addEventListener("click", e => {
-    if (e.target.id === "ideaModal") closeIdeaModal();
-  });
 }
 
 /* =========================================
