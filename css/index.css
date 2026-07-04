@@ -1972,22 +1972,7 @@ button, input, select, textarea {
   border-radius: 14px;
   margin-top: 1rem;
 }
-.req-item-link {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.65rem 1rem;
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  margin-top: 0.5rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.req-item-link:hover {
-  background: #f1f5f9;
-  border-color: var(--primary);
-}
+
 .modal-image-content {
   width: 100%;
   border-radius: 14px;
@@ -1995,78 +1980,399 @@ button, input, select, textarea {
   box-shadow: var(--shadow);
 }
 
-/* 4. Tarjeta Exclusiva Descargable para Redes (Hidden en UI, Renderizada en Canvas) */
-#linkedinShareCard {
-  position: absolute;
-  left: -9999px;
-  top: -9999px;
-  width: 800px;
-  height: 450px;
-  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-  color: white;
-  padding: 40px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-start: space-between;
-  font-family: 'Inter', sans-serif;
-}
-.share-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  padding-bottom: 20px;
-}
 .share-logo { height: 50px; }
-.share-user-info h2 { font-size: 2rem; margin-bottom: 5px; color: #ffffff; }
-.share-user-info p { color: #38bdf8; font-weight: 600; font-size: 1.1rem; }
-.share-body {
-  margin-top: 30px;
-  flex-grow: 1;
-}
-.share-courses-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-  margin-top: 15px;
-}
-.share-course-box {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-left: 5px solid #10b981;
-  padding: 12px;
-  border-radius: 10px;
-}
-.share-course-box h4 { font-size: 0.95rem; margin-bottom: 5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
-.share-course-box span { font-size: 0.75rem; color: #94a3b8; }
-.share-footer {
+
+
+/* =========================================================
+   MEJORAS EN MODAL DE REQUISITOS (PUNTO 1)
+========================================================= */
+.req-item-link {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-top: auto;
-  font-size: 0.85rem;
-  color: #64748b;
+  justify-content: space-between;
+  padding: 0.8rem 1.2rem;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-top: 0.6rem;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Botón de descarga en el Perfil */
+/* Indicador visual de que es un elemento interactivo */
+.req-item-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--primary);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.req-item-link:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(109, 40, 217, 0.08);
+}
+
+.req-item-link:hover::after {
+  opacity: 0.04;
+}
+
+.req-item-link .req-text-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text);
+  font-weight: 600;
+  font-size: 0.95rem;
+  z-index: 2;
+}
+
+.req-item-link .req-status-badge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  z-index: 2;
+}
+
+/* Variantes de color según el estado real del requisito */
+.req-status-badge.completed { background: rgba(16, 185, 129, 0.12); color: var(--success); }
+.req-status-badge.available { background: rgba(109, 40, 217, 0.12); color: var(--primary); }
+.req-status-badge.locked { background: #f1f5f9; color: #64748b; }
+
+/* =========================================================
+   REDISEÑO DEL BOTÓN DE DESCARGA (PUNTO 2)
+========================================================= */
 .download-share-btn {
   width: 100%;
   margin-top: 1.5rem;
-  background: linear-gradient(135deg, #0077b5, #00a0dc);
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
   color: white;
   border: none;
-  padding: 0.85rem;
-  border-radius: 14px;
+  padding: 0.95rem 1.5rem;
+  border-radius: 16px;
   font-weight: 700;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  transition: all 0.2s;
+  gap: 12px;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.2);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 .download-share-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 119, 181, 0.3);
+  transform: translateY(-3px);
+  background: linear-gradient(135deg, #1d4ed8, #1e40af);
+  box-shadow: 0 8px 22px rgba(37, 99, 235, 0.35);
+}
+
+.download-share-btn:active {
+  transform: translateY(-1px);
+}
+/* =========================================================
+   ESTRUCTURA DE EXPORTACIÓN: TARJETA COMPARTIBLE PREMIUM (1200x630)
+========================================================= */
+#linkedinShareCard {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  width: 1200px;
+  height: 630px;
+  background: #05081f;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+}
+
+/* 1. Franja Blanca Pura Obligatoria para Logos */
+.share-branding-strip {
+  height: 85px;
+  background: #ffffffd7;
+  border-bottom: 3px solid #072e72;
+  border-top: 3px solid #072e72;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 45px;
+  box-sizing: border-box;
+}
+
+.share-strip-left .share-logo-main {
+  height: 52px;
+  width: auto;
+  object-fit: contain;
+}
+
+.share-logo-inst {
+  height: 38px;
+  width: auto;
+  object-fit: contain;
+}
+
+.share-logo-instm {
+  height: 70px;
+  width: auto;
+  object-fit: contain;
+}
+
+.share-strip-right {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+
+
+/* 2. Cuerpo Central */
+.share-body {
+  flex: 1;
+  padding: 10px 45px 15px 45px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.share-user-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.share-user-details h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #24c1e9;
+  margin-bottom: 4px;
+}
+
+.share-user-sub {
+  font-size: 0.95rem;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.share-separator {
+  color: #cbd5e1;
+}
+
+.share-user-stats {
+  display: flex;
+  gap: 12px;
+}
+
+.share-stat-badge {
+  background: #e2e8f015;
+  color: #8031ff;
+  padding: 8px 16px;
+  padding-bottom: 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.share-date-badge {
+  background: #e2e8f015;
+  color: #80a1ce;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* 3. Rejilla Inteligente de Cursos (Evita desbordes y vacíos) */
+.share-courses-container {
+  display: grid;
+  gap: 16px;
+  flex: 1;
+  align-content: start;
+}
+
+/* Distribución según cantidad de elementos */
+.share-courses-container.grid-vacio {
+  grid-template-columns: 1fr;
+}
+
+.share-courses-container.baja-densidad {
+  grid-template-columns: repeat(2, 1fr); /* Elementos grandes si son pocos */
+}
+
+.share-courses-container.media-densidad {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.share-courses-container.alta-densidad {
+  grid-template-columns: repeat(4, 1fr); /* Elementos compactos si son muchos */
+}
+
+/* Caja de cada Módulo Individual (Dinámica) */
+.share-course-box {
+  background: #ffffff13;
+  border: 1px solid #a8a8a8;
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  min-height: 75px; /* Se cambia height fijo por min-height para permitir escalado */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+}
+
+.share-box-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.share-box-icon {
+  font-size: 0.8rem;
+  color: #24c1e9;
+}
+
+.share-badge-success {
+  color: #09c45d;
+  font-size: 0.5rem;
+  font-weight: 800;
+  padding: 2px 4px;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+/* Prevención Quirúrgica de Desborde o pérdida de texto */
+.share-course-box h4 {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #ffffff;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Corta exactamente en la segunda línea si es muy largo */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.25;
+  height: 1.7rem; /* Asegura espacio fijo para el texto */
+  margin: 5px 0;
+}
+
+.share-course-date {
+  font-size: 0.5rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* =========================================================
+   ADAPTACIÓN DINÁMICA POR BAJO VOLUMEN (EVITA ESPACIOS VACÍOS)
+========================================================= */
+
+/* Ajustes cuando la densidad es BAJA (1 a 3 cursos) */
+.baja-densidad .share-course-box {
+  padding: 22px 24px;
+  min-height: 125px;
+}
+.baja-densidad .share-course-box h4 {
+  font-size: 1.05rem;
+  height: 2.6rem;
+  line-height: 1.3;
+}
+.baja-densidad .share-box-icon {
+  font-size: 1.2rem;
+}
+.baja-densidad .share-badge-success {
+  font-size: 0.7rem;
+  padding: 4px 8px;
+}
+.baja-densidad .share-course-date {
+  font-size: 0.75rem;
+}
+
+/* Ajustes cuando la densidad es MEDIA (4 a 6 cursos) */
+.media-densidad .share-course-box {
+  padding: 18px 20px;
+  min-height: 95px;
+}
+.media-densidad .share-course-box h4 {
+  font-size: 0.85rem;
+  height: 2.1rem;
+}
+.media-densidad .share-box-icon {
+  font-size: 1rem;
+}
+.media-densidad .share-badge-success {
+  font-size: 0.6rem;
+  padding: 3px 6px;
+}
+.media-densidad .share-course-date {
+  font-size: 0.65rem;
+}
+
+/* ========================================================= */
+
+.share-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 150px;
+  color: #94a3b8;
+  gap: 12px;
+}
+
+.share-empty-state i {
+  font-size: 3rem;
+}
+
+/* 4. Pie de Página con Integración de Código QR */
+.share-footer {
+  height: 110px;
+  background: #072e72;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 45px;
+  box-sizing: border-box;
+  color: #ffffff;
+}
+
+.share-footer-text span {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.share-footer-text p {
+  font-size: 0.6rem;
+  color: #94a3b8;
+}
+
+.share-footer-qr {
+  background: #ffffff;
+  padding: 6px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  transform: translateY(-15px); /* Efecto flotante elegante sobre el pie de página */
+  border: 1px solid #e2e8f0;
+}
+
+.share-qr-image {
+  width: 78px;
+  height: 78px;
+  display: block;
 }
