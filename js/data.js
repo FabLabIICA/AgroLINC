@@ -53,10 +53,12 @@ function getCourseIcon(courseName) {
 
   const iconRules = [
     { keywords: ['drone', 'vant', 'vuelo', 'vehiculo aereo'], icon: 'fa-helicopter-symbol' }, 
-    { keywords: ['3d', 'impresion'], icon: 'fa-cubes' }, 
+    { keywords: ['basico'], icon: 'fa-cube' }, 
+    { keywords: ['intermedio'], icon: 'fa-cubes' }, 
     { keywords: ['laser', 'corte', 'cnc'], icon: 'fa-scissors' }, 
     { keywords: ['geoespacial', 'mapa', 'gps', 'kobo', 'territorio'], icon: 'fa-map-location-dot' },
-    { keywords: ['microcontrolador', 'sensor', 'actuador', 'electronico', 'electricidad'], icon: 'fa-microchip' },
+    { keywords: ['microcontrolador', 'sensor', 'actuador'], icon: 'fa-microchip' },
+    { keywords: [ 'electronico', 'electricidad'], icon: 'fa-bolt' },
     { keywords: ['iot', 'internet de las cosas'], icon: 'fa-wifi' },
     { keywords: ['automatizacion', 'robot', 'programacion'], icon: 'fa-robot' },
     { keywords: ['fabricacion digital'], icon: 'fa-industry' },
@@ -392,9 +394,9 @@ async function consultarRuta() {
 }
 
 /* =========================================================
-   MODIFICACIÓN: MOTOR DINÁMICO DE SUB-MODALES (PUNTO 1)
+   MOTOR DINÁMICO DE SUB-MODALES (ACTUALIZADO PARA DISPONIBLES)
 ========================================================= */
-function abrirModalDetallado(curso, estado) {
+async function abrirModalDetallado(curso, estado) {
   const modal = document.getElementById('courseModal');
   if (!modal) return;
 
@@ -404,21 +406,81 @@ function abrirModalDetallado(curso, estado) {
   const container = document.getElementById('modalDescription');
   container.innerHTML = ''; 
 
+  // MODIFICACIÓN EXCLUSIVA PARA EL ESTADO AVAILABLE (ESTILO INDEX ORIGINAL)
   if (estado === 'available') {
-    container.innerHTML = `
-      <p>${curso.descripcion || 'Sin descripción disponible por el momento.'}</p>
-      <div class="modal-requirement-box" style="border-left: 5px solid var(--primary);">
-        <h4><i class="fa-solid fa-calendar-check"></i> Convocatoria Disponible</h4>
-        <p>¡Cumples con los prerrequisitos! Puedes matricularte de forma directa en este módulo usando el enlace oficial:</p>
-        <a href="https://forms.gle/3hsVm6HF35N531JG7" target="_blank" class="req-item-link" style="justify-content: center; background: var(--primary); color: white; font-weight: bold; border-radius:12px;">
-          <div class="req-text-container" style="color: white;">
-            <i class="fa-solid fa-file-signature"></i>
-            <span>Formulario de Matrícula AgroLINC</span>
+    const calendario = await fetchCalendario();
+    const eventosCurso = calendario.filter(e => e.id === curso.id);
+    let eventosHTML = "";
+
+    if (eventosCurso.length === 0) {
+      eventosHTML = `
+        <div class="course-event event-closed">
+          <div class="event-status status-closed">Próximamente</div>
+          <p>No hay convocatorias publicadas para este curso.</p>
+        </div>
+      `;
+    } else {
+      eventosCurso.forEach(evento => {
+        const cuposDisponibles = evento.max - evento.inscritos - evento.espera + evento.cancelados;
+        const cumpleMinimo = evento.inscritos + evento.espera - evento.cancelados >= evento.min;
+
+        let clase = "";
+        let estadoClase = "";
+        let estadoTexto = "";
+        let detalle = "";
+        let boton = "";
+
+        if (!evento.enlace) {
+          clase = "event-closed";
+          estadoClase = "status-closed";
+          estadoTexto = "Grupo cerrado";
+          detalle = "Esta convocatoria se gestiona mediante un grupo específico.";
+        }
+        else if (cuposDisponibles <= 0) {
+          clase = "event-waiting";
+          estadoClase = "status-waiting";
+          estadoTexto = "Lista de espera";
+          detalle = `<br><span class="event-note">No hay cupos disponibles. Puede registrarse en la lista de espera...</span>`;
+          boton = `<a class="event-btn" href="${evento.enlace}" target="_blank">Unirse a lista de espera</a>`;
+        }
+        else if (cumpleMinimo) {
+          clase = "event-confirmed";
+          estadoClase = "status-confirmed";
+          estadoTexto = "Convocatoria confirmada";
+          detalle = `<div class="event-slots status-confirmed">${cuposDisponibles} cupos disponibles</div>`;
+          boton = `<a class="event-btn" href="${evento.enlace}" target="_blank">Solicitar inscripción</a>`;
+        }
+        else {
+          clase = "event-pending";
+          estadoClase = "status-pending";
+          estadoTexto = "Convocatoria abierta";
+          detalle = `
+            <div class="event-note status-pending">Pendiente de alcanzar el cupo mínimo.</div>
+            <div class="event-slots status-pending">${cuposDisponibles} cupos disponibles</div>
+          `;
+          boton = `<a class="event-btn" href="${evento.enlace}" target="_blank">Solicitar inscripción</a>`;
+        }
+
+        eventosHTML += `
+          <div class="course-event ${clase}">
+            <div class="event-date">${evento.fecha}</div>
+            <div class="event-status ${estadoClase}">${estadoTexto}</div>
+            ${detalle}
+            ${boton}
           </div>
-        </a>
+        `;
+      });
+    }
+
+    container.innerHTML = `
+      <p>${curso.descripcion || "Próximamente disponible."}</p>
+      <div class="modal-events">
+        <h4>Próximas convocatorias</h4>
+        ${eventosHTML}
       </div>
     `;
   } 
+  // EL RESTO DEL CÓDIGO PERMANECE INTACTO Y TOTALMENTE INALTERADO
   else if (estado === 'completed') {
     container.innerHTML = `
       <p><strong>¡Felicitaciones! Has completado y aprobado con éxito este módulo.</strong></p>
@@ -440,13 +502,11 @@ function abrirModalDetallado(curso, estado) {
           let reqEstadoClase = 'locked';
           let reqIcono = 'fa-lock';
 
-          // Verificar si el requisito está aprobado o si al menos está disponible para cursar
           if (esAprobado) {
             reqEstadoTexto = 'Completo';
             reqEstadoClase = 'completed';
             reqIcono = 'fa-circle-check';
           } else {
-            // Evaluar disponibilidad interna del requisito previo
             let reqDisponible = false;
             const r1 = reqCurso.requisito1;
             const r2 = reqCurso.requisito2;
@@ -463,7 +523,6 @@ function abrirModalDetallado(curso, estado) {
             }
           }
           
-          // Render estructurado presionable con bádges dinámicos estilizados en CSS
           htmlRequisitos += `
             <div class="req-item-link" onclick="cambiarFocoModal('${reqCurso.id}')" role="button" title="Haga clic para evaluar este curso">
               <div class="req-text-container">
@@ -533,7 +592,7 @@ function cambiarFocoModal(cursoId) {
 }
 
 /* =========================================================
-   MODIFICACIÓN: GENERADOR Y TARJETA COMPARTIBLE (PUNTOS 2 Y 3)
+   GENERADOR Y TARJETA COMPARTIBLE OPTIMIZADA
 ========================================================= */
 function inyectarBotonCompartir() {
   const profileCard = document.querySelector('.profile-card');
@@ -542,16 +601,19 @@ function inyectarBotonCompartir() {
   const btnShare = document.createElement('button');
   btnShare.id = 'btnDownloadShare';
   btnShare.className = 'download-share-btn';
-  // Texto genérico limpio sin referencias explícitas a marcas externas
   btnShare.innerHTML = `<i class="fa-solid fa-cloud-download-alt"></i> Descargar Tarjeta de Progreso`;
   
   btnShare.addEventListener('click', generarImagenRedesSociales);
   profileCard.appendChild(btnShare);
 }
 
+/* =========================================================
+   GENERADOR Y TARJETA COMPARTIBLE OPTIMIZADA (CON QR Y AUTO-FIT)
+========================================================= */
 function generarImagenRedesSociales() {
   if (!estudianteGlobal) return;
 
+  // 1. Validar u obtener el contenedor base
   let shareContainer = document.getElementById('linkedinShareCard');
   if (!shareContainer) {
     shareContainer = document.createElement('div');
@@ -559,67 +621,111 @@ function generarImagenRedesSociales() {
     document.body.appendChild(shareContainer);
   }
 
-  // Extraer los cursos completados reales
-  const aprobadosReales = cursosRutaGlobal.filter(c => tuplasGlobales.some(t => t[0] === c.id));
-  const cursosNombres = aprobadosReales.map(c => c.nombre);
+  // 2. Extraer los módulos aprobados con sus fechas cruzadas reales
+  const aprobadosReales = cursosRutaGlobal
+    .map(c => {
+      const tuplaAsociada = tuplasGlobales.find(t => t[0] === c.id);
+      if (tuplaAsociada) {
+        return { ...c, fechaCompletado: tuplaAsociada[1] };
+      }
+      return null;
+    })
+    .filter(c => c !== null);
 
-  // Lógica de placeholders para garantizar siempre 3 cajas simétricas en la tarjeta premium
-  while (cursosNombres.length < 3) {
-    if (cursosNombres.length === 0) {
-      cursosNombres.push("Primeros pasos en AgroLINC");
-    } else {
-      cursosNombres.push("Próximo módulo formativo de especialización");
-    }
+  const totalCursosLogrados = aprobadosReales.length;
+  const fechaEmision = new Date().toLocaleDateString('es-CR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
+
+  // 3. Generar dinámicamente las cajas HTML con control estricto de truncado de texto
+  const cursosHTML = aprobadosReales.map(curso => {
+    return `
+      <div class="share-course-box">
+        <div class="share-box-top">
+          <i class="fa-solid ${getCourseIcon(curso.nombre)} share-box-icon"></i>
+          <span class="share-badge-success"><i class="fa-solid fa-circle-check"></i> Aprobado</span>
+        </div>
+        <h4 title="${curso.nombre}">${curso.nombre}</h4>
+        <span class="share-course-date">Completado: ${curso.fechaCompletado || '---'}</span>
+      </div>
+    `;
+  }).join('');
+
+  // 4. Ajuste inteligente de densidad de la rejilla según volumen real de cursos
+  let claseDensidad = 'grid-vacio';
+  if (totalCursosLogrados >= 7) {
+    claseDensidad = 'alta-densidad';
+  } else if (totalCursosLogrados >= 4) {
+    claseDensidad = 'media-densidad';
+  } else if (totalCursosLogrados >= 1) {
+    claseDensidad = 'baja-densidad';
   }
 
-  // Re-maquetación completa con la estructura visual corporativa premium
+  // 5. Definir la URL de la plataforma para el código QR
+  const urlPlataforma = `https://fablabiica.github.io/AgroLINC/`;
+  const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(urlPlataforma)}&color=07152d`;
+
   shareContainer.innerHTML = `
-    <div class="share-header">
-      <div class="share-branding">
-        <img src="assets/images/agrolinc.svg" alt="AgroLINC" class="share-logo-main">
+    <!-- Franja Blanca Premium Superior Obligatoria para Logos -->
+    <div class="share-branding-strip">
+      <div class="share-strip-left">
+        <img src="assets/images/agrolinc.svg" alt="AgroLINC" class="share-logo-main" onerror="this.style.display='none'">
       </div>
-      <div class="share-institution-logos">
-        <img src="assets/images/micitt.png" alt="MICITT" class="share-logo-inst">
-        <img src="assets/images/iica-azul.png" alt="IICA" class="share-logo-inst">
+      <div class="share-strip-right">
+        <img src="assets/images/micitt.png" alt="MICITT" class="share-logo-instm" onerror="this.style.display='none'">
+        <img src="assets/images/iica-azul.png" alt="IICA" class="share-logo-inst" onerror="this.style.display='none'">
       </div>
     </div>
     
     <div class="share-body">
-      <div class="share-user-info">
-        <h2>${estudianteGlobal.nombre}</h2>
-        <p><i class="fa-solid fa-award"></i> Especialización en Ruta ${estudianteGlobal.ruta}</p>
+      <div class="share-user-meta">
+        <div class="share-user-details">
+          <h2>${estudianteGlobal.nombre}</h2>
+          <p class="share-user-sub">
+            <span><i class="fa-solid fa-id-card"></i> Identificación: <b>${estudianteGlobal.cedula}</b></span>
+            <span class="share-separator">•</span>
+            <span><i class="fa-solid fa-route"></i> Ruta: <b>${estudianteGlobal.ruta.toUpperCase()}</b></span>
+          </p>
+        </div>
+        <div class="share-user-stats">
+          <span class="share-stat-badge"><i class="fa-solid fa-award"></i> ${totalCursosLogrados} Módulos Logrados</span>
+          <span class="share-date-badge"><i class="fa-solid fa-calendar-day"></i> ${fechaEmision}</span>
+        </div>
       </div>
       
-      <h3>Hitos de Aprendizaje Alcanzados:</h3>
-      <div class="share-courses-grid">
-        <div class="share-course-box">
-          <h4>${cursosNombres[0]}</h4>
-          <span><i class="fa-solid fa-check-circle"></i> Completado</span>
-        </div>
-        <div class="share-course-box">
-          <h4>${cursosNombres[1]}</h4>
-          <span><i class="fa-solid fa-check-circle"></i> Completado</span>
-        </div>
-        <div class="share-course-box">
-          <h4>${cursosNombres[2]}</h4>
-          <span><i class="fa-solid fa-check-circle"></i> Completado</span>
-        </div>
+      <!-- Contenedor con distribución elástica e inteligente para evitar vacíos -->
+      <div class="share-courses-container ${claseDensidad}">
+        ${totalCursosLogrados === 0 
+          ? `<div class="share-empty-state"><i class="fa-solid fa-graduation-cap"></i><p>Iniciando ruta de aprendizaje formativa.</p></div>`
+          : cursosHTML
+        }
       </div>
     </div>
 
+    <!-- Pie de página con integración del Código QR e información de credenciales -->
     <div class="share-footer">
-      <span>Ruta de Aprendizaje Oficial • Laboratorios de Innovación Comunitaria</span>
-      <span class="share-footer-url">agrolinc.iica.int</span>
+      <div class="share-footer-text">
+        <span><i class="fa-solid fa-certificate"></i> Registro de Cursos Aprobados del Programa AgroLINC </span>
+        <img src="assets/images/fablab.png" alt="FabLab" class="share-logo-inst" onerror="this.style.display='none'">
+        <p>Escanea el código QR de la derecha para validar en la plataforma de AgroLINC</p>
+      </div>
+      <div class="share-footer-qr">
+        <img src="${qrApiUrl}" alt="Código QR de Verificación" class="share-qr-image">
+      </div>
     </div>
   `;
 
-  // Renderizado a imagen descargable en alta resolución usando CORS para los logos externos
+  // 6. Captura fotográfica estable fijando las dimensiones de salida
   setTimeout(() => {
     html2canvas(shareContainer, {
       useCORS: true,
       allowTaint: true,
-      backgroundColor: null,
-      scale: 2 
+      backgroundColor: "#f4f7fb",
+      scale: 2,           // Renderizado nítido de alta definición
+      width: 1200,        
+      height: 630         
     }).then(canvas => {
       const nombreArchivoSafe = estudianteGlobal.nombre.trim().replace(/\s+/g, '_');
       const link = document.createElement('a');
@@ -629,7 +735,7 @@ function generarImagenRedesSociales() {
     }).catch(err => {
       console.error("Error generando la tarjeta de progreso: ", err);
     });
-  }, 400);
+  }, 600); 
 }
 
 /* =========================================
