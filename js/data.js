@@ -55,13 +55,17 @@ function getCourseIcon(courseName) {
     { keywords: ['drone', 'vant', 'vuelo', 'vehiculo aereo'], icon: 'fa-helicopter-symbol' }, 
     { keywords: ['basico'], icon: 'fa-cube' }, 
     { keywords: ['intermedio'], icon: 'fa-cubes' }, 
-    { keywords: ['laser', 'corte', 'cnc'], icon: 'fa-scissors' }, 
+    { keywords: ['laser', 'corte'], icon: 'fa-explosion' }, 
+    { keywords: ['cnc'], icon: 'fa-bore-hole' }, 
     { keywords: ['geoespacial', 'mapa', 'gps', 'kobo', 'territorio'], icon: 'fa-map-location-dot' },
-    { keywords: ['microcontrolador', 'sensor', 'actuador'], icon: 'fa-microchip' },
+    { keywords: ['microcontrolador', 'arduino'], icon: 'fa-microchip' },
+
+    { keywords: ['microcontrolador', 'sensor', 'actuador'], icon: 'fa-tower-broadcast' },
     { keywords: [ 'electronico', 'electricidad'], icon: 'fa-bolt' },
     { keywords: ['iot', 'internet de las cosas'], icon: 'fa-wifi' },
-    { keywords: ['automatizacion', 'robot', 'programacion'], icon: 'fa-robot' },
-    { keywords: ['fabricacion digital'], icon: 'fa-industry' },
+    { keywords: ['automatizacion', 'robot'], icon: 'fa-robot' },
+    { keywords: ['programacion'], icon: 'fa-code' },
+    { keywords: ['fabricacion digital'], icon: 'fa-gear' },
     { keywords: ['innovacion', 'canvas', 'modelo', 'soluciones'], icon: 'fa-lightbulb' }
   ];
 
@@ -529,7 +533,7 @@ async function abrirModalDetallado(curso, estado) {
                 <i class="fa-solid ${getCourseIcon(reqCurso.nombre)}"></i>
                 <span>${reqCurso.nombre}</span>
               </div>
-              <span class="req-status-badge ${reqEstadoClase}">
+              <span class="req-status-badge req-badge ${reqEstadoClase}">
                 <i class="fa-solid ${reqIcono}" style="font-size:0.7rem; margin-right:2px;"></i> ${reqEstadoTexto}
               </span>
             </div>
@@ -606,14 +610,59 @@ function inyectarBotonCompartir() {
   btnShare.addEventListener('click', generarImagenRedesSociales);
   profileCard.appendChild(btnShare);
 }
-
 /* =========================================================
-   GENERADOR Y TARJETA COMPARTIBLE OPTIMIZADA (CON QR Y AUTO-FIT)
+   GENERADOR Y TARJETA COMPARTIBLE OPTIMIZADA (DISEÑO DOBLE HILERA DE 7)
 ========================================================= */
+
+// FUNCIÓN AUXILIAR AUTOMATIZADA: Simplifica los nombres largos de los cursos para la tarjeta compacta
+function obtenerNombreCortoCurso(courseName) {
+  const name = String(courseName || "").trim().toLowerCase();
+  
+  if (name.includes("impresion 3d") || name.includes("impresión 3d")) {
+    return name.includes("intermedio") ? "Impresión 3D II" : "Impresión 3D I";
+  }
+  if (name.includes("drone") || name.includes("vant") || name.includes("vuelo")) {
+    return "Vuelo de Drones";
+  }
+  if (name.includes("programación") || name.includes("programacion") || name.includes("programar")) {
+    return "Programación";
+  }
+  if (name.includes("corte laser") || name.includes("corte láser") ) {
+    return "Corte Láser";
+  }
+  if (name.includes("cnc") || name.includes("router") ) {
+    return "Fresado CNC";
+  }
+  if (name.includes("iot") || name.includes("internet de las cosas")) {
+    return "IoT";
+  }
+  if (name.includes("microcontrolador") ) {
+    return "Microcontroladores";
+  }
+  if (name.includes("actuadores") || name.includes("sensores")) {
+    return "Sensores";
+  }
+  if (name.includes("automatizacion") || name.includes("automatización") || name.includes("robot")) {
+    return "Automatización";
+  }
+  if (name.includes("geoespacial") || name.includes("mapa") || name.includes("kobo")) {
+    return "Geotecnologías";
+  }
+  if (name.includes("innovacion") || name.includes("innovación") || name.includes("canvas")) {
+    return "Innovación Aplicada";
+  }
+  if (name.includes("fabricacion digital") || name.includes("fabricación digital")) {
+    return "Fabricación Digital";
+  }
+  if (name.includes("electricidad") || name.includes("electrotecnia")) {
+    return "Electrónica";
+  }
+  // Si no entra en ninguna regla, devuelve el nombre original truncado discretamente
+  return courseName.length > 22 ? courseName.substring(0, 20) + "..." : courseName;
+}
 function generarImagenRedesSociales() {
   if (!estudianteGlobal) return;
 
-  // 1. Validar u obtener el contenedor base
   let shareContainer = document.getElementById('linkedinShareCard');
   if (!shareContainer) {
     shareContainer = document.createElement('div');
@@ -621,54 +670,80 @@ function generarImagenRedesSociales() {
     document.body.appendChild(shareContainer);
   }
 
-  // 2. Extraer los módulos aprobados con sus fechas cruzadas reales
-  const aprobadosReales = cursosRutaGlobal
-    .map(c => {
-      const tuplaAsociada = tuplasGlobales.find(t => t[0] === c.id);
-      if (tuplaAsociada) {
-        return { ...c, fechaCompletado: tuplaAsociada[1] };
-      }
-      return null;
-    })
-    .filter(c => c !== null);
+  // 1. Extraer aprobados reales
+  const aprobadosReales = cursosRutaGlobal.filter(c => 
+    tuplasGlobales.some(t => t[0] === c.id)
+  );
 
   const totalCursosLogrados = aprobadosReales.length;
-  const fechaEmision = new Date().toLocaleDateString('es-CR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  });
+  const horasAcumuladas = totalCursosLogrados * 4; 
 
-  // 3. Generar dinámicamente las cajas HTML con control estricto de truncado de texto
-  const cursosHTML = aprobadosReales.map(curso => {
-    return `
-      <div class="share-course-box">
-        <div class="share-box-top">
-          <i class="fa-solid ${getCourseIcon(curso.nombre)} share-box-icon"></i>
-          <span class="share-badge-success"><i class="fa-solid fa-circle-check"></i> Aprobado</span>
+  const tieneModuloFinal = aprobadosReales.some(c => c.nombre.toLowerCase().includes("innovación"));
+  
+  // CONDICIÓN: Evaluar si es una sola hilera para aplicar espaciados de caja
+  const esUnaHilera = totalCursosLogrados <= 6;
+  const slotsOrdinariosVisibles = esUnaHilera ? 6 : Math.max(totalCursosLogrados, 12);
+  const columnasGrid = esUnaHilera ? 6 : Math.ceil(slotsOrdinariosVisibles / 2);
+
+  let medallasHTML = "";
+  for (let i = 0; i < slotsOrdinariosVisibles; i++) {
+    if (i < totalCursosLogrados) {
+      const curso = aprobadosReales[i];
+      const nombreAbreviado = obtenerNombreCortoCurso(curso.nombre);
+      
+      // Intentar buscar la fecha de aprobación desde las tuplas globales de tu base de datos
+      const tuplaCorrespondiente = tuplasGlobales.find(t => t[0] === curso.id);
+      // Si la tupla tiene la fecha en la posición [1] o [2], la usamos; si no, dejamos un fallback ordenado
+      let fechaCursoFormateada = "Completado";
+      if (tuplaCorrespondiente && tuplaCorrespondiente[1]) {
+        // Asumiendo formato string o Date, lo ideal es mostrar algo corto como "Ene 2026" o "12/04/2026"
+        fechaCursoFormateada = tuplaCorrespondiente[1]; 
+      }
+      
+      medallasHTML += `
+        <div class="compact-medal-slot medal-unlocked" title="${curso.nombre}">
+          <div class="compact-medal-circle">
+            <i class="fa-solid ${getCourseIcon(curso.nombre)}"></i>
+          </div>
+          <span class="medal-course-title">${nombreAbreviado}</span>
+          <span class="medal-course-date">${fechaCursoFormateada}</span>
         </div>
-        <h4 title="${curso.nombre}">${curso.nombre}</h4>
-        <span class="share-course-date">Completado: ${curso.fechaCompletado || '---'}</span>
-      </div>
-    `;
-  }).join('');
-
-  // 4. Ajuste inteligente de densidad de la rejilla según volumen real de cursos
-  let claseDensidad = 'grid-vacio';
-  if (totalCursosLogrados >= 7) {
-    claseDensidad = 'alta-densidad';
-  } else if (totalCursosLogrados >= 4) {
-    claseDensidad = 'media-densidad';
-  } else if (totalCursosLogrados >= 1) {
-    claseDensidad = 'baja-densidad';
+      `;
+    } else {
+      // Casilla bloqueada
+      medallasHTML += `
+        <div class="compact-medal-slot medal-locked">
+          <div class="compact-medal-circle">
+            <i class="fa-solid fa-lock"></i>
+          </div>
+          
+        </div>
+      `;
+    }
   }
 
-  // 5. Definir la URL de la plataforma para el código QR
-  const urlPlataforma = `https://fablabiica.github.io/AgroLINC/`;
-  const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(urlPlataforma)}&color=07152d`;
+  const trofeoHTML = `
+    <div class="special-trophy-panel ${tieneModuloFinal ? 'trophy-unlocked' : 'trophy-locked'}">
+      <div class="trophy-title">Programa AgroLINC</div>
+      <div class="trophy-badge">
+        <i class="fa-solid ${tieneModuloFinal ? 'fa-trophy' : 'fa-award'}"></i>
+      </div>
+      <div class="trophy-title">${tieneModuloFinal ? 'COMPLETADO' : ''}</div>
+    </div>
+  `;
 
-  shareContainer.innerHTML = `
-    <!-- Franja Blanca Premium Superior Obligatoria para Logos -->
+  const urlPlataforma = `https://fablabiica.github.io/AgroLINC/ruta.html`;
+  const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(urlPlataforma)}&color=041124`;
+
+ // --- VALIDACIÓN DINÁMICA DE TAMAÑO PARA EL NOMBRE ---
+// Si el nombre pasa de 25 caracteres, reducimos la fuente para prevenir que rompa el layout
+let fontSizeNombre = '2.6rem';
+if (estudianteGlobal.nombre && estudianteGlobal.nombre.length > 25) {
+  fontSizeNombre = '2.0rem'; // Se reduce lo suficiente para acomodarse en dos líneas compactas
+}
+
+// Ahora sí, inyectas tu plantilla usando la variable dinámicamente en el inline-style de la etiqueta h2
+shareContainer.innerHTML = `
     <div class="share-branding-strip">
       <div class="share-strip-left">
         <img src="assets/images/agrolinc.svg" alt="AgroLINC" class="share-logo-main" onerror="this.style.display='none'">
@@ -682,58 +757,110 @@ function generarImagenRedesSociales() {
     <div class="share-body">
       <div class="share-user-meta">
         <div class="share-user-details">
-          <h2>${estudianteGlobal.nombre}</h2>
+          <!-- PARCHE DE REDUCCIÓN DE FUENTE IMPLEMENTADO AQUÍ -->
+          <h2 class="compact-white-name" style="font-size: ${fontSizeNombre} !important;">${estudianteGlobal.nombre}</h2>
           <p class="share-user-sub">
-            <span><i class="fa-solid fa-id-card"></i> Identificación: <b>${estudianteGlobal.cedula}</b></span>
+            <span><i class="fa-solid fa-id-card"></i> <b>${estudianteGlobal.cedula}</b></span>
             <span class="share-separator">•</span>
-            <span><i class="fa-solid fa-route"></i> Ruta: <b>${estudianteGlobal.ruta.toUpperCase()}</b></span>
+            <span><i class="fa-solid fa-route"></i> Ruta Tecnológica: <b>${estudianteGlobal.ruta.toUpperCase()}</b></span>
+            <span class="share-separator">•</span>
+            <span>
+              <i class="fa-regular fa-calendar-check"></i> 
+              <b>${new Date().toLocaleDateString('es-CR', { day: '2-digit', month: '2-digit', year: 'numeric' })}</b>
+            </span>
           </p>
         </div>
+        
         <div class="share-user-stats">
-          <span class="share-stat-badge"><i class="fa-solid fa-award"></i> ${totalCursosLogrados} Módulos Logrados</span>
-          <span class="share-date-badge"><i class="fa-solid fa-calendar-day"></i> ${fechaEmision}</span>
+          <div class="badge-logro-premium">
+            <div class="badge-premium-icon">
+              
+              <i class="fa-solid fa-medal"></i>
+            </div>
+            <div class="badge-premium-content">
+              <div class="badge-premium-title">
+              <span class="badge-hours-highlight">${totalCursosLogrados === 1 ? 'Nuevo' : totalCursosLogrados}</span>
+                 ${totalCursosLogrados === 1 ? 'Logro de aprendizaje' : 'Logros de aprendizaje'}
+              </div>
+              <div class="badge-premium-subtitle">
+                 En innovación tecnológica
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       
-      <!-- Contenedor con distribución elástica e inteligente para evitar vacíos -->
-      <div class="share-courses-container ${claseDensidad}">
-        ${totalCursosLogrados === 0 
-          ? `<div class="share-empty-state"><i class="fa-solid fa-graduation-cap"></i><p>Iniciando ruta de aprendizaje formativa.</p></div>`
-          : cursosHTML
-        }
+      <!-- CONTENEDOR CON LA CLASE ADAPTATIVA DE UNA SOLA HILERA -->
+      <div class="showcase-container ${esUnaHilera ? 'one-row-case' : ''}">
+        <div class="compact-medal-case-dynamic" style="grid-template-columns: repeat(${columnasGrid}, 1fr);">
+          ${medallasHTML}
+        </div>
+        ${trofeoHTML}
       </div>
     </div>
 
-    <!-- Pie de página con integración del Código QR e información de credenciales -->
-    <div class="share-footer">
-      <div class="share-footer-text">
-        <span><i class="fa-solid fa-certificate"></i> Registro de Cursos Aprobados del Programa AgroLINC </span>
-        <img src="assets/images/fablab.png" alt="FabLab" class="share-logo-inst" onerror="this.style.display='none'">
-        <p>Escanea el código QR de la derecha para validar en la plataforma de AgroLINC</p>
-      </div>
-      <div class="share-footer-qr">
-        <img src="${qrApiUrl}" alt="Código QR de Verificación" class="share-qr-image">
-      </div>
+   <div class="share-footer">
+  <div class="share-footer-left-block">
+    <div class="share-footer-text">
+      <span><i class="fa-solid fa-shield-halved"></i> Portafolio de Habilidades Digitales • AgroLINC</span>
+      <p>¡Escanea el código QR para comprobar mis cursos aprobados y seguir mi avance en la plataforma!</p>
     </div>
+    
+      <img src="assets/images/fablab.png" alt="FABAB" class="share-logo-footer-inst" onerror="this.style.display='none'">
+  </div>
+  
+  <div class="share-footer-qr">
+    <img src="${qrApiUrl}" alt="Código QR de Verificación" class="share-qr-image">
+  </div>
+</div>
   `;
 
-  // 6. Captura fotográfica estable fijando las dimensiones de salida
+
+  // 5. Captura con corrección tipográfica
   setTimeout(() => {
     html2canvas(shareContainer, {
       useCORS: true,
       allowTaint: true,
-      backgroundColor: "#f4f7fb",
-      scale: 2,           // Renderizado nítido de alta definición
+      backgroundColor: "#081d38",
+      scale: 2,           
       width: 1200,        
-      height: 630         
+      height: 720,
+      logging: false,     
+      scrollX: 0,
+      scrollY: 0,
+      x: 0, 
+      y: 0,
+      windowWidth: 1200,  
+      windowHeight: 720,
+
+      onclone: (clonedDoc) => {
+        const iconos = clonedDoc.querySelectorAll('.compact-medal-circle i, .trophy-badge i, .badge-premium-icon i');
+        iconos.forEach(icono => {
+          icono.style.position = 'absolute';
+          icono.style.top = '40%'; 
+          icono.style.left = '50%';
+          icono.style.transform = 'translate(-50%, -50%)'; 
+          icono.style.lineHeight = '1';
+        });
+
+        const todosLosTextos = clonedDoc.querySelectorAll(
+          '.compact-white-name, .share-user-sub, .badge-logro-premium, .medal-course-title, .medal-course-date, .medal-locked-date, .trophy-title, .share-footer-text span, .share-footer-text p'
+        );
+
+        todosLosTextos.forEach(texto => {
+          texto.style.position = 'relative';
+          texto.style.top = '-8px'; 
+          texto.style.lineHeight = '1.8';
+        });
+      }
     }).then(canvas => {
       const nombreArchivoSafe = estudianteGlobal.nombre.trim().replace(/\s+/g, '_');
       const link = document.createElement('a');
-      link.download = `AgroLINC_Progreso_${nombreArchivoSafe}.png`;
+      link.download = `AgroLINC_Logros_${nombreArchivoSafe}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
     }).catch(err => {
-      console.error("Error generando la tarjeta de progreso: ", err);
+      console.error("Error en la captura de la tarjeta: ", err);
     });
   }, 600); 
 }

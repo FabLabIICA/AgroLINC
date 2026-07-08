@@ -179,7 +179,7 @@ button, input, select, textarea {
   position: sticky;
   top: 0;
   z-index: 500;
-  height: 110px;
+  height: 80px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1984,22 +1984,45 @@ button, input, select, textarea {
 
 
 /* =========================================================
-   MEJORAS EN MODAL DE REQUISITOS (PUNTO 1)
+   REQUISITOS DEL MODAL: Corrección adaptativa para móviles
 ========================================================= */
-.req-item-link {
+.req-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.8rem 1.2rem;
-  background: #ffffff;
+  /* CLAVE: Permite que si no caben en una sola línea, la etiqueta baje elegantemente */
+  flex-wrap: wrap; 
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: 12px;
-  margin-top: 0.6rem;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
-  position: relative;
-  overflow: hidden;
+  margin-bottom: 8px;
+  transition: all 0.2s ease;
+}
+
+/* El enlace o texto del nombre del curso requisito */
+.req-item a, 
+.req-item span:first-child {
+  flex: 1;
+  min-width: 200px; /* Le asegura un espacio mínimo al texto antes de saltar */
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.3;
+  word-break: break-word; /* Rompe palabras si el nombre es extremadamente largo */
+}
+
+/* La etiqueta de estado (Disponible / No disponible) */
+.req-badge {
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap; /* Evita que el texto interno "Disponible" se parta en dos líneas */
+  text-align: center;
+  
+  /* En móviles, si llega a bajar, se estira armoniosamente o se alinea a la derecha */
+  margin-left: auto; 
 }
 
 /* Indicador visual de que es un elemento interactivo */
@@ -2047,332 +2070,716 @@ button, input, select, textarea {
 .req-status-badge.available { background: rgba(109, 40, 217, 0.12); color: var(--primary); }
 .req-status-badge.locked { background: #f1f5f9; color: #64748b; }
 
+/* Ajuste específico para pantallas muy pequeñas (Media query de seguridad) */
+@media (max-width: 480px) {
+  .req-item {
+    align-items: flex-start; /* Alinea arriba si se vuelve multilínea */
+  }
+  
+  .req-badge {
+    width: auto;
+    margin-left: 0; /* En celulares ultra pequeños se alinea al flujo natural abajo del texto */
+    margin-top: 4px;
+  }
+}
+
+/* ==========================================================================
+   1. BOTÓN DE DESCARGA (INTERFAZ WEB PRINCIPAL)
+   ========================================================================== */
+   .download-share-btn {
+    width: 100%;
+    margin-top: 1.5rem;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #ffffff;
+    border: none;
+    padding: 0.95rem 1.5rem;
+    border-radius: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.2);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* ==========================================================================
+     2. CONTENEDOR MAESTRO DE LA TARJETA (1200x720)
+     ========================================================================== */
+     #linkedinShareCard {
+      width: 1200px;
+      height: 720px;
+      position: absolute;
+      left: -9999px;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, sans-serif;
+    
+      /* COLOR BASE + TEXTURA DE REJILLA TECNOLÓGICA */
+      background-color: #081d38; /* El azul noche exacto de tu interfaz */
+      background-image: 
+        linear-gradient(315deg,#ffffff24 1px, transparent 3px),
+        linear-gradient(135deg, #00000085 2px, transparent 2px);
+      background-size: 24px 24px; /* Tamaño del cuadrante */
+      background-position: center;
+    }
+  
+  /* Cabecera de Marcas */
+  .share-branding-strip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    padding: 15px 40px;
+    height: 75px;
+    box-sizing: border-box;
+  }
+  
+  .share-branding-strip::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, #54108b, #13aac5);
+  }
+  
+  .share-logo-main { 
+    height: 70px; 
+    width: auto; 
+  }
+  
+  .share-strip-right { 
+    display: flex; 
+    align-items: center; 
+    gap: 25px; 
+  }
+  
+  .share-logo-instm { 
+    height: 70px; 
+    width: auto; 
+    object-fit: contain; 
+  }
+  
+  .share-logo-inst { 
+    height: 38px; 
+    width: auto; 
+    object-fit: contain; 
+  }
+  
+  /* Cuerpo Principal */
+  .share-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 35px;
+    padding-top: 15px;
+    box-sizing: border-box;
+    position: relative; /* Eje de referencia indispensable para el ::before */
+  }
+  
+  .share-body::before {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, #54108b, #13aac5);
+    z-index: 10; /* Parche de renderizado para html2canvas */
+  }
+  
+  /* Meta Datos del Alumno */
+  .share-user-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  .share-user-stats {
+
+    margin-top: 15px;
+  }
+  
+  .compact-white-name {
+    color: #ffffff !important;
+    font-size: 2.6rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0 0 6px 0;
+  }
+  
+  .share-user-sub {
+    color: #94a3b8;
+    font-size: 1.1rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .share-separator { 
+    color: #475569; 
+    font-weight: bold; 
+  }
+  
 /* =========================================================
-   REDISEÑO DEL BOTÓN DE DESCARGA (PUNTO 2)
+   CONTENEDOR PADRE GENERAL
 ========================================================= */
-.download-share-btn {
-  width: 100%;
-  margin-top: 1.5rem;
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  color: white;
-  border: none;
-  padding: 0.95rem 1.5rem;
-  border-radius: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.2);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.download-share-btn:hover {
-  transform: translateY(-3px);
-  background: linear-gradient(135deg, #1d4ed8, #1e40af);
-  box-shadow: 0 8px 22px rgba(37, 99, 235, 0.35);
-}
-
-.download-share-btn:active {
-  transform: translateY(-1px);
-}
-/* =========================================================
-   ESTRUCTURA DE EXPORTACIÓN: TARJETA COMPARTIBLE PREMIUM (1200x630)
-========================================================= */
-#linkedinShareCard {
-  position: absolute;
-  left: -9999px;
-  top: -9999px;
-  width: 1200px;
-  height: 630px;
-  background: #05081f;
-  color: #ffffff;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  font-family: 'Inter', sans-serif;
-  overflow: hidden;
-}
-
-/* 1. Franja Blanca Pura Obligatoria para Logos */
-.share-branding-strip {
-  height: 85px;
-  background: #ffffffd7;
-  border-bottom: 3px solid #072e72;
-  border-top: 3px solid #072e72;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 45px;
-  box-sizing: border-box;
-}
-
-.share-strip-left .share-logo-main {
-  height: 52px;
-  width: auto;
-  object-fit: contain;
-}
-
-.share-logo-inst {
-  height: 38px;
-  width: auto;
-  object-fit: contain;
-}
-
-.share-logo-instm {
-  height: 70px;
-  width: auto;
-  object-fit: contain;
-}
-
-.share-strip-right {
+.badge-logro-premium {
   display: flex;
   align-items: center;
-  gap: 28px;
-}
-
-
-
-/* 2. Cuerpo Central */
-.share-body {
-  flex: 1;
-  padding: 10px 45px 15px 45px;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-
-.share-user-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
-}
-
-.share-user-details h2 {
-  font-size: 2rem;
-  font-weight: 800;
-  color: #24c1e9;
-  margin-bottom: 4px;
-}
-
-.share-user-sub {
-  font-size: 0.95rem;
-  color: #64748b;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.share-separator {
-  color: #cbd5e1;
-}
-
-.share-user-stats {
-  display: flex;
-  gap: 12px;
-}
-
-.share-stat-badge {
-  background: #e2e8f015;
-  color: #8031ff;
-  padding: 8px 16px;
-  padding-bottom: 16px;
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 0.9rem;
-}
-
-.share-date-badge {
-  background: #e2e8f015;
-  color: #80a1ce;
-  padding: 8px 16px;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-/* 3. Rejilla Inteligente de Cursos (Evita desbordes y vacíos) */
-.share-courses-container {
-  display: grid;
   gap: 16px;
-  flex: 1;
-  align-content: start;
-}
-
-/* Distribución según cantidad de elementos */
-.share-courses-container.grid-vacio {
-  grid-template-columns: 1fr;
-}
-
-.share-courses-container.baja-densidad {
-  grid-template-columns: repeat(2, 1fr); /* Elementos grandes si son pocos */
-}
-
-.share-courses-container.media-densidad {
-  grid-template-columns: repeat(3, 1fr);
-}
-
-.share-courses-container.alta-densidad {
-  grid-template-columns: repeat(4, 1fr); /* Elementos compactos si son muchos */
-}
-
-/* Caja de cada Módulo Individual (Dinámica) */
-.share-course-box {
-  background: #ffffff13;
-  border: 1px solid #a8a8a8;
+  background: rgba(255, 255, 255, 0.03); 
+  border: 1px solid rgba(255, 255, 255, 0.08); 
+  padding: 14px 14px;
   border-radius: 16px;
-  padding: 14px 16px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   box-sizing: border-box;
-  min-height: 75px; /* Se cambia height fijo por min-height para permitir escalado */
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); 
 }
 
-.share-box-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* =========================================================
+   CUADRO MORADO: Eje de referencia absoluto
+========================================================= */
+.badge-premium-icon {
+  width: 50px;
+  height: 50px;
+  background: rgba(139, 92, 246, 0.12); 
+  border-radius: 12px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  padding: 0; 
+  
+  /* CLAVE: Obligatorio para que el icono se clave en su centro exacto */
+  position: relative; 
 }
 
-.share-box-icon {
-  font-size: 0.8rem;
-  color: #24c1e9;
+/* =========================================================
+   ICONO DE LA MEDALLA: Centrado absoluto indestructible
+========================================================= */
+.badge-premium-icon i {
+  position: absolute;
+  /* El ajuste dorado (top: 40%) contrarresta el desfase de html2canvas */
+  top: 40%; 
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #a78bfa; 
+  font-size: 1.6rem; /* Tamaño óptimo para que respire dentro de los 50px */
+  line-height: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block;
+}
+  
+  .badge-premium-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left;
+  }
+  
+  .badge-premium-title {
+    color: #e2e8f0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+  }
+  
+  .badge-hours-highlight {
+    color: #c084fc; 
+    font-weight: 800;
+  }
+  
+  .badge-premium-subtitle {
+    color: #94a3b8; 
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-top: 3px;
+    letter-spacing: 0.01em;
+  }
+  
+  /* ==========================================================================
+     4. ESTUCHE DE MEDALLAS DINÁMICO (LÍNEA DE CURSOS ORDINARIOS)
+     ========================================================================== */
+  .showcase-container {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    width: 100%;
+    margin: 15px 0;
+    background: rgba(255, 255, 255, 0.03) !important;
+    padding: 25px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-sizing: border-box;
+  }
+  
+  .compact-medal-case-dynamic {
+    flex: 1;
+    display: grid;
+    gap: 5px; 
+    box-sizing: border-box;
+  }
+  
+  .compact-medal-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .compact-medal-circle {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    box-sizing: border-box;
+    position: relative; /* Eje estricto para el centrado absoluto del icono */
+  }
+  
+  .compact-medal-circle i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centrado matemático puro para html2canvas */
+    font-size: 3rem;
+    line-height: 1 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block;
+  }
+  
+/* ===========================
+   Medalla desbloqueada
+   =========================== */
+
+   .medal-unlocked .compact-medal-circle {
+    background: rgba(34, 211, 238, 0.10);
+    color: #22D3EE;
+    border: 2px solid #22D3EE;
+
+    /* Sombra muy sutil */
+    filter: drop-shadow(0 2px 6px rgba(34, 211, 238, 0.18));
+
+    position: relative;
+    z-index: 1;
 }
 
-.share-badge-success {
-  color: #09c45d;
-  font-size: 0.5rem;
-  font-weight: 800;
-  padding: 2px 4px;
-  border-radius: 999px;
-  text-transform: uppercase;
+/* Halo suave */
+.medal-unlocked .compact-medal-circle::before {
+    content: "";
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+
+    background: radial-gradient(
+        circle,
+        rgba(34,211,238,.18) 0%,
+        rgba(34,211,238,.08) 45%,
+        rgba(34,211,238,0) 72%
+    );
+
+    z-index: -1;
+    pointer-events: none;
 }
 
-/* Prevención Quirúrgica de Desborde o pérdida de texto */
-.share-course-box h4 {
-  font-size: 0.7rem;
+/* Aro interior para dar sensación de insignia */
+.medal-unlocked .compact-medal-circle::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.10);
+    pointer-events: none;
+}
+  
+  /* Estado: MEDALLA BLOQUEADA */
+  .medal-locked .compact-medal-circle {
+    background: rgba(255, 255, 255, 0.03);
+    color: rgba(255, 255, 255, 0.12);
+    border: 2px dashed rgba(255, 255, 255, 0.12);
+    width: 75px;
+    height: 75px;
+    margin-top: 24px;
+  }
+  
+  .medal-locked .compact-medal-circle i {
+    font-size: 1.6rem !important;
+    opacity: 0.40;
+  }
+  
+  /* Textos de los Cursos (Títulos y Fechas) */
+
+  
+  .medal-course-date {
+    font-size: 0.72rem;
+    color: #7a7a7a81; 
+    font-weight: 700;
+    margin-bottom: 2px;
+    letter-spacing: 0.02em;
+    opacity: 0.9;
+    display: block;
+    width: 100%;
+  }
+  
+  .medal-locked-title {
+    color: rgba(255, 255, 255, 0.25);
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .medal-locked-date {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.2);
+    font-weight: 500;
+    margin-top: 6px;
+    display: block;
+    width: 100%;
+  }
+  
+  /* ==========================================================================
+     5. PANEL EXCLUSIVO: MÓDULO FINAL (EL TROFEO DE CIERRE)
+     ========================================================================== */
+  .special-trophy-panel {
+    width: 180px;
+    height: 160px;
+    border-left: 2px dashed rgba(255, 255, 255, 0.15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-left: 25px;
+    box-sizing: border-box;
+  }
+  
+  .trophy-badge {
+    width: 100px;
+    height: 100px;
+    border-radius: 18px;
+    position: relative; /* Ancla de centrado seguro */
+    box-sizing: border-box;
+  }
+ 
+  
+  /* Trofeo: Estado Bloqueado */
+  .trophy-locked .trophy-badge {
+    background: rgba(255, 255, 255, 0.02);
+    border: 3px dashed rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.089);
+    font-size: 2.5rem;
+  }
+  
+
+  .medal-unlocked .compact-medal-circle {
+    background: rgba(34, 211, 238, 0.10);
+    color: #22D3EE;
+    border: 2px solid #22D3EE;
+
+    /* Sombra muy sutil */
+    filter: drop-shadow(0 2px 6px rgba(34, 211, 238, 0.18));
+
+    position: relative;
+    z-index: 1;
+}
+
+/* =========================================================
+   TROFEO COMPLETADO: Contenedor Padre Rígido
+========================================================= */
+.trophy-unlocked .trophy-badge {
+  width: 100px;
+  height: 100px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.2), rgba(251, 191, 36, 0.2));
+  border: 3px solid #eab308;
+  
+  /* Sistema de coordenadas absoluto blindado */
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  overflow: visible; /* Permite que el aura exterior respire sin cortarse */
+}
+
+/* HALO SUAVE DE ORO (Aura exterior expansiva) */
+.trophy-unlocked .trophy-badge::before {
+  content: "";
+  position: absolute;
+  inset: -8px; 
+  border-radius: 22px; 
+  background: radial-gradient(
+    circle,
+    rgba(234, 179, 8, 0.22) 0%,
+    rgba(234, 179, 8, 0.08) 45%,
+    rgba(234, 179, 8, 0) 75%
+  );
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ARO INTERIOR DE CRISTAL ORIGINAL (Recuperado y Blindado) */
+.trophy-unlocked .trophy-badge::after {
+  content: "";
+  position: absolute;
+  
+  /* Centrado absoluto simétrico por coordenadas fijas */
+  top: 4px;
+  left: 4px;
+  width: 86px;  /* 100px - 6px de bordes - 8px de aire */
+  height: 86px; 
+  
+  border-radius: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.12); /* Tu línea fina original */
+  pointer-events: none;
+  box-sizing: border-box;
+  z-index: 2;
+}
+
+/* =========================================================
+   ICONO DEL TROFEO: ¡Más Grande y Centrado al Píxel!
+========================================================= */
+.trophy-unlocked .trophy-badge i {
+  position: absolute;
+  
+  /* El truco de oro: Anclaje al 50% con transform anti-desfases */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+  color: #eab308; 
+  font-size: 2.8rem; /* ¡Incrementado considerablemente para máxima presencia! */
+  
+  /* Reseteo absoluto de fuentes para evitar que html2canvas empuje hacia arriba */
+  line-height: 1 !important;
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  z-index: 3;
+  
+  /* Sombra proyectada del icono para realzar el metalizado */
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
+}
+
+.trophy-title {
+  font-size: 0.85rem;
   font-weight: 700;
-  color: #ffffff;
+  text-align: center;
+  color: #94a3b8;
+  letter-spacing: 0.03em;
+}
+
+.trophy-unlocked .trophy-title { 
+  color: #fef08a; 
+}
+  
+  /* ==========================================================================
+     6. PIE DE PÁGINA (FOOTER CON QR INTEGRADO Y BADGES TEMPORALES)
+     ========================================================================== */
+  .share-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #1e293b;
+    padding: 20px 40px;
+    background:   #041124;
+    height: 100px;
+    box-sizing: border-box;
+    position: relative; 
+    margin-bottom: 0px;
+  }
+  
+  .share-footer-text span {
+    font-weight: 700;
+    color: #ffffff;
+    font-size: 1.05rem;
+    display: block;
+  }
+  
+  .share-footer-text p {
+    color: #64748b;
+    font-size: 0.85rem;
+    margin: 4px 0 0 0;
+  }
+  
+  .share-footer-qr {
+    position: absolute;
+    right: 40px;
+    bottom: 20px; 
+    z-index: 50;
+  }
+  
+  .share-qr-image {
+    width: 110px; 
+    height: 110px;
+    border-radius: 12px;
+    background: #ffffff;
+    padding: 6px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+    display: block;
+  }
+  
+  .share-date-badge {
+    color: #38bdf8 !important; 
+    background: rgba(56, 189, 248, 0.08);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: 1px solid rgba(56, 189, 248, 0.15);
+  }
+  
+  /* ==========================================================================
+     7. COMPORTAMIENTO ADAPTATIVO: CASO DE UNA SOLA HILERA (.one-row-case)
+     ========================================================================== */
+  .one-row-case {
+    margin: 35px 0 !important;
+    padding: 40px 30px !important; /* Más colchón interno para equilibrar pesos */
+    background: rgba(255, 255, 255, 0.03) !important;
+  }
+  
+  .one-row-case .share-body {
+    padding-left: 35px !important;
+  }
+  
+  /* Escalado Contenido de Medallas Ganadas (Una sola Hilera) */
+  .one-row-case .medal-unlocked .compact-medal-circle {
+    width: 118px !important;
+    height: 118px !important;
+    border-width: 3px !important;
+    filter: drop-shadow(0px 0px 10px rgba(0, 217, 255, 0.4));
+  }
+  
+  .one-row-case .medal-unlocked .compact-medal-circle i {
+    font-size: 3.2rem !important;
+  }
+  
+ /* =========================================================
+   TÍTULOS DE LOS CURSOS (ESTUCHE NORMAL)
+========================================================= */
+.medal-course-title {
+  color: #e2e8f0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  width: 100%;
+  margin-top: 5px;
+  
+  
+  /* CLAVE 1: Interlineado más compacto para que html2canvas controle las hileras */
+  line-height: 1.5 !important; 
+  
+  /* CLAVE 2: Colchón de seguridad para salvar los rasgos descendentes (g, p, y) */
+  padding-bottom: 5px !important; 
+  
+  /* TRUNCADO SEGURO EN 2 LÍNEAS */
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Corta exactamente en la segunda línea si es muy largo */
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.25;
-  height: 1.7rem; /* Asegura espacio fijo para el texto */
-  margin: 5px 0;
-}
-
-.share-course-date {
-  font-size: 0.5rem;
-  color: #94a3b8;
-  font-weight: 500;
+  box-sizing: border-box; /* Asegura que el padding no rompa el tamaño total */
 }
 
 /* =========================================================
-   ADAPTACIÓN DINÁMICA POR BAJO VOLUMEN (EVITA ESPACIOS VACÍOS)
+   TÍTULOS EN UNA SOLA HILERA (.one-row-case)
 ========================================================= */
+.one-row-case .medal-unlocked .medal-course-title {
+  font-size: 0.85rem !important;
+  margin-top: 10px !important;
+  color: #ffffff;
+  
+  /* Mantenemos el interlineado y el colchón proporcional al tamaño de letra */
+  line-height: 1.25 !important;
+  padding-bottom: 4px !important;
+}
+  
+  /* Ajuste proporcional de Medallas Bloqueadas (Una sola Hilera) */
+  .one-row-case .medal-locked .compact-medal-circle {
+    width: 70px !important;
+    height: 70px !important;
+    margin-top: 40px !important; 
+  }
+  
+  /* Crecimiento del Bloque de Cierre/Trofeo (Una sola Hilera) */
+  .one-row-case .special-trophy-panel {
+    height: 190px !important;
+    padding-left: 30px !important;
+  }
+  
+  .one-row-case .share-footer {
+    height: 120px !important;
+  }
 
-/* Ajustes cuando la densidad es BAJA (1 a 3 cursos) */
-.baja-densidad .share-course-box {
-  padding: 22px 24px;
-  min-height: 125px;
-}
-.baja-densidad .share-course-box h4 {
-  font-size: 1.05rem;
-  height: 2.6rem;
-  line-height: 1.3;
-}
-.baja-densidad .share-box-icon {
-  font-size: 1.2rem;
-}
-.baja-densidad .share-badge-success {
-  font-size: 0.7rem;
-  padding: 4px 8px;
-}
-.baja-densidad .share-course-date {
-  font-size: 0.75rem;
-}
+  .compact-white-name {
+    color: #ffffff !important;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0 0 6px 0;
+    line-height: 1.15; /* Reduce el interlineado para que si pasa a dos hileras no empuje las medallas */
+  
+    /* ESCUDO DE SEGURIDAD CONTRA DESBORDES MULTILÍNEA */
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Máximo absoluto de 2 hileras permitidas en la tarjeta */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Si es ridículamente largo, pone "..." al final para salvar el layout */
+    margin-right: 15px;
+  }
 
-/* Ajustes cuando la densidad es MEDIA (4 a 6 cursos) */
-.media-densidad .share-course-box {
-  padding: 18px 20px;
-  min-height: 95px;
-}
-.media-densidad .share-course-box h4 {
-  font-size: 0.85rem;
-  height: 2.1rem;
-}
-.media-densidad .share-box-icon {
-  font-size: 1rem;
-}
-.media-densidad .share-badge-success {
-  font-size: 0.6rem;
-  padding: 3px 6px;
-}
-.media-densidad .share-course-date {
-  font-size: 0.65rem;
-}
-
-/* ========================================================= */
-
-.share-empty-state {
-  display: flex;
-  flex-direction: column;
+  /* =========================================================
+   NUEVA ETIQUETA DE FECHA DE EMISIÓN
+========================================================= */
+.share-date-badge {
+  background: rgba(34, 211, 238, 0.08); /* Un toque sutil cian para amarrar con las medallas */
+  color: #22d3ee !important;
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(34, 211, 238, 0.15);
+  font-size: 0.7rem; /* Ligeramente más pequeño para mantener discreción */
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  height: 150px;
-  color: #94a3b8;
-  gap: 12px;
+  gap: 4px;
 }
 
-.share-empty-state i {
-  font-size: 3rem;
+.share-date-badge i {
+  color: #22d3ee !important;
 }
 
-/* 4. Pie de Página con Integración de Código QR */
+/* =========================================================
+   ESTRUCTURA DEL FOOTER OPTIMIZADA PARA COEXISTENCIA
+========================================================= */
 .share-footer {
-  height: 110px;
-  background: #072e72;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 0 45px;
+  align-items: flex-end; /* Alinea los bloques al fondo */
   box-sizing: border-box;
-  color: #ffffff;
 }
 
-.share-footer-text span {
-  display: block;
-  font-size: 0.9rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  margin-bottom: 10px;
-}
-
-.share-footer-text p {
-  font-size: 0.6rem;
-  color: #94a3b8;
-}
-
-.share-footer-qr {
-  background: #ffffff;
-  padding: 6px;
-  border-radius: 12px;
+/* Bloque contenedor que agrupa el texto y la nueva marca abajo */
+.share-footer-left-block {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-  transform: translateY(-15px); /* Efecto flotante elegante sobre el pie de página */
-  border: 1px solid #e2e8f0;
+  flex-direction: column;
+  gap: 12px; /* Espacio controlado entre el texto descriptivo y el logo */
+  flex-grow: 1;
 }
 
-.share-qr-image {
-  width: 78px;
-  height: 78px;
+/* El nuevo espacio para el logotipo institucional del footer */
+.share-footer-branding {
   display: block;
+  text-align: left;
+}
+
+.share-logo-footer-inst {
+  height: 45px; /* Altura discreta y elegante para que conviva en armonía */
+  width: auto; /* Sutil transparencia para que se fusione con el pie de página */
+  bottom: 27px;
+  right: 270px;
+  position: absolute;
 }
