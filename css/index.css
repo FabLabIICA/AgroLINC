@@ -38,27 +38,11 @@ body {
   min-height: 100vh;
 }
 
-/* Capa de fondo con repetición vertical y opacidad controlada */
-body::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  
-  /* Configuración de la imagen de fondo */
-  background-image: url("../assets/images/fondo.png"); /* Ajusta la ruta a tu archivo */
-  background-repeat: repeat-y;   /* Se repite únicamente a lo largo del eje vertical */
-  background-size: 100% auto;    /* Ajusta el ancho exacto al 100% de la pantalla */
-  background-position: top center;
-
-  /* Control de transparencia */
-  opacity: 0.15; /* Ajusta este valor entre 0.05 y 0.30 según el nivel de sutileza deseado */
-  
-  /* Garantiza que la capa quede detrás del contenido interactivo */
-  z-index: -1;
-  pointer-events: none;
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  /* overflow-x: hidden; */
 }
 
 img {
