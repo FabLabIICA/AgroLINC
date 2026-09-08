@@ -1,8 +1,8 @@
 {
   "name": "AgroLINC FabLab IICA",
   "short_name": "AgroLINC",
-  "start_url": "/AgroLINC/",
-  "scope": "/AgroLINC/",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#2e7d32",
