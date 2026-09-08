@@ -627,36 +627,6 @@
   </div>
   <script src="js/data.js"></script>
   <script src="js/index.js"></script>
-  <script>
-  let deferredPrompt;
 
-  // 1. Registrar el Service Worker
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js')
-        .then(reg => console.log('Service Worker registrado con éxito', reg))
-        .catch(err => console.error('Error al registrar Service Worker', err));
-    });
-  }
-
-  // 2. Capturar el evento de instalación para mostrar el banner o prompt
-  window.addEventListener('beforeinstallprompt', (e) => {
-    // Previene que Chrome muestre el banner automático por defecto
-    e.preventDefault();
-    deferredPrompt = e;
-
-    // Puedes disparar automáticamente el diálogo de instalación al usuario:
-    deferredPrompt.prompt();
-
-    deferredPrompt.userChoice.then((choiceResult) => {
-      if (choiceResult.outcome === 'accepted') {
-        console.log('El usuario aceptó instalar AgroLINC');
-      } else {
-        console.log('El usuario rechazó la instalación');
-      }
-      deferredPrompt = null;
-    });
-  });
-</script>
 </body>
 </html>
