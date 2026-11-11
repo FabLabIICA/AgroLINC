@@ -894,54 +894,53 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
-
 document.getElementById('downloadInvitationBtn').addEventListener('click', () => {
   const studentNameEl = document.getElementById('studentName');
   const studentName = studentNameEl ? studentNameEl.textContent : 'Participante';
 
-  // Validación rápida por si no ha consultado su cédula aún
+  // Validación si no ha consultado cédula
   if (!studentName || studentName === 'Sin consultar') {
     alert('Por favor consulta tu ruta ingresando tu identificación primero.');
     return;
   }
 
-  // 1. Personalizar el nombre en la tarjeta oculta
+  // 1. Personalizar el saludo con el nombre real del estudiante
   document.getElementById('waStudentName').textContent = `¡Hola, ${studentName}!`;
 
-  // 2. Opcional: Extraer los cursos completados para mostrarlos de forma amigable
+  // 2. Extraer dinámicamente los cursos completados reales del estudiante
   const waModulesContainer = document.getElementById('waModulesContainer');
-  waModulesContainer.innerHTML = ''; // Limpiar anterior
+  waModulesContainer.innerHTML = ''; 
   
-  // Buscamos cuántos cursos están completados en tu grid actual
-  const completedCards = document.querySelectorAll('.course-card.completed');
-  if (completedCards.length > 0) {
-    completedCards.forEach(card => {
-      const titleText = card.querySelector('strong') ? card.querySelector('strong').textContent : 'Módulo completado';
+  const aprobadosReales = cursosRutaGlobal.filter(c => 
+    tuplasGlobales.some(t => t[0] === c.id)
+  );
+
+  if (aprobadosReales.length > 0) {
+    aprobadosReales.forEach(curso => {
       const pill = document.createElement('div');
       pill.className = 'wa-module-pill';
-      pill.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${titleText}`;
+      pill.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${curso.nombre}`;
       waModulesContainer.appendChild(pill);
     });
   } else {
     waModulesContainer.innerHTML = `<span style="font-size: 0.85rem; color: #64748b;">¡Listo para iniciar tu recorrido en AgroLINC!</span>`;
   }
 
-  // 3. Mostrar temporalmente el contenedor oculto para que html2canvas lo lea
+  // 3. Mostrar temporalmente el contenedor oculto para la captura
   const inviteCardNode = document.getElementById('whatsappInviteCard');
   inviteCardNode.style.display = 'flex';
 
-  // 4. Generar la imagen con html2canvas
+  // 4. Generar la imagen con html2canvas optimizada para WhatsApp
   html2canvas(inviteCardNode, {
-    scale: 2, // Mejora la nitidez de la imagen resultante
+    scale: 2,
     useCORS: true,
     backgroundColor: null
   }).then(canvas => {
-    // Ocultar de nuevo la tarjeta del DOM visual
     inviteCardNode.style.display = 'none';
 
-    // Crear enlace de descarga automático
+    const nombreLimpio = studentName.trim().replace(/\s+/g, '_');
     const link = document.createElement('a');
-    link.download = `Invitacion_Bootcamp_AgroLINC_${studentName.replace(/\s+/g, '_')}.png`;
+    link.download = `Invitacion_Bootcamp_AgroLINC_${nombreLimpio}.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
   }).catch(err => {
