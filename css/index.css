@@ -2795,144 +2795,230 @@ button, input, select, textarea {
   position: absolute;
 }
 
-/* =========================================================
-   ESTILOS PARA LA TARJETA COMPACTA DE INVITACIÓN (WHATSAPP)
-========================================================= */
-.download-invitation-btn {
-  width: 100%;
-  margin-top: 1rem;
-  background: linear-gradient(135deg, #059669, #10b981);
-  color: #ffffff;
-  border: none;
-  padding: 0.95rem 1.5rem;
-  border-radius: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2);
-  transition: all 0.25s ease;
-}
-.download-invitation-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
-}
+
+/* =========================================
+   INVITACIÓN VERTICAL BOOTCAMP AGROLINC
+========================================= */
 
 #whatsappInviteCard {
-  width: 900px;
-  height: 620px;
+  width: 760px;
+  height: 1100px;
   position: absolute;
   left: -9999px;
+  top: 0;
   box-sizing: border-box;
   font-family: 'Inter', sans-serif;
-  background-color: #f8fafc;
-  background-image: radial-gradient(#e2e8f0 1.5px, transparent 1.5px);
-  background-size: 24px 24px;
+  background: #ffffff;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 35px 45px;
-  border: 1px solid #cbd5e1;
-  border-radius: 24px;
+  overflow: hidden;
+  border-radius: 30px;
+  border: 2px solid #e9e5f5;
+  box-shadow: 0 20px 60px rgba(30, 20, 70, 0.15);
+}
+
+.whatsapp-invite-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 42px 48px 30px;
+  box-sizing: border-box;
+  background:
+    radial-gradient(circle at 100% 0%, #e8fbf4 0, transparent 30%),
+    radial-gradient(circle at 0% 45%, #f1eaff 0, transparent 28%),
+    #ffffff;
 }
 
 .wa-header {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  border-bottom: 2px solid #e2e8f0;
-  padding-bottom: 12px;
+  gap: 22px;
+  padding-bottom: 28px;
+  border-bottom: 2px solid #e9e2f5;
 }
 
 .wa-logo {
-  height: 40px;
+  width: 250px;
+  height: 75px;
   object-fit: contain;
 }
 
 .wa-badge {
-  background: #ecfdf5;
-  color: #047857;
-  padding: 6px 14px;
+  background: linear-gradient(135deg, #6d28d9, #9333ea);
+  color: white;
+  padding: 12px 28px;
   border-radius: 999px;
-  font-size: 0.85rem;
-  font-weight: 700;
-  border: 1px solid #a7f3d0;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 2px;
 }
 
 .wa-body {
-  padding: 5px 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 28px 0;
+}
+
+.wa-eyebrow {
+  text-align: center;
+  color: #059669;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  margin-bottom: 14px;
 }
 
 .wa-title {
-  font-size: 1.7rem;
-  color: #0f172a;
-  font-weight: 800;
-  margin-bottom: 6px;
+  text-align: center;
+  font-size: 48px;
+  line-height: 1.15;
+  color: #54218d;
+  font-weight: 900;
+  margin-bottom: 20px;
 }
 
 .wa-text {
-  font-size: 0.95rem;
+  text-align: center;
+  font-size: 21px;
+  line-height: 1.65;
   color: #475569;
-  line-height: 1.5;
-  margin-bottom: 15px;
+  margin-bottom: 25px;
+}
+
+.wa-highlight {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #f1eaff, #e8fbf4);
+  border: 1px solid #d9c5f5;
+  border-radius: 22px;
+  padding: 24px;
+  margin-bottom: 25px;
+  color: #54218d;
+  font-size: 19px;
+}
+
+.wa-highlight-icon {
+  font-size: 32px;
+  color: #059669;
+}
+
+.wa-highlight strong {
+  font-size: 24px;
+}
+
+.wa-highlight span:last-child {
+  color: #64748b;
+}
+
+.wa-modules-section {
+  margin-bottom: 24px;
+}
+
+.wa-modules-section h3 {
+  text-align: center;
+  color: #334155;
+  font-size: 18px;
+  margin-bottom: 14px;
 }
 
 .wa-modules-preview {
   display: flex;
-  gap: 8px;
+  justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 15px;
+  gap: 9px;
 }
 
 .wa-module-pill {
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
-  padding: 5px 12px;
-  border-radius: 10px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #1e293b;
+  background: white;
+  border: 1px solid #c4b5fd;
+  padding: 9px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #334155;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  gap: 7px;
 }
+
 .wa-module-pill i {
   color: #059669;
 }
 
 .wa-cta-box {
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  padding: 14px 18px;
-  border-radius: 14px;
+  background: linear-gradient(145deg, #075f46, #059669);
+  color: white;
+  padding: 27px;
+  border-radius: 24px;
+  text-align: center;
+  box-shadow: 0 12px 28px rgba(5, 150, 105, 0.2);
 }
 
-.wa-cta-box p {
-  font-size: 0.9rem;
-  color: #166534;
-  margin-bottom: 6px;
-  line-height: 1.4;
+.wa-cta-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  color: #bbf7d0;
+  margin-bottom: 10px;
+}
+
+.wa-cta-box h3 {
+  font-size: 30px;
+  margin-bottom: 20px;
+  color: white;
 }
 
 .wa-schedule-info {
-  display: inline-block;
-  font-size: 0.85rem;
-  color: #047857;
+  display: block;
+  font-size: 19px;
   font-weight: 700;
-  margin-bottom: 6px;
+  margin: 10px 0;
+  color: white;
+}
+
+.wa-benefit {
+  margin: 18px 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: #d1fae5;
 }
 
 .wa-link-box {
-  font-size: 0.85rem;
-  color: #1e293b;
-  background: #ffffff;
-  padding: 6px 10px;
-  border-radius: 8px;
-  border: 1px dashed #4ade80;
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  background: white;
+  color: #065f46;
+  padding: 16px;
+  border-radius: 15px;
+  margin-top: 18px;
+  overflow-wrap: anywhere;
+}
+
+.wa-link-box span {
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.wa-link-box strong {
+  font-size: 17px;
+}
+
+.wa-closing {
+  text-align: center;
+  color: #54218d;
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.5;
+  margin-top: 22px;
 }
 
 .wa-footer {
@@ -2940,47 +3026,13 @@ button, input, select, textarea {
   justify-content: space-between;
   align-items: center;
   border-top: 1px solid #e2e8f0;
-  padding-top: 12px;
-  font-size: 0.8rem;
+  padding-top: 18px;
+  font-size: 14px;
   color: #64748b;
 }
 
 .wa-footer-logo {
-  height: 26px;
+  height: 35px;
   object-fit: contain;
 }
 
-/* =========================================
-   BOTÓN DE INVITACIÓN AGROLINC
-========================================= */
-
-.download-invitation-btn {
-  width: 100%;
-  margin-top: 12px;
-  padding: 0.95rem 1rem;
-  background: linear-gradient(135deg, #059669, #047857);
-  color: #ffffff;
-  border: none;
-  border-radius: 16px;
-  font-weight: 700;
-  font-size: 0.9rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.2);
-  transition: all 0.25s ease;
-}
-
-.download-invitation-btn:hover {
-  transform: translateY(-2px);
-  background: linear-gradient(135deg, #047857, #065f46);
-  box-shadow: 0 7px 18px rgba(5, 150, 105, 0.3);
-}
-
-.download-invitation-btn:disabled {
-  opacity: 0.6;
-  cursor: wait;
-  transform: none;
-}
