@@ -223,8 +223,13 @@
 
       </div>
 
-    </aside>
+      <!-- NUEVO BOTÓN DE INVITACIÓN PARA WHATSAPP -->
+      <button id="downloadInvitationBtn" class="download-invitation-btn">
+        <i class="fa-brands fa-whatsapp"></i> Descargar invitación al Bootcamp
+      </button>
 
+    </aside>
+    
     <section class="courses-section">
 
       <div class="section-header">
@@ -337,6 +342,36 @@
     }
   });
 </script>
+ <!-- TARJETA OCULTA DE INVITACIÓN COMPACTA (PARA WHATSAPP) -->
+<div id="whatsappInviteCard" style="display:none;">
+  <div class="whatsapp-invite-wrapper">
+    <div class="wa-header">
+      <img src="assets/images/agrolinc.svg" alt="AgroLINC" class="wa-logo">
+      <span class="wa-badge">¡Invitación Especial!</span>
+    </div>
+    
+    <div class="wa-body">
+      <h2 id="waStudentName" class="wa-title">¡Hola!</h2>
+      <p id="waMessageText" class="wa-text">
+        Queremos felicitarte de manera muy atenta por tu excelente participación y el gran desempeño demostrado en los cursos de la plataforma AgroLINC. ¡Has completado tus módulos con gran éxito!
+      </p>
+      
+      <div class="wa-modules-preview" id="waModulesContainer">
+        <!-- Los módulos completados se inyectarán dinámicamente aquí -->
+      </div>
+
+      <div class="wa-cta-box">
+        <p>Queremos invitarte formalmente a dar el siguiente paso en el <strong>Bootcamp AgroLINC</strong>.</p>
+        <span class="wa-link">Inscríbete aquí: agrolinc.iica.int/bootcamp</span>
+      </div>
+    </div>
+
+    <div class="wa-footer">
+      <span>Plataforma AgroLINC · IICA & FabLab</span>
+      <img src="assets/images/fablab.png" alt="FabLab" class="wa-footer-logo">
+    </div>
+  </div>
+</div> 
 
 </body>
 </html>
