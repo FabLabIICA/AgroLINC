@@ -2949,3 +2949,38 @@ button, input, select, textarea {
   height: 26px;
   object-fit: contain;
 }
+
+/* =========================================
+   BOTÓN DE INVITACIÓN AGROLINC
+========================================= */
+
+.download-invitation-btn {
+  width: 100%;
+  margin-top: 12px;
+  padding: 0.95rem 1rem;
+  background: linear-gradient(135deg, #059669, #047857);
+  color: #ffffff;
+  border: none;
+  border-radius: 16px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.2);
+  transition: all 0.25s ease;
+}
+
+.download-invitation-btn:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #047857, #065f46);
+  box-shadow: 0 7px 18px rgba(5, 150, 105, 0.3);
+}
+
+.download-invitation-btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+  transform: none;
+}
