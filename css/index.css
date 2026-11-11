@@ -2794,3 +2794,158 @@ button, input, select, textarea {
   right: 270px;
   position: absolute;
 }
+
+/* =========================================================
+   ESTILOS PARA LA TARJETA COMPACTA DE INVITACIÓN (WHATSAPP)
+========================================================= */
+.download-invitation-btn {
+  width: 100%;
+  margin-top: 1rem;
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: #ffffff;
+  border: none;
+  padding: 0.95rem 1.5rem;
+  border-radius: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2);
+  transition: all 0.25s ease;
+}
+.download-invitation-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+}
+
+#whatsappInviteCard {
+  width: 900px;
+  height: 620px;
+  position: absolute;
+  left: -9999px;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+  background-color: #f8fafc;
+  background-image: radial-gradient(#e2e8f0 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 35px 45px;
+  border: 1px solid #cbd5e1;
+  border-radius: 24px;
+}
+
+.wa-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 12px;
+}
+
+.wa-logo {
+  height: 40px;
+  object-fit: contain;
+}
+
+.wa-badge {
+  background: #ecfdf5;
+  color: #047857;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 1px solid #a7f3d0;
+}
+
+.wa-body {
+  padding: 5px 0;
+}
+
+.wa-title {
+  font-size: 1.7rem;
+  color: #0f172a;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.wa-text {
+  font-size: 0.95rem;
+  color: #475569;
+  line-height: 1.5;
+  margin-bottom: 15px;
+}
+
+.wa-modules-preview {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+.wa-module-pill {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  padding: 5px 12px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #1e293b;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+.wa-module-pill i {
+  color: #059669;
+}
+
+.wa-cta-box {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 14px 18px;
+  border-radius: 14px;
+}
+
+.wa-cta-box p {
+  font-size: 0.9rem;
+  color: #166534;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.wa-schedule-info {
+  display: inline-block;
+  font-size: 0.85rem;
+  color: #047857;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.wa-link-box {
+  font-size: 0.85rem;
+  color: #1e293b;
+  background: #ffffff;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px dashed #4ade80;
+  display: inline-block;
+}
+
+.wa-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 12px;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.wa-footer-logo {
+  height: 26px;
+  object-fit: contain;
+}
