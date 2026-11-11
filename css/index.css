@@ -3036,3 +3036,58 @@ button, input, select, textarea {
   object-fit: contain;
 }
 
+#whatsappInviteCard {
+  width: 760px;
+  height: 1100px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.whatsapp-invite-wrapper {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 42px 48px;
+  align-items: stretch;
+}
+
+.wa-header,
+.wa-body,
+.wa-footer {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.wa-body {
+  align-items: stretch;
+  justify-content: center;
+  text-align: center;
+}
+
+.wa-title,
+.wa-text,
+.wa-closing {
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.wa-modules-preview {
+  justify-content: center;
+  align-items: center;
+}
+
+.wa-congratulations {
+  margin: 18px auto 0;
+  max-width: 540px;
+  text-align: center;
+  color: #64748b;
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+.wa-congratulations i {
+  color: #d69e27;
+  margin-right: 6px;
+}
