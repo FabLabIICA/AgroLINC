@@ -1290,7 +1290,7 @@ async function generarInvitacionBootcamp() {
       useCORS: true,
       backgroundColor: "#ffffff",
       width: 760,
-      height: alturaReal - 200,
+      height: alturaReal - 70,
       windowWidth: 760,
       windowHeight: alturaReal,
       scrollX: 0,
