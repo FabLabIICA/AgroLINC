@@ -935,9 +935,47 @@ document.addEventListener("DOMContentLoaded", () => {
 
       waModulesContainer.innerHTML = "";
 
-      const aprobadosReales = cursosRutaGlobal.filter(curso =>
-        tuplasGlobales.some(tupla => tupla[0] === curso.id)
-      );
+      
+const aprobadosReales = cursosRutaGlobal.filter(curso =>
+  tuplasGlobales.some(tupla => tupla[0] === curso.id)
+);
+
+if (aprobadosReales.length > 0) {
+  aprobadosReales.forEach(curso => {
+
+    const tuplaCurso = tuplasGlobales.find(
+      tupla => tupla[0] === curso.id
+    );
+
+    const fechaCompletado = tuplaCurso?.[1] || "Fecha no registrada";
+
+    const actividad = document.createElement("div");
+    actividad.className = "wa-module-item";
+
+    actividad.innerHTML = `
+      <div class="wa-module-check">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+
+      <div class="wa-module-info">
+        <span class="wa-module-name">${curso.nombre}</span>
+        <span class="wa-module-date">
+          <i class="fa-regular fa-calendar-check"></i>
+          Completado el ${fechaCompletado}
+        </span>
+      </div>
+    `;
+
+    waModulesContainer.appendChild(actividad);
+  });
+
+} else {
+  waModulesContainer.innerHTML = `
+    <div class="wa-no-modules">
+      ¡Tu recorrido de aprendizaje en AgroLINC está por comenzar!
+    </div>
+  `;
+}
 
       if (aprobadosReales.length > 0) {
         aprobadosReales.forEach(curso => {
