@@ -894,58 +894,92 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
-document.getElementById('downloadInvitationBtn').addEventListener('click', () => {
-  const studentNameEl = document.getElementById('studentName');
-  const studentName = studentNameEl ? studentNameEl.textContent : 'Participante';
+/* =========================================
+   EVENTOS PRINCIPALES
+========================================= */
 
-  // Validación si no ha consultado cédula
-  if (!studentName || studentName === 'Sin consultar') {
-    alert('Por favor consulta tu ruta ingresando tu identificación primero.');
-    return;
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("AgroLINC iniciado con mejoras de UI");
+
+  const consultarBtn = document.getElementById("consultarBtn");
+  const cedulaInput = document.getElementById("cedulaInput");
+  const closeModal = document.getElementById('closeModal');
+  const downloadInvitationBtn = document.getElementById('downloadInvitationBtn');
+
+  if (consultarBtn) {
+    consultarBtn.addEventListener("click", consultarRuta);
   }
 
-  // 1. Personalizar el saludo con el nombre real del estudiante
-  document.getElementById('waStudentName').textContent = `¡Hola, ${studentName}!`;
-
-  // 2. Extraer dinámicamente los cursos completados reales del estudiante
-  const waModulesContainer = document.getElementById('waModulesContainer');
-  waModulesContainer.innerHTML = ''; 
-  
-  const aprobadosReales = cursosRutaGlobal.filter(c => 
-    tuplasGlobales.some(t => t[0] === c.id)
-  );
-
-  if (aprobadosReales.length > 0) {
-    aprobadosReales.forEach(curso => {
-      const pill = document.createElement('div');
-      pill.className = 'wa-module-pill';
-      pill.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${curso.nombre}`;
-      waModulesContainer.appendChild(pill);
+  if (cedulaInput) {
+    cedulaInput.addEventListener("keydown", e => {
+      if (e.key === "Enter") {
+        consultarRuta();
+      }
     });
-  } else {
-    waModulesContainer.innerHTML = `<span style="font-size: 0.85rem; color: #64748b;">¡Listo para iniciar tu recorrido en AgroLINC!</span>`;
   }
 
-  // 3. Mostrar temporalmente el contenedor oculto para la captura
-  const inviteCardNode = document.getElementById('whatsappInviteCard');
-  inviteCardNode.style.display = 'flex';
+  if (closeModal) {
+    closeModal.addEventListener('click', () => {
+      document.getElementById('courseModal').classList.remove('active');
+    });
+  }
 
-  // 4. Generar la imagen con html2canvas optimizada para WhatsApp
-  html2canvas(inviteCardNode, {
-    scale: 2,
-    useCORS: true,
-    backgroundColor: null
-  }).then(canvas => {
-    inviteCardNode.style.display = 'none';
+  // GESTIÓN DEL BOTÓN DE INVITACIÓN AL BOOTCAMP (WHATSAPP)
+  if (downloadInvitationBtn) {
+    downloadInvitationBtn.addEventListener('click', () => {
+      const studentNameEl = document.getElementById('studentName');
+      const studentName = studentNameEl ? studentNameEl.textContent : 'Participante';
 
-    const nombreLimpio = studentName.trim().replace(/\s+/g, '_');
-    const link = document.createElement('a');
-    link.download = `Invitacion_Bootcamp_AgroLINC_${nombreLimpio}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  }).catch(err => {
-    console.error("Error al generar la invitación:", err);
-    inviteCardNode.style.display = 'none';
-    alert("Ocurrió un error al generar la imagen de invitación.");
-  });
+      // Validación si no ha consultado cédula previamente
+      if (!studentName || studentName === 'Sin consultar') {
+        alert('Por favor consulta tu ruta ingresando tu identificación primero.');
+        return;
+      }
+
+      // 1. Personalizar el saludo con el nombre real del estudiante
+      document.getElementById('waStudentName').textContent = `¡Hola, ${studentName}!`;
+
+      // 2. Extraer dinámicamente los cursos completados reales del estudiante
+      const waModulesContainer = document.getElementById('waModulesContainer');
+      waModulesContainer.innerHTML = ''; 
+      
+      const aprobadosReales = cursosRutaGlobal.filter(c => 
+        tuplasGlobales.some(t => t[0] === c.id)
+      );
+
+      if (aprobadosReales.length > 0) {
+        aprobadosReales.forEach(curso => {
+          const pill = document.createElement('div');
+          pill.className = 'wa-module-pill';
+          pill.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${curso.nombre}`;
+          waModulesContainer.appendChild(pill);
+        });
+      } else {
+        waModulesContainer.innerHTML = `<span style="font-size: 0.85rem; color: #64748b;">¡Listo para iniciar tu recorrido en AgroLINC!</span>`;
+      }
+
+      // 3. Mostrar temporalmente el contenedor oculto para que html2canvas pueda leerlo
+      const inviteCardNode = document.getElementById('whatsappInviteCard');
+      inviteCardNode.style.display = 'flex';
+
+      // 4. Generar la imagen optimizada para WhatsApp
+      html2canvas(inviteCardNode, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: null
+      }).then(canvas => {
+        inviteCardNode.style.display = 'none';
+
+        const nombreLimpio = studentName.trim().replace(/\s+/g, '_');
+        const link = document.createElement('a');
+        link.download = `Invitacion_Bootcamp_AgroLINC_${nombreLimpio}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      }).catch(err => {
+        console.error("Error al generar la invitación:", err);
+        inviteCardNode.style.display = 'none';
+        alert("Ocurrió un error al generar la imagen de invitación.");
+      });
+    });
+  }
 });
