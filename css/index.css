@@ -3091,3 +3091,286 @@ button, input, select, textarea {
   color: #d69e27;
   margin-right: 6px;
 }
+
+
+/* =========================================
+   INVITACIÓN AGROLINC - DISEÑO REFINADO
+========================================= */
+
+#whatsappInviteCard {
+  width: 760px !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  overflow: visible !important;
+  box-sizing: border-box;
+  background: #ffffff;
+  border-radius: 26px;
+}
+
+.whatsapp-invite-wrapper {
+  width: 100%;
+  height: auto !important;
+  min-height: 0 !important;
+  box-sizing: border-box;
+  padding: 38px 48px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  overflow: visible !important;
+  background:
+    radial-gradient(circle at 95% 5%, #e5f8ef 0, transparent 28%),
+    radial-gradient(circle at 5% 35%, #f1eaff 0, transparent 25%),
+    #ffffff;
+  border: 1px solid #e8e2f2;
+  border-radius: 26px;
+}
+
+.wa-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 22px;
+  border-bottom: 1px solid #e8e5ef;
+}
+
+.wa-logo {
+  width: 190px;
+  height: 65px;
+  object-fit: contain;
+}
+
+.wa-badge {
+  background: #eee8fb;
+  color: #6836a3;
+  border: 1px solid #d9c8f3;
+  border-radius: 30px;
+  padding: 10px 17px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.wa-body {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 28px 0 20px;
+}
+
+.wa-eyebrow {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  color: #059669;
+  margin-bottom: 12px;
+}
+
+.wa-title {
+  text-align: center;
+  color: #54218d;
+  font-size: 45px;
+  line-height: 1.15;
+  font-weight: 900;
+  margin: 0 0 14px;
+}
+
+.wa-text {
+  max-width: 590px;
+  margin: 0 auto 20px;
+  text-align: center;
+  color: #526078;
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.wa-highlight {
+  max-width: 550px;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto 24px;
+  padding: 16px;
+  border-radius: 16px;
+  background: #f3f0fb;
+  border: 1px solid #e4daf5;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 9px;
+  color: #54218d;
+  font-size: 16px;
+}
+
+.wa-highlight-icon {
+  color: #d49b27;
+  font-size: 21px;
+}
+
+.wa-highlight strong {
+  font-size: 16px;
+}
+
+.wa-highlight span:last-child {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.wa-modules-section {
+  width: 100%;
+  margin: 0 auto 23px;
+}
+
+.wa-modules-section h3 {
+  text-align: center;
+  color: #26334a;
+  font-size: 18px;
+  margin: 0 0 14px;
+}
+
+.wa-modules-preview {
+  width: 100%;
+  max-width: 570px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 9px;
+}
+
+.wa-module-item {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 12px 15px;
+  background: #ffffff;
+  border: 1px solid #e2e8ef;
+  border-radius: 13px;
+  text-align: left;
+  break-inside: avoid;
+}
+
+.wa-module-icon {
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #e4f7ed;
+  color: #059669;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 15px;
+}
+
+.wa-module-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wa-module-name {
+  color: #253047;
+  font-size: 14px;
+  font-weight: 750;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.wa-module-date {
+  color: #718096;
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.wa-module-date i {
+  color: #059669;
+  margin-right: 4px;
+}
+
+.wa-no-modules {
+  text-align: center;
+  padding: 15px;
+  color: #64748b;
+  background: #f8fafc;
+  border-radius: 13px;
+}
+
+.wa-cta-box {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 23px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #075f46, #059669);
+  text-align: center;
+  color: white;
+}
+
+.wa-cta-label {
+  display: block;
+  color: #bbf7d0;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-bottom: 9px;
+}
+
+.wa-cta-box h3 {
+  color: white;
+  font-size: 25px;
+  margin: 0 0 15px;
+}
+
+.wa-schedule-info {
+  margin: 9px 0;
+  color: white;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.wa-benefit {
+  margin: 14px 0 0;
+  color: #d1fae5;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.wa-closing {
+  text-align: center;
+  color: #54218d;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 20px auto 0;
+  max-width: 540px;
+}
+
+.wa-footer {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid #e8e5ef;
+  padding-top: 16px;
+  color: #718096;
+  font-size: 12px;
+}
+
+.wa-footer-logo {
+  max-width: 100px;
+  max-height: 38px;
+  object-fit: contain;
+}
+
