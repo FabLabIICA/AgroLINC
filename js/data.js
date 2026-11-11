@@ -894,3 +894,59 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+document.getElementById('downloadInvitationBtn').addEventListener('click', () => {
+  const studentNameEl = document.getElementById('studentName');
+  const studentName = studentNameEl ? studentNameEl.textContent : 'Participante';
+
+  // Validación rápida por si no ha consultado su cédula aún
+  if (!studentName || studentName === 'Sin consultar') {
+    alert('Por favor consulta tu ruta ingresando tu identificación primero.');
+    return;
+  }
+
+  // 1. Personalizar el nombre en la tarjeta oculta
+  document.getElementById('waStudentName').textContent = `¡Hola, ${studentName}!`;
+
+  // 2. Opcional: Extraer los cursos completados para mostrarlos de forma amigable
+  const waModulesContainer = document.getElementById('waModulesContainer');
+  waModulesContainer.innerHTML = ''; // Limpiar anterior
+  
+  // Buscamos cuántos cursos están completados en tu grid actual
+  const completedCards = document.querySelectorAll('.course-card.completed');
+  if (completedCards.length > 0) {
+    completedCards.forEach(card => {
+      const titleText = card.querySelector('strong') ? card.querySelector('strong').textContent : 'Módulo completado';
+      const pill = document.createElement('div');
+      pill.className = 'wa-module-pill';
+      pill.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${titleText}`;
+      waModulesContainer.appendChild(pill);
+    });
+  } else {
+    waModulesContainer.innerHTML = `<span style="font-size: 0.85rem; color: #64748b;">¡Listo para iniciar tu recorrido en AgroLINC!</span>`;
+  }
+
+  // 3. Mostrar temporalmente el contenedor oculto para que html2canvas lo lea
+  const inviteCardNode = document.getElementById('whatsappInviteCard');
+  inviteCardNode.style.display = 'flex';
+
+  // 4. Generar la imagen con html2canvas
+  html2canvas(inviteCardNode, {
+    scale: 2, // Mejora la nitidez de la imagen resultante
+    useCORS: true,
+    backgroundColor: null
+  }).then(canvas => {
+    // Ocultar de nuevo la tarjeta del DOM visual
+    inviteCardNode.style.display = 'none';
+
+    // Crear enlace de descarga automático
+    const link = document.createElement('a');
+    link.download = `Invitacion_Bootcamp_AgroLINC_${studentName.replace(/\s+/g, '_')}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }).catch(err => {
+    console.error("Error al generar la invitación:", err);
+    inviteCardNode.style.display = 'none';
+    alert("Ocurrió un error al generar la imagen de invitación.");
+  });
+});
