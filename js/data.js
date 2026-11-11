@@ -1,3 +1,4 @@
+
 /* =========================================
    DEBUG MODE
 ========================================= */
@@ -9,9 +10,7 @@ function debugLog(title, data) {
   if (!DEBUG) return;
   console.group(title);
   console.log(data);
-  if (Array.isArray(data)) {
-    console.table(data);
-  }
+  if (Array.isArray(data)) console.table(data);
   console.groupEnd();
 }
 
@@ -23,15 +22,11 @@ function parseCSV(text) {
   return text
     .trim()
     .split("\n")
-    .map(row => {
-      return row
-        .split(",")
-        .map(value =>
-          value
-            .replace(/^"|"$/g, "")
-            .trim()
-        );
-    });
+    .map(row =>
+      row.split(",").map(value =>
+        value.replace(/^"|"$/g, "").trim()
+      )
+    );
 }
 
 /* =========================================
@@ -39,12 +34,9 @@ function parseCSV(text) {
 ========================================= */
 
 function clean(value) {
-  return String(value || "")
-    .trim()
-    .toLowerCase();
+  return String(value || "").trim().toLowerCase();
 }
 
-// FUNCIÓN AUXILIAR AUTOMATIZADA: Asigna iconos minimalistas por palabra clave
 function getCourseIcon(courseName) {
   const name = String(courseName || "")
     .toLowerCase()
@@ -52,21 +44,20 @@ function getCourseIcon(courseName) {
     .replace(/[\u0300-\u036f]/g, "");
 
   const iconRules = [
-    { keywords: ['drone', 'vant', 'vuelo', 'vehiculo aereo'], icon: 'fa-helicopter-symbol' }, 
-    { keywords: ['basico'], icon: 'fa-cube' }, 
-    { keywords: ['intermedio'], icon: 'fa-cubes' }, 
-    { keywords: ['laser', 'corte'], icon: 'fa-explosion' }, 
-    { keywords: ['cnc'], icon: 'fa-bore-hole' }, 
-    { keywords: ['geoespacial', 'mapa', 'gps', 'kobo', 'territorio'], icon: 'fa-map-location-dot' },
-    { keywords: ['microcontrolador', 'arduino'], icon: 'fa-microchip' },
-
-    { keywords: ['microcontrolador', 'sensor', 'actuador'], icon: 'fa-tower-broadcast' },
-    { keywords: [ 'electronico', 'electricidad'], icon: 'fa-bolt' },
-    { keywords: ['iot', 'internet de las cosas'], icon: 'fa-wifi' },
-    { keywords: ['automatizacion', 'robot'], icon: 'fa-robot' },
-    { keywords: ['programacion'], icon: 'fa-code' },
-    { keywords: ['fabricacion digital'], icon: 'fa-gear' },
-    { keywords: ['innovacion', 'canvas', 'modelo', 'soluciones'], icon: 'fa-lightbulb' }
+    { keywords: ["drone", "vant", "vuelo", "vehiculo aereo"], icon: "fa-helicopter-symbol" },
+    { keywords: ["basico"], icon: "fa-cube" },
+    { keywords: ["intermedio"], icon: "fa-cubes" },
+    { keywords: ["laser", "corte"], icon: "fa-explosion" },
+    { keywords: ["cnc"], icon: "fa-bore-hole" },
+    { keywords: ["geoespacial", "mapa", "gps", "kobo", "territorio"], icon: "fa-map-location-dot" },
+    { keywords: ["microcontrolador", "arduino"], icon: "fa-microchip" },
+    { keywords: ["sensor", "actuador"], icon: "fa-tower-broadcast" },
+    { keywords: ["electronico", "electricidad"], icon: "fa-bolt" },
+    { keywords: ["iot", "internet de las cosas"], icon: "fa-wifi" },
+    { keywords: ["automatizacion", "robot"], icon: "fa-robot" },
+    { keywords: ["programacion"], icon: "fa-code" },
+    { keywords: ["fabricacion digital"], icon: "fa-gear" },
+    { keywords: ["innovacion", "canvas", "modelo", "soluciones"], icon: "fa-lightbulb" }
   ];
 
   for (const rule of iconRules) {
@@ -74,7 +65,8 @@ function getCourseIcon(courseName) {
       return rule.icon;
     }
   }
-  return 'fa-graduation-cap'; 
+
+  return "fa-graduation-cap";
 }
 
 /* =========================================
@@ -90,10 +82,10 @@ const ESTUDIANTES_URL =
 const EVENTOS_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vQen9jQ8hTfq8nTuYdXS3JXnha10XGyrK42n57v2UT8kEvN3UlrfGiXcKaLY2ZhX8YN2IjWyiUqj-_q/pub?gid=1458346686&single=true&output=csv";
 
-const KPI_URL = 
+const KPI_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vQen9jQ8hTfq8nTuYdXS3JXnha10XGyrK42n57v2UT8kEvN3UlrfGiXcKaLY2ZhX8YN2IjWyiUqj-_q/pub?gid=1244953961&single=true&output=csv";
 
-const CALENDARIO_URL = 
+const CALENDARIO_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vQen9jQ8hTfq8nTuYdXS3JXnha10XGyrK42n57v2UT8kEvN3UlrfGiXcKaLY2ZhX8YN2IjWyiUqj-_q/pub?gid=933585437&single=true&output=csv";
 
 /* =========================================
@@ -101,10 +93,10 @@ const CALENDARIO_URL =
 ========================================= */
 
 const BLOG_URL =
-"https://docs.google.com/spreadsheets/d/e/2PACX-1vQen9jQ8hTfq8nTuYdXS3JXnha10XGyrK42n57v2UT8kEvN3UlrfGiXcKaLY2ZhX8YN2IjWyiUqj-_q/pub?gid=670892286&single=true&output=csv";
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQen9jQ8hTfq8nTuYdXS3JXnha10XGyrK42n57v2UT8kEvN3UlrfGiXcKaLY2ZhX8YN2IjWyiUqj-_q/pub?gid=670892286&single=true&output=csv";
 
 const BLOG_IMAGENES_URL =
-"https://docs.google.com/spreadsheets/d/e/2PACX-1vQen9jQ8hTfq8nTuYdXS3JXnha10XGyrK42n57v2UT8kEvN3UlrfGiXcKaLY2ZhX8YN2IjWyiUqj-_q/pub?gid=2108075240&single=true&output=csv";
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQen9jQ8hTfq8nTuYdXS3JXnha10XGyrK42n57v2UT8kEvN3UlrfGiXcKaLY2ZhX8YN2IjWyiUqj-_q/pub?gid=2108075240&single=true&output=csv";
 
 async function fetchBlog() {
   const noticiasRows = await fetchCSV(BLOG_URL, "BLOG");
@@ -117,6 +109,7 @@ async function fetchBlog() {
 
   return noticiasRows.slice(1).map(r => {
     const id = clean(r[0]);
+
     return {
       id,
       fecha: clean(r[1]),
@@ -137,10 +130,13 @@ async function fetchCSV(url, name) {
   try {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Error HTTP ${res.status}`);
+
     const text = await res.text();
     debugLog(`CSV RAW → ${name}`, text);
+
     const rows = parseCSV(text);
     debugLog(`CSV PARSED → ${name}`, rows);
+
     return rows;
   } catch (error) {
     console.error(`ERROR FETCH ${name}`, error);
@@ -154,16 +150,27 @@ async function fetchCSV(url, name) {
 
 async function fetchKPI() {
   const res = await fetch(KPI_URL);
+  if (!res.ok) throw new Error("Error cargando KPI");
+
   const text = await res.text();
   const rows = parseCSV(text);
+
   return rows.slice(1).map(r => {
-    const nombreOriginal = String(r[0] || "").replace(/\r/g, "").replace(/\n/g, " ").trim();
-    return { nombre: nombreOriginal, valor: clean(r[1]) };
+    const nombreOriginal = String(r[0] || "")
+      .replace(/\r/g, "")
+      .replace(/\n/g, " ")
+      .trim();
+
+    return {
+      nombre: nombreOriginal,
+      valor: clean(r[1])
+    };
   });
 }
 
 async function fetchCursos() {
   const rows = await fetchCSV(CURSOS_URL, "CURSOS");
+
   const data = rows.slice(1).map(r => ({
     id: clean(r[0]),
     nombre: r[1],
@@ -173,13 +180,15 @@ async function fetchCursos() {
     requisito2: clean(r[5]),
     cursoFinal: clean(r[6]),
     etapa: r[7]
-  }));
+  })).filter(c => c.id && c.nombre);
+
   debugLog("CURSOS LIMPIOS", data);
   return data;
 }
 
 async function fetchCalendario() {
   const rows = await fetchCSV(CALENDARIO_URL, "CALENDARIO");
+
   return rows.slice(1).map(r => ({
     fecha: r[0],
     id: clean(r[1]),
@@ -194,129 +203,150 @@ async function fetchCalendario() {
 
 async function fetchEstudiantes() {
   const rows = await fetchCSV(ESTUDIANTES_URL, "ESTUDIANTES");
+
   const data = rows.slice(1).map(r => ({
     cedula: clean(r[0]),
     nombre: r[1],
     correo: r[2],
     ruta: clean(r[3])
   }));
+
   debugLog("ESTUDIANTES LIMPIOS", data);
   return data;
 }
 
 async function fetchEventos() {
   const rows = await fetchCSV(EVENTOS_URL, "EVENTOS");
+
   const data = rows.slice(1).map(r => ({
     cedula: clean(r[0]),
     idCurso: clean(r[1]),
     fecha: r[2],
     estado: clean(r[3])
   }));
+
   debugLog("EVENTOS LIMPIOS", data);
   return data;
 }
 
-// Variables Globales Persistentes
+/* =========================================
+   VARIABLES GLOBALES
+========================================= */
+
 let estudianteGlobal = null;
 let cursosRutaGlobal = [];
 let tuplasGlobales = [];
 
 /* =========================================
-   CONSULTA
+   CONSULTA DE RUTA
 ========================================= */
 
 async function consultarRuta() {
-  const cedula = clean(document.getElementById("cedulaInput").value);
+  const input = document.getElementById("cedulaInput");
+  const cedula = clean(input?.value);
+
   if (!cedula) {
     alert("Ingrese una identificación");
     return;
   }
 
-  const loader = document.getElementById('searchLoader');
-  if (loader) loader.style.display = 'block';
-
-  console.clear();
+  const loader = document.getElementById("searchLoader");
+  if (loader) loader.style.display = "block";
 
   try {
-    const estudiantes = await fetchEstudiantes();
-    const cursos = await fetchCursos();
-    const eventos = await fetchEventos();
+    const [estudiantes, cursos, eventos] = await Promise.all([
+      fetchEstudiantes(),
+      fetchCursos(),
+      fetchEventos()
+    ]);
 
-    /* =====================================
-       BUSCAR ESTUDIANTE
-    ===================================== */
     const estudiante = estudiantes.find(e => e.cedula === cedula);
+
     debugLog("ESTUDIANTE ENCONTRADO", estudiante);
 
     if (!estudiante) {
+      estudianteGlobal = null;
+      cursosRutaGlobal = [];
+      tuplasGlobales = [];
+
       alert("No se encontró el participante");
-      if (loader) loader.style.display = 'none';
       return;
     }
 
     estudianteGlobal = estudiante;
 
-    /* =====================================
-       PERFIL
-    ===================================== */
-    document.getElementById("studentName").textContent = estudiante.nombre;
-    document.getElementById("studentRoute").textContent = `Ruta ${estudiante.ruta}`;
+    /* PERFIL */
 
-    const iniciales = estudiante.nombre
-      .split(" ")
+    document.getElementById("studentName").textContent =
+      estudiante.nombre || "Participante";
+
+    document.getElementById("studentRoute").textContent =
+      `Ruta ${estudiante.ruta}`;
+
+    const iniciales = (estudiante.nombre || "AG")
+      .trim()
+      .split(/\s+/)
       .map(n => n[0])
       .join("")
-      .substring(0, 2);
+      .substring(0, 2)
+      .toUpperCase();
 
     document.getElementById("profileAvatar").textContent = iniciales;
 
-    /* =====================================
-       EVENTOS COMPLETADOS
-    ===================================== */
-    const eventosCompletados = eventos.filter(ev => {
-      const mismaCedula = ev.cedula === cedula;
-      const aprobado = ev.estado.includes("complet");
-      return mismaCedula && aprobado;
+    /* EVENTOS COMPLETADOS */
+
+    const eventosCompletados = eventos.filter(ev =>
+      ev.cedula === cedula &&
+      ev.estado.includes("complet")
+    );
+
+    // Evita repetir un mismo curso si hay varias filas del evento.
+    const eventosUnicos = new Map();
+
+    eventosCompletados.forEach(ev => {
+      if (ev.idCurso && !eventosUnicos.has(ev.idCurso)) {
+        eventosUnicos.set(ev.idCurso, [ev.idCurso, ev.fecha]);
+      }
     });
 
-    const cursosCompletadosTuplas = eventosCompletados.map(ev => [
-      ev.idCurso, 
-      ev.fecha
-    ]);
-    
-    tuplasGlobales = cursosCompletadosTuplas; 
+    tuplasGlobales = Array.from(eventosUnicos.values());
 
-    /* =====================================
-       CURSOS DE LA RUTA
-    ===================================== */
-    const cursosRuta = cursos
+    /* CURSOS DE LA RUTA */
+
+    const cursosUnicos = new Map();
+
+    cursos
       .filter(c => c.ruta === estudiante.ruta)
+      .forEach(curso => {
+        if (!cursosUnicos.has(curso.id)) {
+          cursosUnicos.set(curso.id, curso);
+        }
+      });
+
+    const cursosRuta = Array.from(cursosUnicos.values())
       .sort((a, b) => Number(a.etapa) - Number(b.etapa));
 
-    cursosRutaGlobal = cursosRuta; 
+    cursosRutaGlobal = cursosRuta;
 
-    /* =====================================
-       PROGRESO
-    ===================================== */
-    const cursosFiltradosConFecha = cursosRuta
-      .map(c => {
-        const tuplaAsociada = cursosCompletadosTuplas.find(tupla => tupla[0] === c.id);
-        if (tuplaAsociada) {
-          return { ...c, fechaCompletado: tuplaAsociada[1] };
-        }
-        return null;
-      })
-      .filter(c => c !== null);
+    /* PROGRESO */
 
-    const completados = cursosFiltradosConFecha.length;
-    const porcentaje = (completados / diplomaTotal) * 100;
+    const completados = cursosRuta.filter(curso =>
+      tuplasGlobales.some(t => t[0] === curso.id)
+    ).length;
 
-    document.getElementById("progressText").textContent = `${completados}/${diplomaTotal}`;
-    document.getElementById("progressFill").style.width = `${porcentaje}%`;
+    const porcentaje = Math.min(
+      100,
+      (completados / diplomaTotal) * 100
+    );
 
-    /* =====================================
-       GRID DE TARJETAS
-    ===================================== */
+    document.getElementById("progressText").textContent =
+      `${completados}/${diplomaTotal}`;
+
+    document.getElementById("progressFill").style.width =
+      `${porcentaje}%`;
+
+    /* GRID DE CURSOS */
+
     const grid = document.getElementById("coursesGrid");
     grid.innerHTML = "";
 
@@ -325,43 +355,68 @@ async function consultarRuta() {
     cursosRuta.forEach(curso => {
       let estadoClase = "locked";
       let estadoTexto = "Bloqueado";
-      let fechaTextoHTML = ""; 
-    
-      const tuplaCurso = cursosCompletadosTuplas.find(tupla => tupla[0] === curso.id);
-      const completado = !!tuplaCurso; 
-    
+      let fechaTextoHTML = "";
+
+      const tuplaCurso = tuplasGlobales.find(
+        tupla => tupla[0] === curso.id
+      );
+
+      const completado = !!tuplaCurso;
+
       if (completado) {
         estadoClase = "completed";
         estadoTexto = "Completado";
-        fechaTextoHTML = `<div class="course-date">Completado el: ${tuplaCurso[1]}</div>`;
+
+        fechaTextoHTML = `
+          <div class="course-date">
+            Completado el: ${tuplaCurso[1] || "Fecha no registrada"}
+          </div>
+        `;
       } else {
         let disponible = false;
+
         const r1 = curso.requisito1;
         const r2 = curso.requisito2;
-        const esFinal = curso.cursoFinal ? curso.cursoFinal.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : "";
-    
+
+        const esFinal = clean(curso.cursoFinal)
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "");
+
         if (!r1 && !r2 && esFinal !== "si") {
           disponible = true;
         }
-        if (r1 && !r2 && cursosCompletadosTuplas.some(tupla => tupla[0] === r1)) {
+
+        if (
+          r1 &&
+          !r2 &&
+          tuplasGlobales.some(t => t[0] === r1)
+        ) {
           disponible = true;
         }
-        if (r1 && r2 && cursosCompletadosTuplas.some(tuple => tuple[0] === r1) && cursosCompletadosTuplas.some(tuple => tuple[0] === r2)) {
+
+        if (
+          r1 &&
+          r2 &&
+          tuplasGlobales.some(t => t[0] === r1) &&
+          tuplasGlobales.some(t => t[0] === r2)
+        ) {
           disponible = true;
         }
+
         if (esFinal === "si" && completados >= 6) {
           disponible = true;
         }
+
         if (disponible) {
           estadoClase = "available";
           estadoTexto = "Disponible";
           disponibles++;
         }
       }
-    
+
       const card = document.createElement("div");
       card.className = `course-card ${estadoClase}`;
-    
+
       card.innerHTML = `
         <div class="course-top">
           <i class="fa-solid ${getCourseIcon(curso.nombre)} course-card-icon"></i>
@@ -369,51 +424,61 @@ async function consultarRuta() {
             ${estadoTexto}
           </span>
         </div>
+
         <h4>${curso.nombre}</h4>
-        <span class="course-stage" style="display:block; margin-top:5px; font-size:0.8rem; opacity:0.7;">
+
+        <span class="course-stage"
+          style="display:block; margin-top:5px; font-size:0.8rem; opacity:0.7;">
           Etapa ${curso.etapa}
         </span>
+
         ${fechaTextoHTML}
       `;
-    
+
       card.addEventListener("click", () => {
         abrirModalDetallado(curso, estadoClase);
       });
-    
+
       grid.appendChild(card);
     });
 
-    document.getElementById("completedCount").textContent = completados;
-    document.getElementById("availableCount").textContent = disponibles;
+    document.getElementById("completedCount").textContent =
+      completados;
 
-    // Inyectar el botón renovado de descarga en el perfil
+    document.getElementById("availableCount").textContent =
+      disponibles;
+
     inyectarBotonCompartir();
 
   } catch (error) {
     console.error("ERROR GENERAL", error);
     alert("Error cargando datos");
   } finally {
-    if (loader) loader.style.display = 'none';
+    if (loader) loader.style.display = "none";
   }
 }
 
-/* =========================================================
-   MOTOR DINÁMICO DE SUB-MODALES (ACTUALIZADO PARA DISPONIBLES)
-========================================================= */
+/* =========================================
+   MODAL DE DETALLES
+========================================= */
+
 async function abrirModalDetallado(curso, estado) {
-  const modal = document.getElementById('courseModal');
+  const modal = document.getElementById("courseModal");
   if (!modal) return;
 
-  document.getElementById('modalStage').innerText = `Etapa ${curso.etapa || 'General'}`;
-  document.getElementById('modalTitle').innerText = curso.nombre;
-  
-  const container = document.getElementById('modalDescription');
-  container.innerHTML = ''; 
+  document.getElementById("modalStage").innerText =
+    `Etapa ${curso.etapa || "General"}`;
 
-  // MODIFICACIÓN EXCLUSIVA PARA EL ESTADO AVAILABLE (ESTILO INDEX ORIGINAL)
-  if (estado === 'available') {
+  document.getElementById("modalTitle").innerText =
+    curso.nombre;
+
+  const container = document.getElementById("modalDescription");
+  container.innerHTML = "";
+
+  if (estado === "available") {
     const calendario = await fetchCalendario();
     const eventosCurso = calendario.filter(e => e.id === curso.id);
+
     let eventosHTML = "";
 
     if (eventosCurso.length === 0) {
@@ -425,8 +490,11 @@ async function abrirModalDetallado(curso, estado) {
       `;
     } else {
       eventosCurso.forEach(evento => {
-        const cuposDisponibles = evento.max - evento.inscritos - evento.espera + evento.cancelados;
-        const cumpleMinimo = evento.inscritos + evento.espera - evento.cancelados >= evento.min;
+        const cuposDisponibles =
+          evento.max - evento.inscritos - evento.espera + evento.cancelados;
+
+        const cumpleMinimo =
+          evento.inscritos + evento.espera - evento.cancelados >= evento.min;
 
         let clase = "";
         let estadoClase = "";
@@ -439,36 +507,63 @@ async function abrirModalDetallado(curso, estado) {
           estadoClase = "status-closed";
           estadoTexto = "Grupo cerrado";
           detalle = "Esta convocatoria se gestiona mediante un grupo específico.";
-        }
-        else if (cuposDisponibles <= 0) {
+        } else if (cuposDisponibles <= 0) {
           clase = "event-waiting";
           estadoClase = "status-waiting";
           estadoTexto = "Lista de espera";
-          detalle = `<br><span class="event-note">No hay cupos disponibles. Puede registrarse en la lista de espera...</span>`;
-          boton = `<a class="event-btn" href="${evento.enlace}" target="_blank">Unirse a lista de espera</a>`;
-        }
-        else if (cumpleMinimo) {
+          detalle = `
+            <br>
+            <span class="event-note">
+              No hay cupos disponibles. Puede registrarse en la lista de espera.
+            </span>
+          `;
+          boton = `
+            <a class="event-btn" href="${evento.enlace}"
+              target="_blank" rel="noopener noreferrer">
+              Unirse a lista de espera
+            </a>
+          `;
+        } else if (cumpleMinimo) {
           clase = "event-confirmed";
           estadoClase = "status-confirmed";
           estadoTexto = "Convocatoria confirmada";
-          detalle = `<div class="event-slots status-confirmed">${cuposDisponibles} cupos disponibles</div>`;
-          boton = `<a class="event-btn" href="${evento.enlace}" target="_blank">Solicitar inscripción</a>`;
-        }
-        else {
+          detalle = `
+            <div class="event-slots status-confirmed">
+              ${cuposDisponibles} cupos disponibles
+            </div>
+          `;
+          boton = `
+            <a class="event-btn" href="${evento.enlace}"
+              target="_blank" rel="noopener noreferrer">
+              Solicitar inscripción
+            </a>
+          `;
+        } else {
           clase = "event-pending";
           estadoClase = "status-pending";
           estadoTexto = "Convocatoria abierta";
           detalle = `
-            <div class="event-note status-pending">Pendiente de alcanzar el cupo mínimo.</div>
-            <div class="event-slots status-pending">${cuposDisponibles} cupos disponibles</div>
+            <div class="event-note status-pending">
+              Pendiente de alcanzar el cupo mínimo.
+            </div>
+            <div class="event-slots status-pending">
+              ${cuposDisponibles} cupos disponibles
+            </div>
           `;
-          boton = `<a class="event-btn" href="${evento.enlace}" target="_blank">Solicitar inscripción</a>`;
+          boton = `
+            <a class="event-btn" href="${evento.enlace}"
+              target="_blank" rel="noopener noreferrer">
+              Solicitar inscripción
+            </a>
+          `;
         }
 
         eventosHTML += `
           <div class="course-event ${clase}">
             <div class="event-date">${evento.fecha}</div>
-            <div class="event-status ${estadoClase}">${estadoTexto}</div>
+            <div class="event-status ${estadoClase}">
+              ${estadoTexto}
+            </div>
             ${detalle}
             ${boton}
           </div>
@@ -483,390 +578,756 @@ async function abrirModalDetallado(curso, estado) {
         ${eventosHTML}
       </div>
     `;
-  } 
-  // EL RESTO DEL CÓDIGO PERMANECE INTACTO Y TOTALMENTE INALTERADO
-  else if (estado === 'completed') {
+
+  } else if (estado === "completed") {
     container.innerHTML = `
-      <p><strong>¡Felicitaciones! Has completado y aprobado con éxito este módulo.</strong></p>
-      <p>${curso.descripcion || ''}</p>
-      <h4 style="margin-top:1.2rem;"><i class="fa-solid fa-map"></i> Mapa de Contenidos Desarrollados:</h4>
-      <img src="assets/images/rutas/default-contenido.jpg" alt="Contenidos AgroLINC" class="modal-image-content" onerror="this.src='https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=600&q=80'">
+      <p>
+        <strong>
+          ¡Felicitaciones! Has completado y aprobado con éxito este módulo.
+        </strong>
+      </p>
+
+      <p>${curso.descripcion || ""}</p>
+
+      <h4 style="margin-top:1.2rem;">
+        <i class="fa-solid fa-map"></i>
+        Mapa de Contenidos Desarrollados:
+      </h4>
+
+      <img
+        src="assets/images/rutas/default-contenido.jpg"
+        alt="Contenidos AgroLINC"
+        class="modal-image-content"
+        onerror="this.src='https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=600&q=80'"
+      >
     `;
-  } 
-  else if (estado === 'locked') {
-    let htmlRequisitos = '';
-    
+
+  } else if (estado === "locked") {
+    let htmlRequisitos = "";
+
     [curso.requisito1, curso.requisito2].forEach(reqId => {
-      if (reqId && reqId !== '-') {
-        const reqCurso = cursosRutaGlobal.find(c => c.id === reqId);
-        if (reqCurso) {
-          const esAprobado = tuplasGlobales.some(t => t[0] === reqCurso.id);
-          
-          let reqEstadoTexto = 'Bloqueado';
-          let reqEstadoClase = 'locked';
-          let reqIcono = 'fa-lock';
+      if (!reqId || reqId === "-") return;
 
-          if (esAprobado) {
-            reqEstadoTexto = 'Completo';
-            reqEstadoClase = 'completed';
-            reqIcono = 'fa-circle-check';
-          } else {
-            let reqDisponible = false;
-            const r1 = reqCurso.requisito1;
-            const r2 = reqCurso.requisito2;
-            const esFinalReq = reqCurso.cursoFinal ? reqCurso.cursoFinal.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : "";
+      const reqCurso = cursosRutaGlobal.find(c => c.id === reqId);
+      if (!reqCurso) return;
 
-            if (!r1 && !r2 && esFinalReq !== "si") reqDisponible = true;
-            if (r1 && !r2 && tuplasGlobales.some(t => t[0] === r1)) reqDisponible = true;
-            if (r1 && r2 && tuplasGlobales.some(t => t[0] === r1) && tuplasGlobales.some(t => t[0] === r2)) reqDisponible = true;
+      const esAprobado = tuplasGlobales.some(t => t[0] === reqCurso.id);
 
-            if (reqDisponible) {
-              reqEstadoTexto = 'Disponible';
-              reqEstadoClase = 'available';
-              reqIcono = 'fa-unlock';
-            }
-          }
-          
-          htmlRequisitos += `
-            <div class="req-item-link" onclick="cambiarFocoModal('${reqCurso.id}')" role="button" title="Haga clic para evaluar este curso">
-              <div class="req-text-container">
-                <i class="fa-solid ${getCourseIcon(reqCurso.nombre)}"></i>
-                <span>${reqCurso.nombre}</span>
-              </div>
-              <span class="req-status-badge req-badge ${reqEstadoClase}">
-                <i class="fa-solid ${reqIcono}" style="font-size:0.7rem; margin-right:2px;"></i> ${reqEstadoTexto}
-              </span>
-            </div>
-          `;
+      let reqEstadoTexto = "Bloqueado";
+      let reqEstadoClase = "locked";
+      let reqIcono = "fa-lock";
+
+      if (esAprobado) {
+        reqEstadoTexto = "Completo";
+        reqEstadoClase = "completed";
+        reqIcono = "fa-circle-check";
+      } else {
+        let reqDisponible = false;
+
+        const r1 = reqCurso.requisito1;
+        const r2 = reqCurso.requisito2;
+
+        const esFinalReq = clean(reqCurso.cursoFinal)
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "");
+
+        if (!r1 && !r2 && esFinalReq !== "si") {
+          reqDisponible = true;
+        }
+
+        if (r1 && !r2 && tuplasGlobales.some(t => t[0] === r1)) {
+          reqDisponible = true;
+        }
+
+        if (
+          r1 && r2 &&
+          tuplasGlobales.some(t => t[0] === r1) &&
+          tuplasGlobales.some(t => t[0] === r2)
+        ) {
+          reqDisponible = true;
+        }
+
+        if (reqDisponible) {
+          reqEstadoTexto = "Disponible";
+          reqEstadoClase = "available";
+          reqIcono = "fa-unlock";
         }
       }
+
+      htmlRequisitos += `
+        <div class="req-item-link"
+          onclick="cambiarFocoModal('${reqCurso.id}')"
+          role="button"
+          title="Haga clic para evaluar este curso">
+
+          <div class="req-text-container">
+            <i class="fa-solid ${getCourseIcon(reqCurso.nombre)}"></i>
+            <span>${reqCurso.nombre}</span>
+          </div>
+
+          <span class="req-status-badge req-badge ${reqEstadoClase}">
+            <i class="fa-solid ${reqIcono}"
+              style="font-size:0.7rem; margin-right:2px;"></i>
+            ${reqEstadoTexto}
+          </span>
+        </div>
+      `;
     });
 
-    let aclaracionFinal = '';
-    const esFinal = curso.cursoFinal ? curso.cursoFinal.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : "";
-    if (esFinal === 'si') {
+    let aclaracionFinal = "";
+
+    const esFinal = clean(curso.cursoFinal)
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+
+    if (esFinal === "si") {
       const totalLleva = tuplasGlobales.length;
       const faltan = Math.max(0, 6 - totalLleva);
+
       aclaracionFinal = `
-        <div class="modal-requirement-box" style="border-left: 5px solid #eab308; background: #fef08a; color: #713f12; margin-top:10px;">
+        <div class="modal-requirement-box"
+          style="border-left:5px solid #eab308; background:#fef08a; color:#713f12; margin-top:10px;">
+
           <strong>Módulo Final de Graduación</strong>
-          <p>Este bloque requiere la aprobación de un mínimo de 6 módulos en la plataforma. Actualmente registras <strong>${totalLleva} aprobados</strong> (Faltan: ${faltan}).</p>
+
+          <p>
+            Este bloque requiere la aprobación de un mínimo de 6 módulos
+            en la plataforma. Actualmente registras
+            <strong>${totalLleva} aprobados</strong>
+            (Faltan: ${faltan}).
+          </p>
         </div>
       `;
     }
 
     container.innerHTML = `
-      <p>${curso.descripcion || 'Módulo bloqueado estructuralmente en tu ruta formativa.'}</p>
+      <p>
+        ${curso.descripcion || "Módulo bloqueado estructuralmente en tu ruta formativa."}
+      </p>
+
       <div class="modal-requirement-box">
-        <h4><i class="fa-solid fa-triangle-exclamation"></i> Requisitos Obligatorios:</h4>
-        <p>Debes aprobar los módulos predecesores. Presiona cualquiera para evaluar sus especificaciones:</p>
+        <h4>
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          Requisitos Obligatorios:
+        </h4>
+
+        <p>
+          Debes aprobar los módulos predecesores.
+          Presiona cualquiera para evaluar sus especificaciones:
+        </p>
+
         ${htmlRequisitos}
       </div>
+
       ${aclaracionFinal}
     `;
   }
 
-  modal.classList.add('active');
+  modal.classList.add("active");
 }
+
+/* =========================================
+   CAMBIAR FOCO DEL MODAL
+========================================= */
 
 function cambiarFocoModal(cursoId) {
   const curso = cursosRutaGlobal.find(c => c.id === cursoId);
-  if (curso) {
-    const esAprobado = tuplasGlobales.some(t => t[0] === curso.id);
-    let estado = "locked";
-    
-    if (esAprobado) {
-      estado = "completed";
-    } else {
-      const r1 = curso.requisito1;
-      const r2 = curso.requisito2;
-      const esFinal = curso.cursoFinal ? curso.cursoFinal.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : "";
-      
-      let disponible = false;
-      if (!r1 && !r2 && esFinal !== "si") disponible = true;
-      if (r1 && !r2 && tuplasGlobales.some(t => t[0] === r1)) disponible = true;
-      if (r1 && r2 && tuplasGlobales.some(t => t[0] === r1) && tuplasGlobales.some(t => t[0] === r2)) disponible = true;
-      if (esFinal === "si" && tuplasGlobales.length >= 6) disponible = true;
-      
-      if (disponible) estado = "available";
+  if (!curso) return;
+
+  const esAprobado = tuplasGlobales.some(t => t[0] === curso.id);
+  let estado = "locked";
+
+  if (esAprobado) {
+    estado = "completed";
+  } else {
+    const r1 = curso.requisito1;
+    const r2 = curso.requisito2;
+
+    const esFinal = clean(curso.cursoFinal)
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+
+    let disponible = false;
+
+    if (!r1 && !r2 && esFinal !== "si") {
+      disponible = true;
     }
-    
-    abrirModalDetallado(curso, estado);
+
+    if (r1 && !r2 && tuplasGlobales.some(t => t[0] === r1)) {
+      disponible = true;
+    }
+
+    if (
+      r1 && r2 &&
+      tuplasGlobales.some(t => t[0] === r1) &&
+      tuplasGlobales.some(t => t[0] === r2)
+    ) {
+      disponible = true;
+    }
+
+    if (esFinal === "si" && tuplasGlobales.length >= 6) {
+      disponible = true;
+    }
+
+    if (disponible) estado = "available";
   }
+
+  abrirModalDetallado(curso, estado);
 }
 
-/* =========================================================
-   GENERADOR Y TARJETA COMPARTIBLE OPTIMIZADA
-========================================================= */
-function inyectarBotonCompartir() {
-  const profileCard = document.querySelector('.profile-card');
-  if (!profileCard || document.getElementById('btnDownloadShare')) return;
+/* =========================================
+   BOTÓN DE TARJETA COMPARTIBLE
+========================================= */
 
-  const btnShare = document.createElement('button');
-  btnShare.id = 'btnDownloadShare';
-  btnShare.className = 'download-share-btn';
-  btnShare.innerHTML = `<i class="fa-solid fa-cloud-download-alt"></i> Descargar Tarjeta de Progreso`;
-  
-  btnShare.addEventListener('click', generarImagenRedesSociales);
+function inyectarBotonCompartir() {
+  const profileCard = document.querySelector(".profile-card");
+
+  if (!profileCard || document.getElementById("btnDownloadShare")) {
+    return;
+  }
+
+  const btnShare = document.createElement("button");
+
+  btnShare.id = "btnDownloadShare";
+  btnShare.className = "download-share-btn";
+  btnShare.innerHTML = `
+    <i class="fa-solid fa-cloud-download-alt"></i>
+    Descargar Tarjeta de Progreso
+  `;
+
+  btnShare.addEventListener("click", generarImagenRedesSociales);
   profileCard.appendChild(btnShare);
 }
-/* =========================================================
-   GENERADOR Y TARJETA COMPARTIBLE OPTIMIZADA (DISEÑO DOBLE HILERA DE 7)
-========================================================= */
 
-// FUNCIÓN AUXILIAR AUTOMATIZADA: Simplifica los nombres largos de los cursos para la tarjeta compacta
+/* =========================================
+   NOMBRES CORTOS DE CURSOS
+========================================= */
+
 function obtenerNombreCortoCurso(courseName) {
   const name = String(courseName || "").trim().toLowerCase();
-  
+
   if (name.includes("impresion 3d") || name.includes("impresión 3d")) {
     return name.includes("intermedio") ? "Impresión 3D II" : "Impresión 3D I";
   }
+
   if (name.includes("drone") || name.includes("vant") || name.includes("vuelo")) {
     return "Vuelo de Drones";
   }
+
   if (name.includes("programación") || name.includes("programacion") || name.includes("programar")) {
     return "Programación";
   }
-  if (name.includes("corte laser") || name.includes("corte láser") ) {
+
+  if (name.includes("corte laser") || name.includes("corte láser")) {
     return "Corte Láser";
   }
-  if (name.includes("cnc") || name.includes("router") ) {
+
+  if (name.includes("cnc") || name.includes("router")) {
     return "Fresado CNC";
   }
+
   if (name.includes("iot") || name.includes("internet de las cosas")) {
     return "IoT";
   }
-  if (name.includes("microcontrolador") ) {
+
+  if (name.includes("microcontrolador")) {
     return "Microcontroladores";
   }
+
   if (name.includes("actuadores") || name.includes("sensores")) {
     return "Sensores";
   }
+
   if (name.includes("automatizacion") || name.includes("automatización") || name.includes("robot")) {
     return "Automatización";
   }
+
   if (name.includes("geoespacial") || name.includes("mapa") || name.includes("kobo")) {
     return "Geotecnologías";
   }
+
   if (name.includes("innovacion") || name.includes("innovación") || name.includes("canvas")) {
     return "Innovación Aplicada";
   }
+
   if (name.includes("fabricacion digital") || name.includes("fabricación digital")) {
     return "Fabricación Digital";
   }
+
   if (name.includes("electricidad") || name.includes("electrotecnia")) {
     return "Electrónica";
   }
-  // Si no entra en ninguna regla, devuelve el nombre original truncado discretamente
-  return courseName.length > 22 ? courseName.substring(0, 20) + "..." : courseName;
+
+  return courseName.length > 22
+    ? courseName.substring(0, 20) + "..."
+    : courseName;
 }
+
+/* =========================================
+   GENERAR TARJETA DE PROGRESO
+========================================= */
+
 function generarImagenRedesSociales() {
   if (!estudianteGlobal) return;
 
-  let shareContainer = document.getElementById('linkedinShareCard');
+  if (typeof html2canvas !== "function") {
+    alert("No se pudo cargar el generador de imágenes.");
+    return;
+  }
+
+  let shareContainer = document.getElementById("linkedinShareCard");
+
   if (!shareContainer) {
-    shareContainer = document.createElement('div');
-    shareContainer.id = 'linkedinShareCard';
+    shareContainer = document.createElement("div");
+    shareContainer.id = "linkedinShareCard";
     document.body.appendChild(shareContainer);
   }
 
-  // 1. Extraer aprobados reales
-  const aprobadosReales = cursosRutaGlobal.filter(c => 
+  const aprobadosReales = cursosRutaGlobal.filter(c =>
     tuplasGlobales.some(t => t[0] === c.id)
   );
 
   const totalCursosLogrados = aprobadosReales.length;
-  const horasAcumuladas = totalCursosLogrados * 4; 
+  const tieneModuloFinal = aprobadosReales.some(c =>
+    clean(c.nombre).includes("innovación") ||
+    clean(c.nombre).includes("innovacion")
+  );
 
-  const tieneModuloFinal = aprobadosReales.some(c => c.nombre.toLowerCase().includes("innovación"));
-  
-  // CONDICIÓN: Evaluar si es una sola hilera para aplicar espaciados de caja
   const esUnaHilera = totalCursosLogrados <= 6;
-  const slotsOrdinariosVisibles = esUnaHilera ? 6 : Math.max(totalCursosLogrados, 12);
-  const columnasGrid = esUnaHilera ? 6 : Math.ceil(slotsOrdinariosVisibles / 2);
+  const slotsOrdinariosVisibles = esUnaHilera
+    ? 6
+    : Math.max(totalCursosLogrados, 12);
+
+  const columnasGrid = esUnaHilera
+    ? 6
+    : Math.ceil(slotsOrdinariosVisibles / 2);
 
   let medallasHTML = "";
+
   for (let i = 0; i < slotsOrdinariosVisibles; i++) {
     if (i < totalCursosLogrados) {
       const curso = aprobadosReales[i];
       const nombreAbreviado = obtenerNombreCortoCurso(curso.nombre);
-      
-      // Intentar buscar la fecha de aprobación desde las tuplas globales de tu base de datos
-      const tuplaCorrespondiente = tuplasGlobales.find(t => t[0] === curso.id);
-      // Si la tupla tiene la fecha en la posición [1] o [2], la usamos; si no, dejamos un fallback ordenado
-      let fechaCursoFormateada = "Completado";
-      if (tuplaCorrespondiente && tuplaCorrespondiente[1]) {
-        // Asumiendo formato string o Date, lo ideal es mostrar algo corto como "Ene 2026" o "12/04/2026"
-        fechaCursoFormateada = tuplaCorrespondiente[1]; 
-      }
-      
+
+      const tuplaCorrespondiente = tuplasGlobales.find(
+        t => t[0] === curso.id
+      );
+
+      const fechaCursoFormateada =
+        tuplaCorrespondiente?.[1] || "Completado";
+
       medallasHTML += `
-        <div class="compact-medal-slot medal-unlocked" title="${curso.nombre}">
+        <div class="compact-medal-slot medal-unlocked"
+          title="${curso.nombre}">
+
           <div class="compact-medal-circle">
             <i class="fa-solid ${getCourseIcon(curso.nombre)}"></i>
           </div>
-          <span class="medal-course-title">${nombreAbreviado}</span>
-          <span class="medal-course-date">${fechaCursoFormateada}</span>
+
+          <span class="medal-course-title">
+            ${nombreAbreviado}
+          </span>
+
+          <span class="medal-course-date">
+            ${fechaCursoFormateada}
+          </span>
         </div>
       `;
     } else {
-      // Casilla bloqueada
       medallasHTML += `
         <div class="compact-medal-slot medal-locked">
           <div class="compact-medal-circle">
             <i class="fa-solid fa-lock"></i>
           </div>
-          
         </div>
       `;
     }
   }
 
   const trofeoHTML = `
-    <div class="special-trophy-panel ${tieneModuloFinal ? 'trophy-unlocked' : 'trophy-locked'}">
+    <div class="special-trophy-panel ${tieneModuloFinal ? "trophy-unlocked" : "trophy-locked"}">
       <div class="trophy-title">Programa AgroLINC</div>
+
       <div class="trophy-badge">
-        <i class="fa-solid ${tieneModuloFinal ? 'fa-trophy' : 'fa-award'}"></i>
+        <i class="fa-solid ${tieneModuloFinal ? "fa-trophy" : "fa-award"}"></i>
       </div>
-      <div class="trophy-title">${tieneModuloFinal ? 'COMPLETADO' : ''}</div>
+
+      <div class="trophy-title">
+        ${tieneModuloFinal ? "COMPLETADO" : ""}
+      </div>
     </div>
   `;
 
-  const urlPlataforma = `https://fablabiica.github.io/AgroLINC/ruta.html`;
-  const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(urlPlataforma)}&color=041124`;
+  const urlPlataforma =
+    "https://fablabiica.github.io/AgroLINC/ruta.html";
 
- // --- VALIDACIÓN DINÁMICA DE TAMAÑO PARA EL NOMBRE ---
-// Si el nombre pasa de 25 caracteres, reducimos la fuente para prevenir que rompa el layout
-let fontSizeNombre = '2.6rem';
-if (estudianteGlobal.nombre && estudianteGlobal.nombre.length > 25) {
-  fontSizeNombre = '2.0rem'; // Se reduce lo suficiente para acomodarse en dos líneas compactas
-}
+  const qrApiUrl =
+    `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(urlPlataforma)}&color=041124`;
 
-// Ahora sí, inyectas tu plantilla usando la variable dinámicamente en el inline-style de la etiqueta h2
-shareContainer.innerHTML = `
+  let fontSizeNombre = "2.6rem";
+
+  if (estudianteGlobal.nombre && estudianteGlobal.nombre.length > 25) {
+    fontSizeNombre = "2rem";
+  }
+
+  shareContainer.innerHTML = `
     <div class="share-branding-strip">
       <div class="share-strip-left">
-        <img src="assets/images/agrolinc.svg" alt="AgroLINC" class="share-logo-main" onerror="this.style.display='none'">
+        <img src="assets/images/agrolinc.svg"
+          alt="AgroLINC" class="share-logo-main"
+          onerror="this.style.display='none'">
       </div>
+
       <div class="share-strip-right">
-        <img src="assets/images/micitt.png" alt="MICITT" class="share-logo-instm" onerror="this.style.display='none'">
-        <img src="assets/images/iica-azul.png" alt="IICA" class="share-logo-inst" onerror="this.style.display='none'">
+        <img src="assets/images/micitt.png"
+          alt="MICITT" class="share-logo-instm"
+          onerror="this.style.display='none'">
+
+        <img src="assets/images/iica-azul.png"
+          alt="IICA" class="share-logo-inst"
+          onerror="this.style.display='none'">
       </div>
     </div>
-    
+
     <div class="share-body">
       <div class="share-user-meta">
         <div class="share-user-details">
-          <!-- PARCHE DE REDUCCIÓN DE FUENTE IMPLEMENTADO AQUÍ -->
-          <h2 class="compact-white-name" style="font-size: ${fontSizeNombre} !important;">${estudianteGlobal.nombre}</h2>
+          <h2 class="compact-white-name"
+            style="font-size:${fontSizeNombre} !important;">
+            ${estudianteGlobal.nombre}
+          </h2>
+
           <p class="share-user-sub">
-            <span><i class="fa-solid fa-id-card"></i> <b>${estudianteGlobal.cedula}</b></span>
-            <span class="share-separator">•</span>
-            <span><i class="fa-solid fa-route"></i> Ruta Tecnológica: <b>${estudianteGlobal.ruta.toUpperCase()}</b></span>
-            <span class="share-separator">•</span>
             <span>
-              <i class="fa-regular fa-calendar-check"></i> 
-              <b>${new Date().toLocaleDateString('es-CR', { day: '2-digit', month: '2-digit', year: 'numeric' })}</b>
+              <i class="fa-solid fa-id-card"></i>
+              <b>${estudianteGlobal.cedula}</b>
+            </span>
+
+            <span class="share-separator">•</span>
+
+            <span>
+              <i class="fa-solid fa-route"></i>
+              Ruta Tecnológica:
+              <b>${estudianteGlobal.ruta.toUpperCase()}</b>
+            </span>
+
+            <span class="share-separator">•</span>
+
+            <span>
+              <i class="fa-regular fa-calendar-check"></i>
+              <b>
+                ${new Date().toLocaleDateString("es-CR", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric"
+                })}
+              </b>
             </span>
           </p>
         </div>
-        
+
         <div class="share-user-stats">
           <div class="badge-logro-premium">
             <div class="badge-premium-icon">
-              
               <i class="fa-solid fa-medal"></i>
             </div>
+
             <div class="badge-premium-content">
               <div class="badge-premium-title">
-              <span class="badge-hours-highlight">${totalCursosLogrados === 1 ? 'Nuevo' : totalCursosLogrados}</span>
-                 ${totalCursosLogrados === 1 ? 'Logro de aprendizaje' : 'Logros de aprendizaje'}
+                <span class="badge-hours-highlight">
+                  ${totalCursosLogrados === 1 ? "Nuevo" : totalCursosLogrados}
+                </span>
+
+                ${totalCursosLogrados === 1
+                  ? "Logro de aprendizaje"
+                  : "Logros de aprendizaje"}
               </div>
+
               <div class="badge-premium-subtitle">
-                 En innovación tecnológica
+                En innovación tecnológica
               </div>
             </div>
           </div>
         </div>
       </div>
-      
-      <!-- CONTENEDOR CON LA CLASE ADAPTATIVA DE UNA SOLA HILERA -->
-      <div class="showcase-container ${esUnaHilera ? 'one-row-case' : ''}">
-        <div class="compact-medal-case-dynamic" style="grid-template-columns: repeat(${columnasGrid}, 1fr);">
+
+      <div class="showcase-container ${esUnaHilera ? "one-row-case" : ""}">
+        <div class="compact-medal-case-dynamic"
+          style="grid-template-columns:repeat(${columnasGrid}, 1fr);">
           ${medallasHTML}
         </div>
+
         ${trofeoHTML}
       </div>
     </div>
 
-   <div class="share-footer">
-  <div class="share-footer-left-block">
-    <div class="share-footer-text">
-      <span><i class="fa-solid fa-shield-halved"></i> Portafolio de Habilidades Digitales • AgroLINC</span>
-      <p>¡Escanea el código QR para comprobar mis cursos aprobados y seguir mi avance en la plataforma!</p>
+    <div class="share-footer">
+      <div class="share-footer-left-block">
+        <div class="share-footer-text">
+          <span>
+            <i class="fa-solid fa-shield-halved"></i>
+            Portafolio de Habilidades Digitales • AgroLINC
+          </span>
+
+          <p>
+            ¡Escanea el código QR para comprobar mis cursos aprobados
+            y seguir mi avance en la plataforma!
+          </p>
+        </div>
+
+        <img src="assets/images/fablab.png"
+          alt="FABLAB"
+          class="share-logo-footer-inst"
+          onerror="this.style.display='none'">
+      </div>
+
+      <div class="share-footer-qr">
+        <img src="${qrApiUrl}"
+          alt="Código QR de Verificación"
+          class="share-qr-image">
+      </div>
     </div>
-    
-      <img src="assets/images/fablab.png" alt="FABAB" class="share-logo-footer-inst" onerror="this.style.display='none'">
-  </div>
-  
-  <div class="share-footer-qr">
-    <img src="${qrApiUrl}" alt="Código QR de Verificación" class="share-qr-image">
-  </div>
-</div>
   `;
 
-
-  // 5. Captura con corrección tipográfica
   setTimeout(() => {
     html2canvas(shareContainer, {
       useCORS: true,
       allowTaint: true,
       backgroundColor: "#081d38",
-      scale: 2,           
-      width: 1200,        
+      scale: 2,
+      width: 1200,
       height: 720,
-      logging: false,     
+      logging: false,
       scrollX: 0,
       scrollY: 0,
-      x: 0, 
-      y: 0,
-      windowWidth: 1200,  
+      windowWidth: 1200,
       windowHeight: 720,
 
-      onclone: (clonedDoc) => {
-        const iconos = clonedDoc.querySelectorAll('.compact-medal-circle i, .trophy-badge i, .badge-premium-icon i');
+      onclone: clonedDoc => {
+        const iconos = clonedDoc.querySelectorAll(
+          ".compact-medal-circle i, .trophy-badge i, .badge-premium-icon i"
+        );
+
         iconos.forEach(icono => {
-          icono.style.position = 'absolute';
-          icono.style.top = '40%'; 
-          icono.style.left = '50%';
-          icono.style.transform = 'translate(-50%, -50%)'; 
-          icono.style.lineHeight = '1';
+          icono.style.position = "absolute";
+          icono.style.top = "40%";
+          icono.style.left = "50%";
+          icono.style.transform = "translate(-50%, -50%)";
+          icono.style.lineHeight = "1";
         });
 
         const todosLosTextos = clonedDoc.querySelectorAll(
-          '.compact-white-name, .share-user-sub, .badge-logro-premium, .medal-course-title, .medal-course-date, .medal-locked-date, .trophy-title, .share-footer-text span, .share-footer-text p'
+          ".compact-white-name, .share-user-sub, .badge-logro-premium, .medal-course-title, .medal-course-date, .medal-locked-date, .trophy-title, .share-footer-text span, .share-footer-text p"
         );
 
         todosLosTextos.forEach(texto => {
-          texto.style.position = 'relative';
-          texto.style.top = '-8px'; 
-          texto.style.lineHeight = '1.8';
+          texto.style.position = "relative";
+          texto.style.top = "-8px";
+          texto.style.lineHeight = "1.8";
         });
       }
     }).then(canvas => {
-      const nombreArchivoSafe = estudianteGlobal.nombre.trim().replace(/\s+/g, '_');
-      const link = document.createElement('a');
+      const nombreArchivoSafe = estudianteGlobal.nombre
+        .trim()
+        .replace(/\s+/g, "_");
+
+      const link = document.createElement("a");
       link.download = `AgroLINC_Logros_${nombreArchivoSafe}.png`;
-      link.href = canvas.toDataURL('image/png');
+      link.href = canvas.toDataURL("image/png");
+
+      document.body.appendChild(link);
       link.click();
-    }).catch(err => {
-      console.error("Error en la captura de la tarjeta: ", err);
+      link.remove();
+    }).catch(error => {
+      console.error("Error en la captura de la tarjeta:", error);
+      alert("No se pudo generar la tarjeta de progreso.");
     });
-  }, 600); 
+  }, 600);
+}
+
+/* =========================================
+   INVITACIÓN BOOTCAMP
+   Cada curso aprobado se agrega una sola vez.
+========================================= */
+
+async function generarInvitacionBootcamp() {
+  if (!estudianteGlobal) {
+    alert("Primero consulta tu identificación.");
+    return;
+  }
+
+  if (typeof html2canvas !== "function") {
+    alert("No se pudo cargar el generador de imágenes.");
+    return;
+  }
+
+  const downloadButton = document.getElementById("downloadInvitationBtn");
+  const inviteCardNode = document.getElementById("whatsappInviteCard");
+  const waStudentName = document.getElementById("waStudentName");
+  const waModulesContainer = document.getElementById("waModulesContainer");
+
+  if (!inviteCardNode || !waStudentName || !waModulesContainer) {
+    alert("No se encontró la plantilla de invitación.");
+    return;
+  }
+
+  const nombreCompleto = estudianteGlobal.nombre || "Participante";
+  const primerNombreOriginal = nombreCompleto.trim().split(/\s+/)[0];
+
+  const primerNombre =
+    primerNombreOriginal.charAt(0).toLocaleUpperCase("es-CR") +
+    primerNombreOriginal.slice(1).toLocaleLowerCase("es-CR");
+
+  waStudentName.textContent = `¡Hola, ${primerNombre}!`;
+
+  // Limpiar completamente el contenedor antes de agregar los cursos.
+  waModulesContainer.replaceChildren();
+
+  // Filtrar los cursos aprobados y evitar IDs repetidos.
+  const idsAprobados = new Set(tuplasGlobales.map(t => t[0]));
+
+  const aprobadosReales = cursosRutaGlobal.filter(curso =>
+    idsAprobados.has(curso.id)
+  );
+
+  if (aprobadosReales.length > 0) {
+    aprobadosReales.forEach(curso => {
+      const tuplaCurso = tuplasGlobales.find(
+        tupla => tupla[0] === curso.id
+      );
+
+      const fechaCompletado =
+        tuplaCurso?.[1] || "Fecha no registrada";
+
+      const actividad = document.createElement("div");
+      actividad.className = "wa-module-item";
+
+      const check = document.createElement("div");
+      check.className = "wa-module-check";
+
+      const icono = document.createElement("i");
+      icono.className = "fa-solid fa-circle-check";
+      check.appendChild(icono);
+
+      const info = document.createElement("div");
+      info.className = "wa-module-info";
+
+      const nombre = document.createElement("span");
+      nombre.className = "wa-module-name";
+      nombre.textContent = curso.nombre;
+
+      const fecha = document.createElement("span");
+      fecha.className = "wa-module-date";
+
+      const iconoFecha = document.createElement("i");
+      iconoFecha.className = "fa-regular fa-calendar-check";
+
+      fecha.appendChild(iconoFecha);
+      fecha.appendChild(
+        document.createTextNode(` Completado el ${fechaCompletado}`)
+      );
+
+      info.appendChild(nombre);
+      info.appendChild(fecha);
+
+      actividad.appendChild(check);
+      actividad.appendChild(info);
+
+      waModulesContainer.appendChild(actividad);
+    });
+  } else {
+    const mensaje = document.createElement("div");
+    mensaje.className = "wa-no-modules";
+    mensaje.textContent =
+      "¡Tu recorrido de aprendizaje en AgroLINC está por comenzar!";
+
+    waModulesContainer.appendChild(mensaje);
+  }
+
+  const displayOriginal = inviteCardNode.style.display;
+  const styleOriginal = inviteCardNode.getAttribute("style");
+
+  if (downloadButton) downloadButton.disabled = true;
+
+  try {
+    // Mostrar fuera del área visible para capturarla sin mostrarla al usuario.
+    inviteCardNode.style.display = "flex";
+    inviteCardNode.style.position = "fixed";
+    inviteCardNode.style.left = "-10000px";
+    inviteCardNode.style.top = "0";
+    inviteCardNode.style.width = "760px";
+    inviteCardNode.style.height = "auto";
+    inviteCardNode.style.minHeight = "0";
+    inviteCardNode.style.maxHeight = "none";
+    inviteCardNode.style.overflow = "visible";
+    inviteCardNode.style.boxSizing = "border-box";
+
+    const wrapper = inviteCardNode.querySelector(".whatsapp-invite-wrapper");
+
+    if (wrapper) {
+      wrapper.style.width = "100%";
+      wrapper.style.maxWidth = "760px";
+      wrapper.style.height = "auto";
+      wrapper.style.minHeight = "0";
+      wrapper.style.maxHeight = "none";
+      wrapper.style.overflow = "visible";
+      wrapper.style.boxSizing = "border-box";
+    }
+
+    // Esperar a que el navegador actualice el diseño y calcule la altura.
+    await new Promise(resolve =>
+      requestAnimationFrame(() => requestAnimationFrame(resolve))
+    );
+
+    const alturaReal = Math.max(
+      inviteCardNode.scrollHeight,
+      wrapper ? wrapper.scrollHeight : 0,
+      1100
+    );
+
+    const canvas = await html2canvas(inviteCardNode, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: "#ffffff",
+      width: 760,
+      height: alturaReal,
+      windowWidth: 760,
+      windowHeight: alturaReal,
+      scrollX: 0,
+      scrollY: 0,
+      logging: false
+    });
+
+    const link = document.createElement("a");
+
+    link.download =
+      `Invitacion_Bootcamp_AgroLINC_${primerNombre}.png`;
+
+    link.href = canvas.toDataURL("image/png");
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+  } catch (error) {
+    console.error("Error generando invitación:", error);
+    alert("Ocurrió un error al generar la imagen de invitación.");
+
+  } finally {
+    if (styleOriginal !== null) {
+      inviteCardNode.setAttribute("style", styleOriginal);
+    } else {
+      inviteCardNode.removeAttribute("style");
+      inviteCardNode.style.display = displayOriginal || "none";
+    }
+
+    if (downloadButton) downloadButton.disabled = false;
+  }
 }
 
 /* =========================================
    EVENTOS PRINCIPALES
+   Un solo registro de eventos.
 ========================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -896,145 +1357,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (downloadInvitationBtn) {
-    downloadInvitationBtn.addEventListener("click", async () => {
-
-      if (!estudianteGlobal) {
-        alert("Primero consulta tu identificación.");
-        return;
-      }
-
-      const nombreCompleto = estudianteGlobal.nombre || "Participante";
-
-      // Extraer únicamente el primer nombre
-      const primerNombreOriginal = nombreCompleto.trim().split(/\s+/)[0];
-
-      const primerNombre =
-        primerNombreOriginal.charAt(0).toLocaleUpperCase("es-CR") +
-        primerNombreOriginal.slice(1).toLocaleLowerCase("es-CR");
-
-      const waStudentName =
-        document.getElementById("waStudentName");
-
-      const waModulesContainer =
-        document.getElementById("waModulesContainer");
-
-      const inviteCardNode =
-        document.getElementById("whatsappInviteCard");
-
-      if (!waStudentName || !waModulesContainer || !inviteCardNode) {
-        alert("No se encontró la plantilla de invitación.");
-        return;
-      }
-
-      if (typeof html2canvas !== "function") {
-        alert("No se pudo cargar el generador de imágenes.");
-        return;
-      }
-
-      waStudentName.textContent = `¡Hola, ${primerNombre}!`;
-
-      waModulesContainer.innerHTML = "";
-
-      
-const aprobadosReales = cursosRutaGlobal.filter(curso =>
-  tuplasGlobales.some(tupla => tupla[0] === curso.id)
-);
-
-if (aprobadosReales.length > 0) {
-  aprobadosReales.forEach(curso => {
-
-    const tuplaCurso = tuplasGlobales.find(
-      tupla => tupla[0] === curso.id
+    downloadInvitationBtn.addEventListener(
+      "click",
+      generarInvitacionBootcamp
     );
-
-    const fechaCompletado = tuplaCurso?.[1] || "Fecha no registrada";
-
-    const actividad = document.createElement("div");
-    actividad.className = "wa-module-item";
-
-    actividad.innerHTML = `
-      <div class="wa-module-check">
-        <i class="fa-solid fa-circle-check"></i>
-      </div>
-
-      <div class="wa-module-info">
-        <span class="wa-module-name">${curso.nombre}</span>
-        <span class="wa-module-date">
-          <i class="fa-regular fa-calendar-check"></i>
-          Completado el ${fechaCompletado}
-        </span>
-      </div>
-    `;
-
-    waModulesContainer.appendChild(actividad);
-  });
-
-} else {
-  waModulesContainer.innerHTML = `
-    <div class="wa-no-modules">
-      ¡Tu recorrido de aprendizaje en AgroLINC está por comenzar!
-    </div>
-  `;
-}
-
-      if (aprobadosReales.length > 0) {
-        aprobadosReales.forEach(curso => {
-          const pill = document.createElement("div");
-          pill.className = "wa-module-pill";
-
-          const icono = document.createElement("i");
-          icono.className = "fa-solid fa-circle-check";
-
-          pill.appendChild(icono);
-          pill.appendChild(
-            document.createTextNode(` ${curso.nombre}`)
-          );
-
-          waModulesContainer.appendChild(pill);
-        });
-      } else {
-        waModulesContainer.innerHTML = `
-          <span style="color:#64748b;font-size:15px;">
-            ¡Tu recorrido de aprendizaje continúa!
-          </span>
-        `;
-      }
-
-      const displayOriginal = inviteCardNode.style.display;
-
-      downloadInvitationBtn.disabled = true;
-      inviteCardNode.style.display = "flex";
-
-      try {
-        const canvas = await html2canvas(inviteCardNode, {
-          scale: 2,
-          useCORS: true,
-          backgroundColor: "#ffffff",
-          width: 760,
-          height: 1100,
-          windowWidth: 760,
-          windowHeight: 1100,
-          logging: false
-        });
-
-        const link = document.createElement("a");
-        link.download =
-          `Invitacion_Bootcamp_AgroLINC_${primerNombre}.png`;
-
-        link.href = canvas.toDataURL("image/png");
-
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-
-      } catch (error) {
-        console.error("Error generando invitación:", error);
-        alert("Ocurrió un error al generar la invitación.");
-
-      } finally {
-        inviteCardNode.style.display = displayOriginal || "none";
-        downloadInvitationBtn.disabled = false;
-      }
-    });
+  } else {
+    console.warn(
+      "No se encontró el botón #downloadInvitationBtn en ruta.html"
+    );
   }
 });
