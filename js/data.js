@@ -1277,7 +1277,7 @@ periodoReconocimiento.appendChild(
 const notaReconocimiento = document.createElement("span");
 notaReconocimiento.className = "wa-module-date";
 notaReconocimiento.textContent =
-  "Preparación reconocida mediante cursos y contenidos formativos de AgroLINC.";
+  "Reconocido para el cumplimiento de requisitos formativos de AgroLINC";
 
 infoReconocimiento.appendChild(nombreReconocimiento);
 infoReconocimiento.appendChild(periodoReconocimiento);
@@ -1333,7 +1333,7 @@ waModulesContainer.appendChild(reconocimiento);
       useCORS: true,
       backgroundColor: "#ffffff",
       width: 760,
-      height: alturaReal - 200,
+      height: alturaReal - 150,
       windowWidth: 760,
       windowHeight: alturaReal,
       scrollX: 0,
