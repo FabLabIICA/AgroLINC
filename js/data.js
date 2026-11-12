@@ -1243,7 +1243,50 @@ async function generarInvitacionBootcamp() {
 
     waModulesContainer.appendChild(mensaje);
   }
+   // Agregar reconocimiento de preparación en Agrotecnología
+const reconocimiento = document.createElement("div");
+reconocimiento.className = "wa-module-item";
 
+const checkReconocimiento = document.createElement("div");
+checkReconocimiento.className = "wa-module-check";
+
+const iconoReconocimiento = document.createElement("i");
+iconoReconocimiento.className = "fa-solid fa-circle-check";
+
+checkReconocimiento.appendChild(iconoReconocimiento);
+
+const infoReconocimiento = document.createElement("div");
+infoReconocimiento.className = "wa-module-info";
+
+const nombreReconocimiento = document.createElement("span");
+nombreReconocimiento.className = "wa-module-name";
+nombreReconocimiento.textContent =
+  "Agrotecnología y agricultura de precisión (CAH 506)";
+
+const periodoReconocimiento = document.createElement("span");
+periodoReconocimiento.className = "wa-module-date";
+
+const iconoPeriodo = document.createElement("i");
+iconoPeriodo.className = "fa-regular fa-calendar-check";
+
+periodoReconocimiento.appendChild(iconoPeriodo);
+periodoReconocimiento.appendChild(
+  document.createTextNode(" Segundo semestre 2026")
+);
+
+const notaReconocimiento = document.createElement("span");
+notaReconocimiento.className = "wa-module-date";
+notaReconocimiento.textContent =
+  "Preparación reconocida mediante cursos y contenidos formativos de AgroLINC.";
+
+infoReconocimiento.appendChild(nombreReconocimiento);
+infoReconocimiento.appendChild(periodoReconocimiento);
+infoReconocimiento.appendChild(notaReconocimiento);
+
+reconocimiento.appendChild(checkReconocimiento);
+reconocimiento.appendChild(infoReconocimiento);
+
+waModulesContainer.appendChild(reconocimiento);
   const displayOriginal = inviteCardNode.style.display;
   const styleOriginal = inviteCardNode.getAttribute("style");
 
@@ -1290,7 +1333,7 @@ async function generarInvitacionBootcamp() {
       useCORS: true,
       backgroundColor: "#ffffff",
       width: 760,
-      height: alturaReal - 70,
+      height: alturaReal - 200,
       windowWidth: 760,
       windowHeight: alturaReal,
       scrollX: 0,
